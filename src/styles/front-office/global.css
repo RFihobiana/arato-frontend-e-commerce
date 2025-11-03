@@ -376,7 +376,7 @@ footer{
     position: fixed;
     top: 0;
     right: -100%; 
-    width: 50%;
+    width: 40%;
     max-width: 350px;
     height: 100vh;
     background-color: var(--color-background-white);
@@ -394,8 +394,8 @@ footer{
 
   .header-nav-toggle .close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 5px;
+    right: 0px;
     background: none;
     border: none;
     color:var(--color-green-primary);
