@@ -213,8 +213,6 @@
 }
 
 
-/* --- Styles des contrôles de quantité (maintenus pour cohérence) --- */
-
 .quantite-control {
   display: flex;
   flex-direction: row;

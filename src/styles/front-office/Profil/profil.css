@@ -1,0 +1,362 @@
+
+.connexion-container {
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.08);
+
+  padding: 3rem 2rem;
+  margin: 2rem auto;
+  width: 100vw;
+  text-align: center;
+}
+
+.titre-connexion {
+  font-size: 1.6rem;
+  color: var(--color-text-dark);
+  margin-bottom: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.boutons-connexion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.btn-facebook,
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 280px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-facebook {
+  background-color: #1877f2;
+  color: var(--color-background-white);
+}
+
+.btn-facebook:hover {
+  background-color: #145dbf;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.3);
+}
+
+.btn-google {
+  background-color: var(--color-background-white);
+  color: var(--color-text-dark);
+  border: 2px solid #e0e0e0;
+}
+
+.btn-google:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-color: #d0d0d0;
+}
+
+.btn-facebook .icon,
+.btn-google .icon {
+  font-size: 1.3rem;
+}
+
+.profil-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  padding: 20px 40px;
+  margin: 60px auto;
+  max-width: 1400px;
+  gap: 40px;
+}
+
+.profil-box {
+  flex: 1;
+  min-width: 450px;
+  max-width: 600px;
+}
+
+.conteneur-formulaire {
+  display: flex;
+  padding: 0px 40px;
+  align-items: flex-start;
+justify-content: center;
+  height: 100%;
+}
+
+.conteneur-formulaire form {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  padding: 40px 45px;
+  gap: 20px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #fafffe 100%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.conteneur-formulaire form:hover {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+.titre {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 12px;
+  width: 100%;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.titre h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.titre h2 {
+  font-size: 0.8rem;
+  width: 100%;
+  color: var(--color-text-dark);
+  font-weight: 200;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.groupe {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.groupe-formulaire {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.groupe-formulaire label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-text-dark);
+}
+.groupe-formulaire input::placeholder {
+ 
+  font-size: 0.8rem;
+ 
+}
+.groupe-formulaire p {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 6px 0 10px 0;
+  font-style: italic;
+}
+
+.champ-avec-icone {
+  display: flex;
+  align-items: center;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--color-background-white);
+  transition: all 0.3s ease;
+}
+
+.champ-avec-icone:focus-within {
+  border-color: var(--color-green-primary);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.icone-champ {
+  padding: 0 10px;
+  font-size: 1.3em;
+  color: var(--color-green-primary);
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.champ-avec-icone input,
+.champ-avec-icone select {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  background-color: transparent;
+  width: 100%;
+}
+
+.champ-avec-icone input::placeholder {
+  color: #ccc;;
+}
+
+.champ-avec-icone select {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.bouton {
+   color: var(--color-background-white);
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+  background-color: var(--color-green-primary);
+}
+
+.bouton:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-green-secondary);
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+}
+
+.bouton:active {
+  transform: translateY(0);
+}
+
+
+
+.conteneur-lien {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.lien {
+  color: var(--color-green-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.lien:hover {
+  color: var(--color-green-secondary);
+  text-decoration: underline;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.separator span {
+  font-size: 1.1rem;
+  color: var(--color-green-primary);
+  font-weight: 600;
+  padding: 0 20px;
+  background-color: var(--color-background-white);
+  position: relative;
+}
+
+.separator::before {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #e5e7eb);
+}
+
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to left, transparent, #e5e7eb);
+}
+
+@media (max-width: 900px) {
+  .profil-container {
+    padding: 20px;
+    margin: 40px auto;
+    gap: 30px;
+  }
+
+  .profil-box {
+    min-width: 100%;
+  }
+
+  .conteneur-formulaire form {
+    padding: 30px 25px;
+    border-radius: 20px;
+  }
+
+  .titre h1 {
+    font-size: 1.5rem;
+  }
+
+  .titre h2 {
+    font-size: 0.9rem;
+  }
+
+  .boutons-connexion {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .btn-facebook,
+  .btn-google {
+    width: 100%;
+    min-width: auto;
+    max-width: 400px;
+  }
+
+  
+
+  .titre-connexion {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .conteneur-formulaire form {
+    padding: 25px 20px;
+    gap: 24px;
+  }
+
+  .titre h1 {
+    font-size: 1.3rem;
+  }
+
+  .champ-avec-icone input,
+  .champ-avec-icone select {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  .bouton {
+    padding: 14px 24px;
+    font-size: 0.9rem;
+  }
+}

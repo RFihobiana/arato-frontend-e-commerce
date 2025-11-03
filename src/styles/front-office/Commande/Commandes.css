@@ -1,20 +1,15 @@
 .filtres-commandes-conteneur {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 40px;
+    flex-direction: row;
+    gap: 40px;
+    padding: 10px 20px;
     margin:40px;
     background-color: var(--color-background-white);
     border-radius: 8px;
-    width: 100%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.filtre-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
 
 .filtre-item input[type="date"], .filtre-item select {
     color: #666;
@@ -287,6 +282,6 @@
 .historique-commandes {
     width: 100%;
     margin-top: 40px;
-    padding:10px 40px;
+    padding:10px 20px;
 }
 

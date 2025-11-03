@@ -140,8 +140,7 @@ const CarteCommande = ({ order }) => {
   };
 
  const handleTrackOrder = () => {
-    // Redirection vers la page de suivi avec l'ID de la commande
-    navigate(`/livraisons/${order.id}`, { 
+       navigate(`/livraisons/${order.id}`, { 
       state: { commande: order } 
     });
   };

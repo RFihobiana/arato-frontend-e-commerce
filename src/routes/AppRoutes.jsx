@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-//front-office
+// front-office
 import Accueil from "../pages/front-office/Accueil";
 import Actualite from "../pages/front-office/Actualite";
 import ActualiteDetails from "../pages/front-office/ActualiteDetails";
 import Panier from "../pages/front-office/Panier";
 import Produit from "../pages/front-office/Produit";
-import Profil from "../pages/front-office/Profil";
-import SuiviCommande from "../pages/front-office/SuiviCommande"; 
-import SuiviLivraison from "../pages/front-office/SuiviLivraison"; 
+import SuiviCommande from "../pages/front-office/SuiviCommande";
+import SuiviLivraison from "../pages/front-office/SuiviLivraison";
+import Profil from "../pages/front-office/Profil"; 
 
 // back-office
 import TableauDeBord from "../pages/back-office/TableauDeBord";
@@ -24,44 +24,44 @@ import PaiementStat from "../pages/back-office/Paiement";
 import AjoutActualite from "../pages/back-office/Actualite/AjoutActualite";
 import ModifierActualite from "../pages/back-office/Actualite/ModifierActualite";
 import TousLesActualite from "../pages/back-office/Actualite/TousLesActualite";
-export default function AppRoutes(){
-    return (
-<Router>
-    <Routes>
-        {/* front-office */}
-        <Route path="/" element={<Accueil />}></Route>
-        <Route path="/actualite" element ={<Actualite/>}></Route>
-        <Route path="/actualite/:id" element ={<ActualiteDetails/>}></Route>
-        <Route path="/produit" element ={<Produit/>}></Route>
-        <Route path="/profil" element ={<Profil/>}></Route>
-        <Route path="/Panier" element ={<Panier/>}></Route>
-        <Route path="/commandes" element ={<SuiviCommande/>}></Route>
-        <Route path="/livraisons/:id" element ={<SuiviLivraison/>}></Route>
 
-
-        {/* back-office */}
-        <Route path="/admin" element={<TableauDeBord/>}></Route>
+export default function AppRoutes() {
+  return (
+    <Router>
+      <Routes>
+        {/* -------- FRONT-OFFICE -------- */}
+        <Route path="/" element={<Accueil />} />
+        <Route path="/actualite" element={<Actualite />} />
+        <Route path="/actualite/:id" element={<ActualiteDetails />} />
+        <Route path="/produit" element={<Produit />} />
+        <Route path="/panier" element={<Panier />} />
+        <Route path="/commandes" element={<SuiviCommande />} />
+        <Route path="/livraisons/:id" element={<SuiviLivraison />} />
         
-        {/* Gestion des produits */}
-        <Route path="/admin/produits" element={<TousLesProduits/>}></Route>
-        <Route path="/admin/produits/ajouter" element={<AjouterProduit/>}></Route>
-        <Route path="/admin/produits/modifier/:id" element={<ModifierProduit/>}></Route>
-        <Route path="/admin/promotion" element={<ProduitEnPromotion/>}></Route>
+               <Route path="/profil" element={<Profil />} />
 
-        {/* Gestion des commandes */}
-        <Route path="/admin/commandes" element={<ListeCommande/>}></Route>
-        <Route path="/admin/commandes/:id" element={<DetailsCommande/>}></Route>
-        
-        {/* Gestion des actualités */}
-        <Route path="/admin/actualites" element={<TousLesActualite/>}></Route>
-        <Route path="/admin/actualites/ajouter" element={<AjoutActualite/>}></Route>
-        <Route path="/admin/actualites/modifier/:id" element={<ModifierActualite/>}></Route>
+             <Route path="/admin" element={<TableauDeBord />} />
+
+        {/* Produits */}
+        <Route path="/admin/produits" element={<TousLesProduits />} />
+        <Route path="/admin/produits/ajouter" element={<AjouterProduit />} />
+        <Route path="/admin/produits/modifier/:id" element={<ModifierProduit />} />
+        <Route path="/admin/promotion" element={<ProduitEnPromotion />} />
+
+        {/* Commandes */}
+        <Route path="/admin/commandes" element={<ListeCommande />} />
+        <Route path="/admin/commandes/:id" element={<DetailsCommande />} />
+
+        {/* Actualités */}
+        <Route path="/admin/actualites" element={<TousLesActualite />} />
+        <Route path="/admin/actualites/ajouter" element={<AjoutActualite />} />
+        <Route path="/admin/actualites/modifier/:id" element={<ModifierActualite />} />
 
         {/* Autres pages admin */}
-        <Route path="/admin/clients" element={<TousLesClient/>}></Route>
-        <Route path="/admin/profil" element={<ProfilAdmin/>}></Route>
-        <Route path="/admin/paiements" element={<PaiementStat/>}></Route>
-    </Routes>
-</Router>
-    );
+        <Route path="/admin/clients" element={<TousLesClient />} />
+        <Route path="/admin/profil" element={<ProfilAdmin />} />
+        <Route path="/admin/paiements" element={<PaiementStat />} />
+      </Routes>
+    </Router>
+  );
 }
