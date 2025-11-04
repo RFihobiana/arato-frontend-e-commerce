@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../../composants/Header';
-import CategorieSection from '../../composants/Produits/CategorieSection';
+import CategorieSection from '../../composants/front-office/Produits/CategorieSection';
 import Footer from '../../composants/FooterSection';
 const Produit = () => {
   return (

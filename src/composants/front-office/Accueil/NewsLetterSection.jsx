@@ -1,6 +1,6 @@
 import React from 'react'
-import "../../styles/front-office/Accueil/NewsLetter.css";
-import  "../../styles/front-office/global.css";
+import "../../../styles/front-office/Accueil/NewsLetter.css";
+import  "../../../styles/front-office/global.css";
 const NewsLetterSection = () => {
   return (
     <section className='newsLetter'>

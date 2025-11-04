@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import "../../styles/front-office/Commande/Commandes.css"; 
-import carotte from "../../assets/images/carotte.png";
-import tomate from "../../assets/images/tomate.png";
-import chou from "../../assets/images/chou.png";
-import pommeDeTerre from "../../assets/images/pommeDeTerre.png";
-import viande from "../../assets/images/legume3.jpg";
-import "../../styles/front-office/global.css";
+import "../../../styles/front-office/Commande/Commandes.css"; 
+import carotte from "../../../assets/images/carotte.png";
+import tomate from "../../../assets/images/tomate.png";
+import chou from "../../../assets/images/chou.png";
+import pommeDeTerre from "../../../assets/images/pommeDeTerre.png";
+import viande from "../../../assets/images/legume3.jpg";
+import "../../../styles/front-office/global.css";
 import SuiviLivraison from "./SuiviLivraison";
 import FiltresCommandes from "./FiltresCommandes"; 
 import { useNavigate } from "react-router-dom";

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import carotte from "../../assets/images/carotte.png";
-import tomate from "../../assets/images/tomate.png";
-import chou from "../../assets/images/chou.png";
-import pommeDeTerre from "../../assets/images/pommeDeTerre.png";
-import viande from "../../assets/images/legume3.jpg";
-import panier from "../../assets/icones/panier.png";
-import "../../styles/front-office/global.css";
-import "../../styles/front-office/Accueil/produitSection.css";
+import carotte from "../../../assets/images/carotte.png";
+import tomate from "../../../assets/images/tomate.png";
+import chou from "../../../assets/images/chou.png";
+import pommeDeTerre from "../../../assets/images/pommeDeTerre.png";
+import viande from "../../../assets/images/legume3.jpg";
+import panier from "../../../assets/icones/panier.png";
+import "../../../styles/front-office/global.css";
+import "../../../styles/front-office/Accueil/produitSection.css";
 
 import PaginationProduits from './PaginationProduits';
 const produits = [

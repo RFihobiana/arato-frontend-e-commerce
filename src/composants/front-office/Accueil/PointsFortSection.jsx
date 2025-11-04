@@ -1,10 +1,10 @@
 import React from 'react'
 
-import deliver from "../../assets/images/deliver.png";
-import carte from "../../assets/images/carte.png";
-import  qualite from "../../assets/images/qualite.png";
-import "../../styles/front-office/global.css";
-import "../../styles/front-office/Accueil/PointsFortSection.css";
+import deliver from "../../../assets/images/deliver.png";
+import carte from "../../../assets/images/carte.png";
+import  qualite from "../../../assets/images/qualite.png";
+import "../../../styles/front-office/global.css";
+import "../../../styles/front-office/Accueil/PointsFortSection.css";
 
 const pointsFort = [
    { id: 3, nom: "deliver", desciption: "Nous livrons dans tout Madagascar avec une chaîne du froid préservée ", image: deliver },

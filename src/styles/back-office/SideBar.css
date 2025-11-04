@@ -1,0 +1,166 @@
+:root {
+  --color-green-primary: #28a458;
+  --color-green-secondary: #5ebb82;
+  --color-text-dark: #3d3b3b;
+  --color-background-light: #f5f0e1;
+  --color-shadow: rgba(22, 163, 74, 0.2);
+  --font-main: "Poppins", sans-serif;
+  --font-size-base: 16px;
+  --color-text-footer: #575555;
+  --color-background-white: #ffffff;
+  --color-hover: #f0f9f4;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:40%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-shadow: 2px 0 30px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  z-index: 100;
+
+}
+
+.sidebar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+  margin-top: 40px;
+  border-bottom: 1px solid var(--color-background-white);
+  background-color: var(--color-background-white);
+}
+
+.sidebar-logo img {
+  width: 20%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 15px;
+  transition: var(--transition-smooth);
+}
+
+
+
+.sidebar-logo h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-green-primary);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 20px 15px;
+  margin: 0;
+  width: 100%;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 20px;
+  margin-bottom: 8px;
+  cursor: pointer;
+
+  border-radius: 10px;
+  color: var(--color-text-dark);
+  position: relative;
+ 
+}
+
+
+.sidebar-item:hover {
+  background-color: var(--color-hover);
+
+  box-shadow: 0 2px 8px var(--color-green-primary) 0.5;
+  backdrop-filter: blur(10px);
+
+}
+
+
+
+
+
+.sidebar-item.active::before {
+  display: none;
+}
+
+.sidebar-item svg {
+  font-size: 20px;
+  flex-shrink: 0;
+ 
+}
+
+
+
+
+.sidebar-item span {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+  background-color: var(--color-background-white);
+}
+
+.sidebar-footer .sidebar-item {
+  margin-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+
+  .sidebar-logo img {
+    width: 100px;
+  }
+
+  .sidebar-item {
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar-logo {
+    padding: 25px 20px 20px;
+  }
+
+  .sidebar-logo img {
+    width: 80px;
+  }
+
+  .sidebar-logo h3 {
+    font-size: 18px;
+  }
+
+  .sidebar-menu {
+    padding: 15px 10px;
+  }
+
+  .sidebar-item {
+    padding: 12px 15px;
+  }
+
+  .sidebar-item:hover {
+    transform: translateX(0);
+  }
+}

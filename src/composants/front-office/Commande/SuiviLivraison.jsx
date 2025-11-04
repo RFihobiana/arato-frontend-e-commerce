@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import "../../styles/front-office/Commande/suiviLivraison.css";
+import "../../../styles/front-office/Commande/suiviLivraison.css";
 import { FaSignOutAlt } from 'react-icons/fa'; 
-import "../../styles/front-office/global.css";
+import "../../../styles/front-office/global.css";
 const InfoCard = ({ icon, title, children }) => (
   <div className="info-card ">
     <div className="info-card-title">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiUser, FiMail, FiPhone, FiLock } from 'react-icons/fi'; 
 import { Link } from 'react-router-dom';
-import "../../styles/front-office/Profil/profil.css";
+import "../../../styles/front-office/Profil/profil.css";
 
 const Authentifier = () => {
   const [nom, definirNom] = useState('');

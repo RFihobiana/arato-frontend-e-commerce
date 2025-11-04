@@ -1,10 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import legume from "../../assets/images/legume3.jpg";
-import volaille from "../../assets/images/elevage.jpg";
-import boeuf from "../../assets/images/boeuf.jpeg";
-import "../../styles/front-office/Actualite/ActualiteDetail.css";
-import "../../styles/front-office/global.css";
+import legume from "../../../assets/images/legume3.jpg";
+import volaille from "../../../assets/images/elevage.jpg";
+import boeuf from "../../../assets/images/boeuf.jpeg";
+import "../../../styles/front-office/Actualite/ActualiteDetail.css";
+import "../../../styles/front-office/global.css";
 const ActualiteDetail = () => {
   const { id } = useParams();
  const articles = [

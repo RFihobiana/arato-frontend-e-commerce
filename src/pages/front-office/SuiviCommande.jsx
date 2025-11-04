@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../../composants/Header';
-import Commandes from '../../composants/Commande/Commandes';
+import Commandes from '../../composants/front-office/Commande/Commandes';
 import Footer from '../../composants/FooterSection';
 
 const SuiviCommande = () => {

@@ -11,7 +11,7 @@ import SuiviLivraison from "../pages/front-office/SuiviLivraison";
 import Profil from "../pages/front-office/Profil"; 
 
 // back-office
-import TableauDeBord from "../pages/back-office/TableauDeBord";
+import TableauDeBord from "../pages/back-office/Tableau";
 import TousLesProduits from "../pages/back-office/Produit/TousLesProduits";
 import AjouterProduit from "../pages/back-office/Produit/AjoutProduit";
 import ModifierProduit from "../pages/back-office/Produit/ModifierProduit";
@@ -40,7 +40,7 @@ export default function AppRoutes() {
         
                <Route path="/profil" element={<Profil />} />
 
-             <Route path="/admin" element={<TableauDeBord />} />
+        <Route path="/admin" element={<TableauDeBord />} />
 
         {/* Produits */}
         <Route path="/admin/produits" element={<TousLesProduits />} />

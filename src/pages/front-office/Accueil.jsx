@@ -1,11 +1,10 @@
 import React from "react";
 import Header from "../../composants/Header";
-import HeroSection from "../../composants/Accueil/HeroSection";
-import ProduitsSection from "../../composants/Accueil/ProduitsSection";
-import PointsFortSection from "../../composants/Accueil/PointsFortSection";
-import AProposSection from "../../composants/Accueil/AboutSection";
-import ServiceSection from "../../composants/Accueil/ServiceSection";
-import NewsLetterSection from "../../composants/Accueil/NewsLetterSection";
+import HeroSection from "../../composants/front-office/Accueil/HeroSection";
+import ProduitsSection from "../../composants/front-office/Accueil/ProduitsSection";
+import PointsFortSection from "../../composants/front-office/Accueil/PointsFortSection";
+import AProposSection from "../../composants/front-office/Accueil/AboutSection";
+import NewsLetterSection from "../../composants/front-office/Accueil/NewsLetterSection";
 import FooterSection from "../../composants/FooterSection";
 export default function Accueil(){
     return (
@@ -15,7 +14,7 @@ export default function Accueil(){
         <ProduitsSection/>
         <PointsFortSection/>
         <AProposSection/>
-        <ServiceSection/>
+       
         <NewsLetterSection/>
         <FooterSection/>
        

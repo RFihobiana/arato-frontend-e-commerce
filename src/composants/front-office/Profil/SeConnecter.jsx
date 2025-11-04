@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiLock } from 'react-icons/fi'; 
-
-import "../../styles/front-office/Profil/profil.css";
+import { useNavigate } from 'react-router-dom';
+import "../../../styles/front-office/Profil/profil.css";
 
 const SeConnecter = () => {
-  const [courriel, definirCourriel] = useState('');
+  const [Email, definirEmail] = useState('');
   const [motDePasse, definirMotDePasse] = useState('');
-
+const naviguer = useNavigate();
   const soumettreFormulaire = (e) => {
     e.preventDefault();
-    console.log('Connexion tentée avec:', { courriel, motDePasse });
+  if (Email === 'admin@gmail.com' && motDePasse === 'MotDePasseValide1') {
+       console.log('Connexion réussie en tant qu\'Agriculteur/Admin.');
+      naviguer('/admin'); 
+      
+    } else if (Email === 'client@agro.com' && motDePasse === 'MotDePasseValide1') {
+        
+             console.log('Connexion réussie en tant qu\'Acheteur.');
+        naviguer('/'); 
+        
+    } else {
+      alert('Erreur de connexion. Vérifiez vos identifiants.');
+    } 
   };
 
   return (
@@ -23,15 +34,15 @@ const SeConnecter = () => {
           </div>
           <div className='groupe'>
             <div className="groupe-formulaire">
-              <label htmlFor="connexion-courriel">Adresse email*</label>
+              <label htmlFor="connexion-Email">Adresse email*</label>
               <div className="champ-avec-icone">
                 <FiMail className="icone-champ" />
                 <input
                   type="email"
-                  id="connexion-courriel"
-                  placeholder="votre@courriel.com"
-                  value={courriel}
-                  onChange={(e) => definirCourriel(e.target.value)}
+                  id="connexion-Email"
+                  placeholder="votre@Email.com"
+                  value={Email}
+                  onChange={(e) => definirEmail(e.target.value)}
                   required
                 />
               </div>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ProduitsSection from "../Accueil/ProduitsSection";
 import { FaSearch, FaFilter } from "react-icons/fa";
-import "../../styles/front-office/Produits/categorieSection.css";
-import "../../styles/front-office/Produits/heroSection.css";
-import "../../styles/front-office/global.css";
+import "../../../styles/front-office/Produits/categorieSection.css";
+import "../../../styles/front-office/Produits/heroSection.css";
+import "../../../styles/front-office/global.css";
 
 const categories = [
   { id: 1, nomCategorie: "Légumes" },

@@ -1,7 +1,7 @@
 import React from "react";
-import "../../styles/front-office/Accueil/HeroSection.css";
-import  "../../styles/front-office/global.css";
-import viandeImage from '../../assets/images/market-Photoroom.png'
+import "../../../styles/front-office/Accueil/HeroSection.css";
+import  "../../../styles/front-office/global.css";
+import viandeImage from '../../../assets/images/market-Photoroom.png'
 export default function HeroSection(){
     return (
         <section className="hero">

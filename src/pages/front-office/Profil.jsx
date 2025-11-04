@@ -3,8 +3,8 @@ import { FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import Header from "../../composants/Header";
 import Footer from "../../composants/FooterSection";
-import SeConnecter from "../../composants/Profil/SeConnecter";
-import Authentifier from "../../composants/Profil/Authentifier";
+import SeConnecter from "../../composants/front-office/Profil/SeConnecter";
+import Authentifier from "../../composants/front-office/Profil/Authentifier";
 
 import "../../styles/front-office/Profil/profil.css";
 

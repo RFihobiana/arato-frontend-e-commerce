@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/front-office/Accueil/Pagination.css';
+import '../../../styles/front-office/Accueil/Pagination.css';
 
 const PaginationProduits = ({ totalProduits, produitsParPage, onPageChange }) => {
   const [pageActuelle, setPageActuelle] = useState(1);

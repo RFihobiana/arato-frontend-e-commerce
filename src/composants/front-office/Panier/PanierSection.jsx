@@ -2,10 +2,10 @@ import React, { useState } from "react";
 // Import des icônes nécessaires, j'ajoute FaLock et FaTruck
 import { FaTrash, FaMobileAlt, FaCreditCard, FaUniversity, FaLock, FaTruck } from "react-icons/fa"; 
 import Pagination from "../Accueil/PaginationProduits"; 
-import panierImage from "../../assets/images/panierList.png"; 
-import "../../styles/front-office/global.css";
-import "../../styles/front-office/Panier/panierSection.css";
-import legumeImage from "../../assets/images/legume3.jpg"; 
+import panierImage from "../../../assets/images/panierList.png"; 
+import "../../../styles/front-office/global.css";
+import "../../../styles/front-office/Panier/panierSection.css";
+import legumeImage from "../../../assets/images/legume3.jpg"; 
 
 import MVolaModal from './MvolaModal';
 import CarteBancaireModal from './CarteBancaireModal';

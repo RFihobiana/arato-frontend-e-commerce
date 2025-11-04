@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import "../../styles/front-office/Actualite/ActualiteSection.css";
-import "../../styles/front-office/global.css";
-import "../../styles/front-office/Produits/categorieSection.css";
-import volaille from "../../assets/images/elevage.jpg";
-import boeuf from "../../assets/images/boeuf.jpeg";
-import legume from "../../assets/images/legume3.jpg";
+import "../../../styles/front-office/Actualite/ActualiteSection.css";
+import "../../../styles/front-office/global.css";
+import "../../../styles/front-office/Produits/categorieSection.css";
+import volaille from "../../../assets/images/elevage.jpg";
+import boeuf from "../../../assets/images/boeuf.jpeg";
+import legume from "../../../assets/images/legume3.jpg";
 import PaginationProduits from '../Accueil/PaginationProduits';
 
 const ActualiteSection = () => {

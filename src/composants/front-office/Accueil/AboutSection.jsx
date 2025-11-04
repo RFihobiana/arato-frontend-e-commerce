@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import panierViande from "../../assets/images/panier2.png";
-import panierLegume from "../../assets/images/panier1.png";
-import cercle from "../../assets/images/cercle.png";
-import "../../styles/front-office/Accueil/AboutSection.css"
+import panierViande from "../../../assets/images/panier2.png";
+import panierLegume from "../../../assets/images/panier1.png";
+import cercle from "../../../assets/images/cercle.png";
+import "../../../styles/front-office/Accueil/AboutSection.css"
 const AboutSection = () => {
 
   return (
