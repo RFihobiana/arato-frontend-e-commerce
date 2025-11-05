@@ -12,14 +12,12 @@ const BoutonFiltrePeriode = ({ periode, periodeActive, setPeriodeActive }) => (
 );
 
 const TableauClient = ({ clients }) => (
-  <div className="carte tableau-client">
-    <div className="entete-tableau">
-      <h2 className="titre-section"> Classement & Promotions</h2>
-    </div>
+ 
+  <div className=" tableau-client">
+    
     <table className="tableau-data">
       <thead>
         <tr>
-
           <th>Rang</th> 
           <th>Client</th>
           <th>Montant Total</th>
@@ -30,17 +28,17 @@ const TableauClient = ({ clients }) => (
         {clients.map((client) => ( 
           <tr key={client.email}>
             
-            <td  data-label="N° Rang"> 
+            <td className="data" data-label="N° Rang"> 
               {client.rang}
             </td>
-            <td data-label="Client">
-              <p className="nom-client">{client.nom}</p> 
-              <p className="email-client">{client.email}</p>
+            <td className="data" data-label="Client">
+              
+              <p >{client.email}</p>
             </td>
-            <td data-label="Montant Total">{client.montantTotal.toFixed(2)} €</td>
-            <td  data-label="Action">
+            <td lassName="data" data-label="Montant Total">{client.montantTotal.toFixed(2)} €</td>
+            <td className="data" data-label="Action">
               <button className="btn-action">
-                <span>Envoyer Code</span>
+               Envoyer Code
               </button>
             </td>
           </tr>
@@ -70,8 +68,6 @@ const TableauDeBord = () => {
       titre: 'Total Commandes', 
       valeur: donneesDashboard.totalCommandesSemaine, 
       unite: '', 
-      icone: '📦', 
-      couleurFond: '#5C6BC0', 
       infoPeriode: 'cette semaine' 
     },
     { 
@@ -79,7 +75,7 @@ const TableauDeBord = () => {
       valeur: donneesDashboard.panierMoyenSemaine.toFixed(2), 
       unite: '€', 
       icone: '', 
-      couleurFond: '#9575CD',
+     
       infoPeriode: 'cette semaine'
     },
     { 
@@ -87,7 +83,7 @@ const TableauDeBord = () => {
       valeur: donneesDashboard.revenuTotalSemaine.toFixed(2), 
       unite: '€', 
       icone: '$', 
-      couleurFond: '#66BB6A', 
+   
       infoPeriode: 'cette semaine'
     },
   ];
@@ -110,8 +106,7 @@ const TableauDeBord = () => {
       <section className="section-indicateurs">
         <div className="carte ">
           <h1 >Revenu Total</h1>
-          <p >{indicateursPrincipaux[2].valeur} {indicateursPrincipaux[2].unite}</p>
-                  
+          <p >{indicateursPrincipaux[2].valeur} {indicateursPrincipaux[2].unite}</p>                 
         </div>
         
         <div className="carte ">

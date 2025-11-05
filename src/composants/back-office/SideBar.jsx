@@ -1,10 +1,17 @@
-// src/components/SideBar.jsx
 import React from "react";
-import { FaTachometerAlt, FaBox, FaTags, FaNewspaper, FaMoneyBillWave, FaShoppingCart, FaUsers } from "react-icons/fa";
+import {
+  FaTachometerAlt,
+  FaBox,
+  FaTags,
+  FaNewspaper,
+  FaMoneyBillWave,
+  FaShoppingCart,
+  FaUsers,
+} from "react-icons/fa";
 import "../../styles/back-office/SideBar.css";
-import logo from "../../assets/icones/log.png"; 
+import logo from "../../assets/icones/log.png";
 
-const SideBar = () => {
+const SideBar = ({ activePage, setActivePage }) => {
   const menuItems = [
     { icon: <FaTachometerAlt />, label: "Tableau de bord" },
     { icon: <FaBox />, label: "Produits" },
@@ -16,14 +23,18 @@ const SideBar = () => {
   ];
 
   return (
-    <div className="sidebar" style={{overflow:"hidden"}}>
+    <div className="sidebar">
       <div className="sidebar-logo">
         <img src={logo} alt="Logo Arato" />
-       
       </div>
+
       <ul className="sidebar-menu">
         {menuItems.map((item, index) => (
-          <li key={index} className="sidebar-item">
+          <li
+            key={index}
+            className={`sidebar-item ${activePage === item.label ? "active" : ""}`}
+            onClick={() => setActivePage(item.label)}
+          >
             {item.icon}
             <span>{item.label}</span>
           </li>
