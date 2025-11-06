@@ -1,45 +1,42 @@
 import React from "react";
-import {
-  FaTachometerAlt,
-  FaBox,
-  FaTags,
-  FaNewspaper,
-  FaMoneyBillWave,
-  FaShoppingCart,
-  FaUsers,
-} from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+// Importez les icônes nécessaires
+import { FaTachometerAlt, FaBox, FaNewspaper, FaShoppingBag, FaCreditCard, FaTag, FaUsers } from 'react-icons/fa'; // <<-- FaUsers ajouté
 import "../../styles/back-office/SideBar.css";
-import logo from "../../assets/icones/log.png";
 
-const SideBar = ({ activePage, setActivePage }) => {
+const SideBar = () => {
   const menuItems = [
-    { icon: <FaTachometerAlt />, label: "Tableau de bord" },
-    { icon: <FaBox />, label: "Produits" },
-    { icon: <FaTags />, label: "Promotion" },
-    { icon: <FaNewspaper />, label: "Articles" },
-    { icon: <FaMoneyBillWave />, label: "Paiement" },
-    { icon: <FaShoppingCart />, label: "Commandes" },
-    { icon: <FaUsers />, label: "Clients" },
+    { label: "Tableau de bord", path: "/admin", icon: FaTachometerAlt },
+    { label: "Produits", path: "/admin/produits", icon: FaBox },
+    { label: "Articles", path: "/admin/articles", icon: FaNewspaper },
+    { label: "Commandes", path: "/admin/commandes", icon: FaShoppingBag },
+    { label: "Paiements", path: "/admin/paiement", icon: FaCreditCard },
+    { label: "Promotions", path: "/admin/promotion", icon: FaTag },
+    { label: "Clients", path: "/admin/clients", icon: FaUsers }, // <<-- Nouvelle entrée Client
   ];
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo">
-        <img src={logo} alt="Logo Arato" />
-      </div>
-
-      <ul className="sidebar-menu">
-        {menuItems.map((item, index) => (
-          <li
-            key={index}
-            className={`sidebar-item ${activePage === item.label ? "active" : ""}`}
-            onClick={() => setActivePage(item.label)}
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </li>
-        ))}
-      </ul>
+      <h2 className="sidebar-title">Admin</h2>
+      <nav className="sidebar-menu">
+        {menuItems.map((item) => {
+          const IconComponent = item.icon; 
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.path === "/admin"}
+              className={({ isActive }) =>
+                isActive ? "sidebar-item active" : "sidebar-item"
+              }
+            >
+            
+              {IconComponent && <IconComponent className="sidebar-icon" />}
+              {item.label}
+            </NavLink>
+          );
+        })}
+      </nav>
     </div>
   );
 };

@@ -1,0 +1,171 @@
+/* Fichier: Promotions.css ou Promotions.scss */
+
+/* --- Mise en page Générale --- */
+.gestion-promotions-bo {
+    padding: 30px;
+    background-color: #f7f9fc; /* Arrière-plan léger */
+    min-height: 100vh;
+}
+
+.titre-page-bo {
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* --- En-tête et Bouton Ajouter --- */
+.header-promotions-bo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn-ajouter-promotion-bo {
+    background-color: #007bff; /* Bleu primaire */
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-ajouter-promotion-bo:hover {
+    background-color: #0056b3;
+}
+
+.icone-plus-bo {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+/* --- Conteneur du Tableau --- */
+.table-container-bo {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow-x: auto; /* Permet le défilement sur mobile */
+}
+
+.promotions-table-bo {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* --- En-tête du Tableau --- */
+.promotions-table-bo thead th {
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 12px 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* --- Corps du Tableau --- */
+.promotions-table-bo tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+}
+
+.promotions-table-bo tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.promotions-table-bo tbody td {
+    padding: 12px 15px;
+    color: #495057;
+    vertical-align: middle;
+}
+
+.code-promo-td {
+    font-weight: 700;
+    color: #333;
+}
+
+/* --- Styles des Badges (Type & Statut) --- */
+
+/* Base du Badge */
+.badge-type-bo, 
+.badge-statut-bo {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Badge Type: Pourcentage */
+.badge-type-pourcentage {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Badge Type: Montant fixe */
+.badge-type-montantfixe {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+/* Badge Statut: Active */
+.badge-statut-active {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* Badge Statut: Désactivée (Hypothétique) */
+.badge-statut-inactive { 
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.actions-cell-bo {
+    display: flex;
+    gap: 10px; 
+}
+
+.btn-action-editer, 
+.btn-action-supprimer {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.icone-action-bo {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+.btn-action-editer {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-action-editer:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-action-supprimer {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-action-supprimer:hover {
+    background-color: #dc3545;
+    color: white;
+}

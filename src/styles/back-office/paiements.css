@@ -1,0 +1,303 @@
+/* ================================================= */
+/* GLOBAL ET RÉUTILISATION DE BASE */
+/* ================================================= */
+
+.paiements-container {
+    padding: 30px;
+    background-color: var(--color-background-light);
+    min-height: 100vh;
+}
+
+.paiements-header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.icon-emoji {
+    margin-right: 12px;
+}
+
+/* Cartes de Statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.stat-card {
+    background-color: var(--color-background-white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-footer);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.stat-change-up {
+    color: var(--color-green-primary);
+}
+
+.stat-change-default {
+    color: var(--color-text-footer);
+}
+
+.stat-arrow {
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid rgba(245, 240, 225, 0.8);
+    margin-bottom: 32px;
+}
+
+/* Historique des Paiements */
+.paiements-historique-card {
+    background-color: var(--color-background-white);
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.historique-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.historique-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* Bouton Exporter */
+.btn-export {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-green-primary);
+    color: var(--color-background-light);
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.btn-export:hover {
+    background-color: var(--color-green-secondary);
+}
+
+/* Filtres et Recherche */
+.filtres-recherche-zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.filtre-group {
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .filtre-group {
+        width: auto;
+    }
+}
+
+.filtre-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-dark);
+    margin-bottom: 4px;
+}
+
+.filtre-select,
+.filtre-input {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.filtre-select:focus,
+.filtre-input:focus {
+    outline: none;
+    border-color: var(--color-green-primary);
+    box-shadow: 0 0 0 1px var(--color-green-primary);
+}
+
+/* Tableau */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.paiements-table {
+    min-width: 100%;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.paiements-table thead {
+    background-color: var(--color-background-light);
+}
+
+.paiements-table th {
+    padding: 12px 24px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-footer);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+}
+
+.paiements-table tbody {
+    background-color: var(--color-background-white);
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+}
+
+.paiement-row:hover {
+    background-color: rgba(245, 240, 225, 0.7);
+}
+
+.paiements-table td {
+    padding: 16px 24px;
+    font-size: 0.875rem;
+    color: var(--color-text-dark);
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+    white-space: nowrap;
+}
+
+.paiement-id,
+.paiement-commande-id {
+    font-weight: 500;
+    color: var(--color-green-primary);
+    cursor: pointer;
+}
+
+.client-name {
+    font-weight: 500;
+    color: var(--color-text-dark);
+}
+
+.client-email,
+.paiement-heure {
+    color: var(--color-text-footer);
+    font-size: 0.75rem;
+}
+
+.paiement-montant {
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* Statut Badges */
+.statut-badge {
+    padding: 4px 12px;
+    display: inline-flex;
+    font-size: 0.75rem;
+    line-height: 1;
+    font-weight: 600;
+    border-radius: 9999px;
+}
+
+.statut-reussi {
+    background-color: var(--color-background-light);
+    color: var(--color-green-primary);
+}
+
+.statut-attente {
+    background-color: var(--color-background-light); 
+    color: var(--color-text-dark);
+}
+
+.statut-echoue {
+    background-color: var(--color-background-light); 
+    color: var(--color-text-dark);
+}
+
+.statut-default {
+    background-color: rgba(245, 240, 225, 0.7);
+    color: var(--color-text-footer);
+}
+
+/* Boutons d'action */
+.paiement-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: background-color 0.15s, opacity 0.15s;
+}
+
+.btn-modifier {
+    background-color: var(--color-background-light);
+    color: var(--color-green-primary);
+    border-color: var(--color-green-secondary);
+}
+
+.btn-modifier:hover {
+    background-color: var(--color-green-secondary);
+}
+
+.btn-supprimer {
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+    border-color: rgba(61, 59, 59, 0.5);
+}
+
+.btn-supprimer:hover {
+    background-color: rgba(61, 59, 59, 0.5);
+}
+
+.no-result {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-footer);
+    font-style: italic;
+}

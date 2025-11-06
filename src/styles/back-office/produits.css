@@ -1,0 +1,362 @@
+/* ==================================== */
+/* 1. Styles pour la page Produits.jsx  */
+/* ==================================== */
+
+.gestion-produits-bo {
+    padding: 30px;
+    background-color: var(--color-background-light);
+    min-height: 100vh;
+}
+
+.header-produits-bo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titre-page-bo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+.btn-ajouter-produit-bo {
+    background-color: var(--color-green-primary);
+    color: var(--color-background-light);
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-ajouter-produit-bo:hover {
+    background-color: var(--color-green-secondary);
+}
+
+.icone-plus-bo {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    stroke-width: 2.5;
+}
+
+.separateur-bo {
+    border: 0;
+    height: 1px;
+    background-color: rgba(245, 240, 225, 0.8);
+    margin: 20px 0;
+}
+
+/* --- Filtre --- */
+.filtre-container-bo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+    padding: 15px;
+    background-color: var(--color-background-white);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filtre-label-bo {
+    font-weight: 500;
+    color: var(--color-text-footer);
+    font-size: 14px;
+}
+
+.filtre-select-bo {
+    padding: 8px 12px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 5px;
+    min-width: 200px;
+}
+
+/* --- Grille des Produits --- */
+.liste-produits-grid-bo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.message-vide-bo {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--color-text-footer);
+    padding: 30px;
+    border: 1px dashed rgba(245, 240, 225, 0.8);
+    background-color: var(--color-background-white);
+    border-radius: 8px;
+}
+
+/* ==================================== */
+/* 2. Styles pour GestionCategories.jsx */
+/* ==================================== */
+
+.gestion-categories {
+    padding: 20px;
+    background-color: var(--color-background-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.form-categorie {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.input-categorie {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.btn-ajouter-categorie {
+    background-color: var(--color-green-primary);
+    color: var(--color-background-light);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-ajouter-categorie:hover {
+    background-color: var(--color-green-secondary);
+}
+
+.liste-categories {
+    list-style: none;
+    padding: 0;
+}
+
+.categorie-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+    font-size: 15px;
+}
+
+.categorie-item:last-child {
+    border-bottom: none;
+}
+
+.categorie-actions button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-editer-categorie {
+    background-color: var(--color-green-secondary);
+    color: var(--color-text-dark);
+}
+
+.btn-editer-categorie:hover {
+    opacity: 0.8;
+}
+
+.btn-supprimer-categorie {
+    background-color: var(--color-text-dark);
+    color: var(--color-background-light);
+}
+
+.btn-supprimer-categorie:hover {
+    opacity: 0.8;
+}
+
+/* ==================================== */
+/* 3. Styles pour ProduitCard.jsx */
+/* ==================================== */
+
+.produit-card-bo {
+    background-color: var(--color-background-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+}
+
+.promo-cercle-bo {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--color-green-secondary); 
+    color: var(--color-text-dark);
+    font-weight: bold;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px; 
+    z-index: 10;
+}
+
+.produit-image-container-bo {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-background-light);
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+}
+
+.image-placeholder-bo {
+    color: var(--color-text-footer);
+    font-size: 14px;
+    padding: 10px;
+    text-align: center;
+}
+
+.produit-text-bo {
+    padding: 15px;
+}
+
+.produit-nom-bo {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--color-text-dark);
+}
+
+.produit-prix-bo {
+    font-size: 16px;
+    color: var(--color-green-primary); 
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.produit-cat-bo {
+    font-size: 12px;
+    color: var(--color-text-footer);
+    margin-bottom: 15px;
+}
+
+.produit-actions-bo {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-editer {
+    background-color: var(--color-green-secondary); 
+    color: var(--color-text-dark);
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-editer:hover {
+    opacity: 0.8;
+}
+
+.btn-supprimer {
+    background-color: var(--color-text-dark); 
+    color: var(--color-background-light);
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-supprimer:hover {
+    opacity: 0.8;
+}
+
+/* ==================================== */
+/* 4. Styles pour AjouterProduitModal.jsx */
+/* ==================================== */
+
+.modal-overlay-bo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(61, 59, 59, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-container-bo {
+    background-color: var(--color-background-white);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header-bo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(245, 240, 225, 0.8);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-titre-bo {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+.modal-fermer-bo {
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: var(--color-text-footer);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-fermer-bo:hover {
+    color: var(--color-text-dark);
+}
+
+.modal-form-bo {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-groupe-bo {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label-bo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-footer);
+    margin-bottom: 6px;
+}
+
+.form-input-bo, .form-select-bo {
+    padding: 10px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 5px;
+    font-size: 15px;
+}

@@ -1,6 +1,99 @@
 import React, { useState } from 'react';
+import { 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell,
+} from 'recharts'; // <-- Imports de Recharts
 import '../../styles/back-office/TableauDeBord.css'; 
 
+// --- NOUVEAUX COMPOSANTS DE GRAPHIQUES ---
+
+const DiagrammeEvolutionVentes = ({ data }) => (
+  <div className="carte graphique-carte">
+    <h2 className="titre-graphique">Évolution des ventes</h2>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart
+        data={data}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+        <XAxis dataKey="jour" stroke="#555" />
+        <YAxis stroke="#555" domain={[0, 10000]} />
+        <Tooltip formatter={(value) => [`ventes : ${value}`, 'Mer']} />
+        <Legend />
+        <Line 
+            type="monotone" 
+            dataKey="ventes" 
+            stroke="#20b2aa" // Couleur Vert Aquamarin pour la ligne
+            strokeWidth={2}
+            dot={{ r: 5 }} // Points de données
+            activeDot={{ r: 8, stroke: '#20b2aa', fill: '#fff' }} // Point actif au survol
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+);
+
+const DiagrammeVentesParCategorie = ({ data, colors }) => {
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, value }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      
+        return (
+          <text 
+            x={x} 
+            y={y} 
+            fill="white" 
+            textAnchor={x > cx ? 'start' : 'end'} 
+            dominantBaseline="central"
+            style={{ fontWeight: 'bold', fontSize: '14px' }}
+          >
+            {`${(percent * 100).toFixed(0)}%`}
+          </text>
+        );
+      };
+
+    return (
+        <div className="carte graphique-carte">
+            <h2 className="titre-graphique">Ventes par catégorie</h2>
+            <div className="pie-container"> {/* Conteneur pour centrer le graphique et la légende */}
+                <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                        <Pie
+                            data={data}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={100}
+                            fill="#8884d8"
+                            paddingAngle={5}
+                            dataKey="value"
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                        >
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                    </PieChart>
+                </ResponsiveContainer>
+                
+                <div className="pie-legend">
+                    {data.map((entry, index) => (
+                        <p key={`legend-${index}`} style={{ color: colors[index % colors.length], fontWeight: 'bold' }}>
+                            {entry.name} {entry.percent}%
+                        </p>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+// --- COMPOSANTS EXISTANTS ---
 
 const BoutonFiltrePeriode = ({ periode, periodeActive, setPeriodeActive }) => (
   <button
@@ -12,9 +105,7 @@ const BoutonFiltrePeriode = ({ periode, periodeActive, setPeriodeActive }) => (
 );
 
 const TableauClient = ({ clients }) => (
- 
   <div className=" tableau-client">
-    
     <table className="tableau-data">
       <thead>
         <tr>
@@ -27,15 +118,13 @@ const TableauClient = ({ clients }) => (
       <tbody>
         {clients.map((client) => ( 
           <tr key={client.email}>
-            
             <td className="data" data-label="N° Rang"> 
               {client.rang}
             </td>
             <td className="data" data-label="Client">
-              
               <p >{client.email}</p>
             </td>
-            <td lassName="data" data-label="Montant Total">{client.montantTotal.toFixed(2)} €</td>
+            <td className="data" data-label="Montant Total">{client.montantTotal.toFixed(2)} €</td>
             <td className="data" data-label="Action">
               <button className="btn-action">
                Envoyer Code
@@ -48,8 +137,12 @@ const TableauClient = ({ clients }) => (
   </div>
 );
 
+// --- COMPOSANT PRINCIPAL ---
+
 const TableauDeBord = () => {
   const [periodeActive, setPeriodeActive] = useState('Cette semaine');
+
+  const COULEURS_PIE = ['#20b2aa', '#ffa500', '#9400d3', '#696969']; // Légumes, Fruits, Céréales, Autres
 
   const donneesDashboard = {
     totalCommandesSemaine: 5,
@@ -61,31 +154,31 @@ const TableauDeBord = () => {
       { rang: 3, nom: 'Pierre Moreau', email: 'pierre.moreau@email.com', achats: 1, montantTotal: 274.00 },
       { rang: 4, nom: 'Sophie Bernard', email: 'sophie.bernard@email.com', achats: 1, montantTotal: 188.00 },
     ],
+    
+    // Nouvelles données pour le graphique de l'évolution des ventes (correspond à votre image)
+    evolutionVentes: [
+        { jour: 'Lun', ventes: 4500 },
+        { jour: 'Mar', ventes: 5200 },
+        { jour: 'Mer', ventes: 4800 },
+        { jour: 'Jeu', ventes: 6200 },
+        { jour: 'Ven', ventes: 7200 },
+        { jour: 'Sam', ventes: 8500 },
+        { jour: 'Dim', ventes: 6800 },
+    ],
+
+    // Nouvelles données pour le graphique des catégories (correspond à votre image)
+    ventesCategories: [
+        { name: 'Légumes', value: 45, percent: 45 },
+        { name: 'Fruits', value: 30, percent: 30 },
+        { name: 'Céréales', value: 15, percent: 15 },
+        { name: 'Autres', value: 10, percent: 10 },
+    ],
   };
 
   const indicateursPrincipaux = [
-    { 
-      titre: 'Total Commandes', 
-      valeur: donneesDashboard.totalCommandesSemaine, 
-      unite: '', 
-      infoPeriode: 'cette semaine' 
-    },
-    { 
-      titre: 'Panier Moyen', 
-      valeur: donneesDashboard.panierMoyenSemaine.toFixed(2), 
-      unite: '€', 
-      icone: '', 
-     
-      infoPeriode: 'cette semaine'
-    },
-    { 
-      titre: 'Revenu Total', 
-      valeur: donneesDashboard.revenuTotalSemaine.toFixed(2), 
-      unite: '€', 
-      icone: '$', 
-   
-      infoPeriode: 'cette semaine'
-    },
+    { titre: 'Total Commandes', valeur: donneesDashboard.totalCommandesSemaine, unite: '' },
+    { titre: 'Panier Moyen', valeur: donneesDashboard.panierMoyenSemaine.toFixed(2), unite: '€' },
+    { titre: 'Revenu Total', valeur: donneesDashboard.revenuTotalSemaine.toFixed(2), unite: '€' },
   ];
 
   return (
@@ -122,6 +215,15 @@ const TableauDeBord = () => {
        </div>
       </section>
       
+      {/* NOUVELLE SECTION POUR LES GRAPHIQUES */}
+      <section className="section-graphiques">
+          <DiagrammeEvolutionVentes data={donneesDashboard.evolutionVentes} />
+          <DiagrammeVentesParCategorie 
+              data={donneesDashboard.ventesCategories} 
+              colors={COULEURS_PIE} 
+          />
+      </section>
+
       <section className="section-classement">
         <TableauClient clients={donneesDashboard.clientsClassement} />
       </section>
