@@ -1,11 +1,6 @@
-/* ================================================= */
-/* Fichier: client.css */
-/* Gère la liste et le CRUD des clients */
-/* ================================================= */
 
 .clients-container {
     padding: 30px;
-    background-color: var(--color-background-light);
     min-height: 100vh;
 }
 
@@ -21,8 +16,6 @@
     font-weight: 700;
     color: var(--color-text-dark);
 }
-
-/* Bouton Ajouter Client (Créer) */
 .btn-add-client {
     background-color: var(--color-green-primary);
     color: var(--color-background-light);

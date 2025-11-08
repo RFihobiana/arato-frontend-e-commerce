@@ -1,3 +1,5 @@
+/* ========== TABLEAUDEBORD.CSS ========== */
+
 :root {
   --color-green-primary: #28a458;
   --color-green-secondary: #5ebb82;
@@ -8,7 +10,6 @@
   --color-background-white: #ffffff;
   --ombre-carte: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   --ombre-carte-hover: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-  --largeur-sidebar: 250px;
   --rayon: 12px;
   --font-main: "Poppins", sans-serif;
   --font-size-base: 16px;
@@ -23,28 +24,7 @@
   color: var(--color-text-dark);
 }
 
-body {
-  font-size: var(--font-size-base);
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-.dashboard-layout {
-  display: flex;
-  align-items: flex-start;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.dashboard-content {
-  flex: 1;
-  margin-left: var(--largeur-sidebar);
-  min-height: 100vh;
-  width: calc(100% - var(--largeur-sidebar));
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
+/* ========== CONTENEUR PRINCIPAL ========== */
 .conteneur {
   background-color: var(--color-background-white);
   padding: 2rem;
@@ -53,10 +33,12 @@ body {
   margin: 0 auto;
 }
 
+/* ========== HEADER MOBILE ========== */
 .mobile-header {
   display: none;
 }
 
+/* ========== EN-TÊTE CLIENT ========== */
 .entete-client {
   margin-bottom: 2rem;
 }
@@ -71,45 +53,45 @@ body {
   gap: 0.5rem;
 }
 
+/* ========== FILTRES PÉRIODE ========== */
 .filtre-periode-client {
   padding: 1.5rem;
   background-color: var(--color-background-white);
   box-shadow: var(--ombre-carte);
+  border-radius: var(--rayon);
+  margin-bottom: 1.5rem;
 }
 
 .titre-periode {
   font-size: 1rem;
   margin-bottom: 1rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--color-text-dark);
 }
 
 .boutons-periode {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 0.8rem;
 }
 
 .bouton-filtre {
-  padding: 5px 10px;
+  padding: 0.6rem 1.2rem;
   border: 1px solid var(--color-background-light);
   background-color: var(--color-background-white);
-
   border-radius: 8px;
   cursor: pointer;
   transition: var(--transition);
-  font-size:12px;
-  display: flex;
-  align-items: center;
- 
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .bouton-filtre:hover {
   background-color: var(--color-green-primary);
   color: var(--color-background-white);
   border-color: var(--color-green-primary);
- 
+  transform: translateY(-2px);
 }
 
 .bouton-filtre.actif {
@@ -119,17 +101,15 @@ body {
   font-weight: 600;
 }
 
+/* ========== SECTION INDICATEURS ========== */
 .section-indicateurs {
-display: flex;
-flex-direction: row;
-flex-wrap: wrap;
-width: 100%;
-justify-content:flex-start;
-gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .carte {
-
   background-color: var(--color-background-white);
   border-radius: 20px;
   box-shadow: var(--ombre-carte-hover);
@@ -143,6 +123,7 @@ gap: 20px;
 
 .carte:hover {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
 }
 
 .carte h1 {
@@ -154,12 +135,56 @@ gap: 20px;
 
 .carte p {
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-green-primary);
 }
 
+/* ========== SECTION GRAPHIQUES ========== */
+.section-graphiques {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.graphique-carte {
+  background-color: var(--color-background-white);
+  border-radius: 20px;
+  box-shadow: var(--ombre-carte);
+  padding: 1.5rem;
+  transition: var(--transition);
+}
+
+.graphique-carte:hover {
+  box-shadow: var(--ombre-carte-hover);
+}
+
+.titre-graphique {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.pie-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.pie-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* ========== SECTION CLASSEMENT / TABLEAUX ========== */
 .section-classement {
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .tableau-client {
@@ -171,38 +196,40 @@ gap: 20px;
 
 .tableau-data {
   width: 100%;
- 
+  border-collapse: collapse;
 }
 
 .tableau-data th,
 .tableau-data td {
-  padding: 10px 20px;
+  padding: 1rem 1.5rem;
   text-align: center;
-  font-size: 16px;
+  font-size: 0.95rem;
 }
 
 .tableau-data thead tr th {
   background-color: var(--color-green-primary);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  color: var(--color-background-light);
+  color: var(--color-background-white);
   letter-spacing: 0.5px;
 }
 
 .tableau-data tbody tr {
-  
   border-bottom: 1px solid var(--color-background-light);
   transition: var(--transition);
 }
 
+.tableau-data tbody tr:hover {
+  background-color: rgba(40, 164, 88, 0.05);
+}
 
 .tableau-data tbody tr:last-child {
   border-bottom: none;
 }
 
 .data p {
-  font-size: 14px;
+  font-size: 0.9rem;
   margin: 0.25rem 0;
 }
 
@@ -213,69 +240,29 @@ gap: 20px;
 
 .data p:last-child {
   color: #6b7280;
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
+/* ========== BOUTONS ACTION ========== */
 .btn-action {
   background-color: var(--color-green-secondary);
   color: var(--color-background-white);
   border: none;
-  padding:5px 10px;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;
-  font-weight:600;
+  font-weight: 600;
   transition: var(--transition);
   font-size: 0.9rem;
 }
 
 .btn-action:hover {
+  background-color: var(--color-green-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 94, 60, 0.3);
-}
-/* Ajoutez ceci à la fin de votre fichier TableauDeBord.css */
-
-.section-graphiques {
-    display: grid;
-    /* Pour les écrans larges, les graphiques sont côte à côte */
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px;
-    margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(40, 164, 88, 0.3);
 }
 
-/* S'assurer que les graphiques prennent toute la largeur sur mobile */
-@media (max-width: 900px) {
-    .section-graphiques {
-        grid-template-columns: 1fr;
-    }
-}
-
-.graphique-carte {
-    /* La classe .carte doit déjà définir le fond blanc et l'ombre */
-    padding: 20px; 
-}
-
-.titre-graphique {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text-dark); /* Assurez-vous d'avoir une variable pour le texte foncé */
-    margin-bottom: 15px;
-}
-
-.pie-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-}
-
-.pie-legend {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 15px;
-    font-size: 0.9rem;
-}
+/* ========== RESPONSIVE LARGE SCREENS ========== */
 @media (max-width: 1440px) {
   .conteneur {
     max-width: 1200px;
@@ -301,12 +288,8 @@ gap: 20px;
   }
 }
 
+/* ========== RESPONSIVE TABLET ========== */
 @media (max-width: 1024px) {
-  .dashboard-content {
-    margin-left: 200px;
-    width: calc(100% - 200px);
-  }
-
   .conteneur {
     padding: 1.5rem;
   }
@@ -324,26 +307,19 @@ gap: 20px;
     padding: 1.5rem;
   }
 
+  .section-graphiques {
+    grid-template-columns: 1fr;
+  }
+
   .tableau-data th,
   .tableau-data td {
     padding: 1rem 1.25rem;
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 }
 
-@media (max-width: 900px) {
-  .section-indicateurs {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* ========== RESPONSIVE MOBILE ========== */
 @media (max-width: 768px) {
-  .dashboard-content {
-    margin-left: 0;
-    width: 100%;
-    padding-bottom: 85px;
-  }
-
   .mobile-header {
     display: flex;
     align-items: center;
@@ -370,17 +346,18 @@ gap: 20px;
   }
 
   .mobile-header-logo h3 {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--color-green-primary);
     margin: 0;
   }
 
-  
+  .conteneur {
+    padding: 1rem;
+  }
 
   .titre-section {
     font-size: 1.3rem;
-    margin-bottom: 1rem;
   }
 
   .filtre-periode-client {
@@ -399,14 +376,18 @@ gap: 20px;
   .bouton-filtre {
     padding: 0.6rem 1rem;
     font-size: 0.85rem;
-    flex: 1;
-    min-width: calc(50% - 0.25rem);
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
     justify-content: center;
   }
 
-  
+  .section-indicateurs {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
   .carte {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
 
   .carte h1 {
@@ -414,7 +395,11 @@ gap: 20px;
   }
 
   .carte p {
-    font-size: 1.75rem;
+    font-size: 1.6rem;
+  }
+
+  .section-graphiques {
+    grid-template-columns: 1fr;
   }
 
   .section-classement {
@@ -425,6 +410,7 @@ gap: 20px;
     border-radius: 12px;
   }
 
+  /* Tableau mobile en cartes */
   .tableau-data thead {
     display: none;
   }
@@ -467,25 +453,25 @@ gap: 20px;
   }
 
   .tableau-data td.data {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-end;
   }
 
   .tableau-data td.data p {
     text-align: right;
     margin: 0;
-    font-size: 13px;
+    font-size: 0.85rem;
   }
 
   .btn-action {
-    width: 40%;
+    width: 100%;
     margin-top: 0.5rem;
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
-    color: var(--color-background-light);
   }
 }
 
+/* ========== RESPONSIVE PETIT MOBILE ========== */
 @media (max-width: 480px) {
   .mobile-header {
     padding: 0.75rem;
@@ -497,7 +483,7 @@ gap: 20px;
   }
 
   .mobile-header-logo h3 {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .conteneur {
@@ -521,8 +507,13 @@ gap: 20px;
     padding: 0.5rem 0.75rem;
   }
 
+  .section-indicateurs {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
   .carte {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 
   .carte h1 {
@@ -546,19 +537,19 @@ gap: 20px;
   }
 
   .data p {
-    font-size: 12px;
+    font-size: 0.8rem;
   }
 
   .btn-action {
-    padding: 0.6rem 0.75rem;
-    font-size: 0.8rem;
-    width: 35%;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
+/* ========== TRÈS PETIT ÉCRAN ========== */
 @media (max-width: 360px) {
   .mobile-header-logo h3 {
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   .titre-section {

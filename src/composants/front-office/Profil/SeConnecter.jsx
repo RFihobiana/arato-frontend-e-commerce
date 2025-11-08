@@ -1,80 +1,83 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FiMail, FiLock } from 'react-icons/fi'; 
+import { FiMail, FiLock } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../../services/AuthService';
 import "../../../styles/front-office/Profil/profil.css";
 
 const SeConnecter = () => {
-  const [Email, definirEmail] = useState('');
-  const [motDePasse, definirMotDePasse] = useState('');
-const naviguer = useNavigate();
-  const soumettreFormulaire = (e) => {
+  const [email, setEmail] = useState('');
+  const [motDePasse, setMotDePasse] = useState('');
+  const [erreur, setErreur] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  if (Email === 'admin@gmail.com' && motDePasse === 'MotDePasseValide1') {
-       console.log('Connexion réussie en tant qu\'Agriculteur/Admin.');
-      naviguer('/admin'); 
-      
-    } else if (Email === 'client@agro.com' && motDePasse === 'MotDePasseValide1') {
-        
-             console.log('Connexion réussie en tant qu\'Acheteur.');
-        naviguer('/'); 
-        
-    } else {
-      alert('Erreur de connexion. Vérifiez vos identifiants.');
-    } 
+    setErreur('');
+
+    try {
+     const response = await loginUser({ email, motDePasse: motDePasse }); 
+
+      localStorage.setItem('userToken', response.access_token);
+        localStorage.setItem('userData', JSON.stringify(response.user));
+
+      navigate(response.user?.role === 'admin' ? '/admin' : '/');
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setErreur('Email ou mot de passe incorrect.');
+      } else if (err.response?.data?.message) {
+        setErreur(err.response.data.message);
+      } else {
+        setErreur('Erreur de connexion.');
+      }
+      console.error(err);
+    }
   };
 
   return (
-          <div className="conteneur-formulaire">
-          <form onSubmit={soumettreFormulaire}>
-           <div className='titre'>
-            <h1>Déjà client?</h1>
-          
-            <h2>Connectez-vous</h2>
+    <div className="conteneur-formulaire">
+      <form onSubmit={handleSubmit}>
+        <div className='titre'>
+          <h1>Déjà client ?</h1>
+          <h2>Connectez-vous</h2>
+        </div>
+
+        <div className='groupe'>
+          <div className="groupe-formulaire">
+            <label>Email*</label>
+            <div className="champ-avec-icone">
+              <FiMail className="icone-champ" />
+              <input 
+                type="email" 
+                placeholder="votre@Email.com" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+              />
+            </div>
           </div>
-          <div className='groupe'>
-            <div className="groupe-formulaire">
-              <label htmlFor="connexion-Email">Adresse email*</label>
-              <div className="champ-avec-icone">
-                <FiMail className="icone-champ" />
-                <input
-                  type="email"
-                  id="connexion-Email"
-                  placeholder="votre@Email.com"
-                  value={Email}
-                  onChange={(e) => definirEmail(e.target.value)}
-                  required
-                />
-              </div>
+
+          <div className="groupe-formulaire">
+            <label>Mot de passe*</label>
+            <p>Votre mot de passe doit contenir au moins 6 caractères.</p>
+            <div className="champ-avec-icone">
+              <FiLock className="icone-champ" />
+              <input 
+                type="password" 
+                placeholder="********" 
+                value={motDePasse} 
+                onChange={(e) => setMotDePasse(e.target.value)} 
+                required 
+                minLength={6} 
+              />
             </div>
-            
-            <div className="groupe-formulaire">
-              <label htmlFor="connexion-mot-de-passe">Mot de passe*</label>
-              <p>Votre mot de passe doit contenir au moins 8 caractères dont 1 chiffre</p>
-              <div className="champ-avec-icone">
-                <FiLock className="icone-champ" />
-                <input
-                  type="password"
-                  id="connexion-mot-de-passe"
-                  placeholder="********"
-                  value={motDePasse}
-                  onChange={(e) => definirMotDePasse(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-            </div>
-            <button type="submit" className="bouton bouton-primaire fond-vert">
-              S'IDENTIFIER
-            </button>
-            
-            
-          </form>
-          
-         
-       
-      </div>
- 
+          </div>
+
+          {erreur && <p style={{ color: 'red', marginBottom: '15px' }}>{erreur}</p>}
+
+          <button type="submit" className="bouton bouton-primaire fond-vert">S'IDENTIFIER</button>
+        </div>
+      </form>
+    </div>
   );
 };
 

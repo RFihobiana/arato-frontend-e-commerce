@@ -1,11 +1,7 @@
-/* ================================================= */
-/* GLOBAL ET RÉUTILISATION DE BASE */
-/* ================================================= */
 
 .commandes-container, .det-com-cont {
     padding: 30px;
-    background-color: var(--color-background-light);
-    min-height: 100vh;
+       min-height: 100vh;
 }
 
 h2 {

@@ -1,11 +1,7 @@
-/* ================================================= */
-/* Gestion Articles (gestion-articles-bo) */
-/* ================================================= */
 
 .gestion-articles-bo {
     padding: 30px;
-    background: linear-gradient(to bottom right, var(--color-background-white), var(--color-background-light));
-    min-height: 100vh;
+     min-height: 100vh;
     font-family: var(--font-main); 
 }
 

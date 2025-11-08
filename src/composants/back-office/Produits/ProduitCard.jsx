@@ -3,12 +3,6 @@ import React from 'react';
 const ProduitCard = ({ produit, onEdit, onDelete }) => {
     const imageUrl = produit.image; 
 
-    const imageStyle = {
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain' 
-    };
-
     return (
         <div className="produit-card-bo">
             {produit.promotion && produit.promotion.valeur && (
@@ -16,7 +10,20 @@ const ProduitCard = ({ produit, onEdit, onDelete }) => {
             )}
             
             <div className="produit-image-container-bo">
-                <span className="image-placeholder-bo">{imageUrl.substring(0, 15)}...</span>
+                {imageUrl ? (
+                    <img 
+                        src={imageUrl} 
+                        alt={produit.nom}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'block';
+                        }}
+                    />
+                ) : null}
+                <span className="image-placeholder-bo" style={{display: imageUrl ? 'none' : 'block'}}>
+                    {produit.nom.substring(0, 15)}...
+                </span>
             </div>
 
             <div className="produit-text-bo">

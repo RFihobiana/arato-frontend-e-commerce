@@ -1,44 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AjouterProduitModal from './AjouterProduitModal';
 import ProduitCard from './ProduitCard';
 import GestionCategories from './categorie';
+import { fetchProduits, deleteProduit } from '../../../services/produitService';
+import { getCategories } from '../../../services/categorieService';
 import "../../../styles/back-office/produits.css";
 
-const initialProducts = [
-  { id: 1, nom: "Carotte", prix: "500Ar/kg", image: 'carotte.png', promotion:{valeur:'-50%'}, numCategorie: 1},
-  { id: 2, nom: "Tomate", prix: "500Ar/kg", image: 'tomate.png', promotion: null, numCategorie: 1},
-  { id: 3, nom: "Chou", prix: "500Ar/kg", image: 'chou.png', promotion: null, numCategorie: 1},
-  { id: 4, nom: "Bavette de Boeuf", prix: "7500Ar/kg", image: 'viande.jpg', promotion: { valeur: '-20%' }, numCategorie: 2},
-  { id: 5, nom: "Pomme de Terre", prix: "400Ar/kg", image: 'pommedeterre.png', promotion: { valeur: '-10%' }, numCategorie: 1},
-];
-
-const initialCategories = [
-    { id: 1, nom: "Légumes et Fruits" },
-    { id: 2, nom: "Viandes et Poissons" },
-    { id: 3, nom: "Épicerie" },
-];
-
 const Produits = () => {
-  const [products, setProducts] = useState(initialProducts);
-  const [categories, setCategories] = useState(initialCategories); 
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]); 
   const [categorieFiltre, setCategorieFiltre] = useState(0); 
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [produitAEditer, setProduitAEditer] = useState(null); 
+  const [produitAEditer, setProduitAEditer] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadProduits = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchProduits();
+      setProducts(data);
+      setError(null);
+    } catch (error) {
+      console.error("Erreur chargement produits:", error);
+      if (error.response?.status === 401) {
+        setError("Veuillez vous connecter pour accéder aux produits");
+      } else {
+        setError("Erreur lors du chargement des produits");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error("Erreur chargement catégories:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadProduits();
+    loadCategories();
+  }, []);
 
   const produitsFiltres = categorieFiltre === 0
     ? products
     : products.filter(p => p.numCategorie === categorieFiltre);
-  
+
   const handleSaveProduit = (produitMisAJour) => {
-    if (produitAEditer) {
-      setProducts(products.map(p => 
-        p.id === produitMisAJour.id ? produitMisAJour : p
-      ));
+    const existe = products.find(p => p.id === produitMisAJour.id);
+    if (existe) {
+      setProducts(products.map(p => p.id === produitMisAJour.id ? produitMisAJour : p));
     } else {
       setProducts([produitMisAJour, ...products]);
     }
-    
     setProduitAEditer(null);
     setIsModalOpen(false);
   };
@@ -47,21 +66,29 @@ const Produits = () => {
     setProduitAEditer(produit);
     setIsModalOpen(true);
   };
-  
-  const handleDelete = (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
-      setProducts(products.filter(p => p.id !== id));
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
+    try {
+      await deleteProduit(id);
+      await loadProduits(); // ← AJOUTÉ: Recharger après suppression
+    } catch (error) {
+      console.error("Erreur suppression produit:", error);
+      alert("Erreur lors de la suppression du produit");
     }
   };
-  
+
   const openAjouterModal = () => {
     setProduitAEditer(null); 
     setIsModalOpen(true);
   };
-  
+
   const handleCategoriesChange = (newCategories) => {
     setCategories(newCategories);
   };
+
+  if (loading) return <p>Chargement des produits...</p>;
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div className="gestion-produits-bo">
@@ -71,15 +98,15 @@ const Produits = () => {
           className="btn-ajouter-produit-bo"
           onClick={openAjouterModal}
         >
-          <svg className="icone-plus-bo" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          <svg className="icone-plus-bo" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+          </svg>
           Ajouter un produit
         </button>
       </header>
       
       <hr className="separateur-bo"/>
-
       <GestionCategories onCategoriesChange={handleCategoriesChange} />
-
       <hr className="separateur-bo"/>
       
       <div className="filtre-container-bo">
@@ -91,7 +118,7 @@ const Produits = () => {
         >
           <option value={0}>Toutes les catégories</option>
           {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.nom}</option>
+            <option key={cat.id} value={cat.id}>{cat.nom}</option> // ← CORRIGÉ: cat.id au lieu de cat.numCategorie
           ))}
         </select>
       </div>
@@ -101,7 +128,7 @@ const Produits = () => {
           {produitsFiltres.length > 0 ? (
             produitsFiltres.map(produit => (
               <ProduitCard 
-                key={produit.id} 
+                key={produit.id} // ← CORRIGÉ: produit.id au lieu de produit.numProduit
                 produit={produit} 
                 onEdit={handleEdit}
                 onDelete={handleDelete}
