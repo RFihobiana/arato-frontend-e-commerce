@@ -84,19 +84,18 @@ const Produits = () => {
 
       <div className="filtre-container-bo">
         <label className="filtre-label-bo">Filtrer par catégorie :</label>
-       <select
-  className="filtre-select-bo"
-  value={categorieFiltre}
-  onChange={(e) => setCategorieFiltre(parseInt(e.target.value, 10))}
->
-  <option value={0}>Toutes les catégories</option>
-  {categories.map(cat => (
-    <option key={cat.numCategorie} value={cat.numCategorie}>
-      {cat.nomCategorie}
-    </option>
-  ))}
-</select>
-
+        <select
+          className="filtre-select-bo"
+          value={categorieFiltre}
+          onChange={(e) => setCategorieFiltre(parseInt(e.target.value, 10))}
+        >
+          <option value={0}>Toutes les catégories</option>
+          {categories.map(cat => (
+            <option key={cat.numCategorie} value={cat.numCategorie}>
+              {cat.nomCategorie}
+            </option>
+          ))}
+        </select>
       </div>
 
       <section className="section-catalogue-bo">
