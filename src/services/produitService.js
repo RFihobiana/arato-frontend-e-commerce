@@ -2,18 +2,26 @@ import api from "./api";
 
 const PRODUIT_URL = "/produits";
 
-const getConfig = () => {
-  const token = localStorage.getItem("userToken");
-  return token
-    ? { 
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        },
-        withCredentials: true
-      }
-    : { withCredentials: true };
-};
 
+const getConfig = (isFormData = false) => {
+  const token = localStorage.getItem("userToken");
+  if (!token) throw new Error("Utilisateur non authentifié");
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (isFormData) {
+    headers["Content-Type"] = "multipart/form-data";
+  } else {
+    headers["Content-Type"] = "application/json";
+  }
+
+  return {
+    headers,
+    withCredentials: true,
+  };
+};
 export const fetchProduits = async () => {
   try {
     const res = await api.get(PRODUIT_URL, getConfig());
@@ -25,32 +33,31 @@ export const fetchProduits = async () => {
 };
 
 export const createProduit = async (produitData) => {
-  const token = localStorage.getItem("userToken");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true
-  };
-  const res = await api.post(PRODUIT_URL, produitData, config);
-  return res.data;
+  try {
+    const res = await api.post(PRODUIT_URL, produitData, getConfig(true));
+    return res.data;
+  } catch (error) {
+    console.error("Erreur création produit: ", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const updateProduit = async (id, produitData) => {
-  const token = localStorage.getItem("userToken");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true
-  };
-  const res = await api.post(`${PRODUIT_URL}/${id}?_method=PUT`, produitData, config);
-  return res.data;
+  try {
+    const res = await api.post(`${PRODUIT_URL}/${id}?_method=PUT`, produitData, getConfig(true));
+    return res.data;
+  } catch (error) {
+    console.error("Erreur mise à jour produit: ", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const deleteProduit = async (id) => {
-  const res = await api.delete(`${PRODUIT_URL}/${id}`, getConfig());
-  return res.data;
+  try {
+    const res = await api.delete(`${PRODUIT_URL}/${id}`, getConfig());
+    return res.data;
+  } catch (error) {
+    console.error("Erreur suppression produit: ", error.response?.data || error.message);
+    throw error;
+  }
 };
