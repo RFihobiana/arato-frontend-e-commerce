@@ -4,19 +4,19 @@ const CATEGORIE_URL = "/categories";
 
 const getConfig = () => {
   const token = localStorage.getItem("userToken");
-  if (!token) throw new Error("Utilisateur non authentifié");
-  
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-  };
+  return token
+    ? { 
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    : { headers: { "Content-Type": "application/json" } };
 };
 
 export const getCategories = async () => {
   try {
-    const res = await api.get(CATEGORIE_URL);
+    const res = await api.get(CATEGORIE_URL); // GET est public, pas besoin de token
     return res.data;
   } catch (error) {
     console.error("Erreur chargement catégories: ", error.response?.data || error.message);
