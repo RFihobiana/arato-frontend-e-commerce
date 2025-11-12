@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {usePagination} from '../../../pages/hooks/hooks';
 import '../../../styles/back-office/paiements.css';
 const paiementsApiData = [
     {
@@ -81,6 +82,8 @@ const Paiements = () => {
 
               return statutMatch && rechercheMatch;
     });
+
+    const {currentRows: filteredPaymentRow, goToPage, currentPage} = usePagination(paiementsFiltres, 5);
 
        const getStatutClass = (statut) => {
         switch (statut) {
@@ -199,7 +202,7 @@ const Paiements = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paiementsFiltres.map((p) => {
+                            {filteredPaymentRow.map((p) => {
                                 const { date, heure } = formaterDate(p.datePaiement);
                                 const clientNom = `${p.commande.utilisateur.prenom} ${p.commande.utilisateur.nom}`;
                                 return (
@@ -237,9 +240,27 @@ const Paiements = () => {
                             })}
                         </tbody>
                     </table>
+
+                    <div className="pagination-controls">
+                        <button
+                            className="pagination-btn"
+                            disabled={filteredPaymentRow.length === 0 || filteredPaymentRow[0].numPaiement === paiementsFiltres[0].numPaiement}
+                            onClick={() => goToPage(currentPage - 1)}
+                        >
+                            &lt;
+                        </button>
+                        
+                        <button
+                            className="pagination-btn"
+                            disabled={filteredPaymentRow.length === 0 || filteredPaymentRow[filteredPaymentRow.length - 1].numPaiement === paiementsFiltres[paiementsFiltres.length - 1].numPaiement}
+                            onClick={() => goToPage(filteredPaymentRow[filteredPaymentRow.length - 1].numPaiement + 1)}
+                        >
+                            &gt;
+                        </button>
+                    </div>
                 </div>
 
-                {paiementsFiltres.length === 0 && (
+                {filteredPaymentRow.length === 0 && (
                     <div className="no-result">
                         Aucun paiement trouvé pour la recherche et les filtres actuels.
                     </div>
