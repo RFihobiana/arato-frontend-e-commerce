@@ -19,7 +19,7 @@ const Articles = () => {
         };
         getArticles();
     }, []);
-
+    
     const openAjouterModal = () => {
         setArticleAEditer(null);
         setIsModalOpen(true);
