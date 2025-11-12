@@ -45,12 +45,8 @@ const Produits = () => {
     return cat ? cat.nomCategorie : "N/A";
   };
 
-  const handleSaveProduit = (produit) => {
-    setProducts((prev) => {
-      const existe = prev.find((p) => p.id === produit.id);
-      if (existe) return prev.map((p) => (p.id === produit.id ? produit : p));
-      return [produit, ...prev];
-    });
+  const handleSaveProduit = async (produit) => {
+    await loadProduits();
     setProduitAEditer(null);
     setIsModalOpen(false);
   };
@@ -64,7 +60,7 @@ const Produits = () => {
     if (!window.confirm("Supprimer ce produit ?")) return;
     try {
       await deleteProduit(id);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      await loadProduits();
     } catch (err) {
       alert("Erreur lors de la suppression du produit");
     }
