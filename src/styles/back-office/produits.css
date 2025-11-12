@@ -157,6 +157,50 @@
     cursor: pointer;
     transition: opacity 0.2s;
 }
+.filtre-container-bo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px; 
+    padding: 15px;
+    background-color: var(--color-background-white);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap; 
+}
+
+.filtre-label-bo {
+    font-weight: 500;
+    color: var(--color-text-footer);
+    font-size: 14px;
+}
+
+.filtre-select-bo {
+    padding: 8px 12px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 5px;
+    min-width: 200px;
+}
+
+.recherche-input-bo {
+    flex-grow: 1; 
+    padding: 8px 12px;
+    border: 1px solid rgba(245, 240, 225, 0.8);
+    border-radius: 5px;
+    font-size: 14px;
+    min-width: 250px;
+}
+.filtre-promo-bo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filtre-promo-bo input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
 .btn-editer-categorie {
     background-color: var(--color-green-primary);
     color: var(--color-background-light);
