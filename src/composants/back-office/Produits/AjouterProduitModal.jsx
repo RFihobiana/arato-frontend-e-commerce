@@ -12,41 +12,59 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
     const [numCategorie, setNumCategorie] = useState('');
     const [numPromotion, setNumPromotion] = useState('');
     const [promotions, setPromotions] = useState([]);
-
     useEffect(() => {
-        const loadPromotions = async () => {
+        console.log("produitAEditer reçu :", produitAEditer);
+    }, [produitAEditer]);
+    useEffect(() => {
+        const load = async () => {
             try {
                 const data = await fetchPromotions();
-                setPromotions(data);
-            } catch (error) {
-                console.error(error);
+                setPromotions(data || []);
+            } catch (err) {
+                console.error("Erreur promotions:", err);
             }
         };
-        loadPromotions();
+        load();
     }, []);
-
     useEffect(() => {
-        const defaultCatId = categories.length > 0 ? categories[0].numCategorie : '';
-        if (produitAEditer) {
-            setNom(produitAEditer.nomProduit || '');
-            setPrix(produitAEditer.prix || '');
-            setPoids(produitAEditer.poids || '');
-            setQuantiteStock(produitAEditer.quantiteStock || '');
-            setImage(produitAEditer.image || null);
-            setImageFileName(produitAEditer.image ? produitAEditer.image.split('/').pop() : '');
-            setNumCategorie(produitAEditer.numCategorie || defaultCatId);
-            setNumPromotion(produitAEditer.numPromotion || '');
-        } else {
+        if (!produitAEditer) {
             setNom('');
             setPrix('');
             setPoids('');
             setQuantiteStock('');
             setImage(null);
             setImageFileName('');
-            setNumCategorie(defaultCatId);
+            setNumCategorie(categories[0]?.numCategorie || '');
+            setNumPromotion('');
+            return;
+        }
+        setNom(produitAEditer.nomProduit || '');
+        setPrix(produitAEditer.prix?.toString() || '');
+        setPoids(produitAEditer.poids?.toString() || '');
+        setQuantiteStock(produitAEditer.quantiteStock?.toString() || '');
+        setNumCategorie(produitAEditer.numCategorie || categories[0]?.numCategorie || '');
+        setNumPromotion(produitAEditer.numPromotion || '');
+        setImage(null);
+        setImageFileName(produitAEditer.image ? produitAEditer.image.split('/').pop() : '');
+
+        console.log("Inputs remplis avec :", {
+            nom: produitAEditer.nomProduit,
+            prix: produitAEditer.prix,
+            categorie: produitAEditer.numCategorie
+        });
+    }, [produitAEditer, categories]);
+    useEffect(() => {
+        if (!isOpen) {
+            setNom('');
+            setPrix('');
+            setPoids('');
+            setQuantiteStock('');
+            setImage(null);
+            setImageFileName('');
+            setNumCategorie('');
             setNumPromotion('');
         }
-    }, [produitAEditer, isOpen, categories]);
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -56,77 +74,106 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
             setImage(file);
             setImageFileName(file.name);
         } else {
-            setImage(produitAEditer && typeof produitAEditer.image === 'string' ? produitAEditer.image : null);
-            setImageFileName(produitAEditer && typeof produitAEditer.image === 'string' ? produitAEditer.image.split('/').pop() : '');
+            setImage(null);
+            setImageFileName(produitAEditer?.image ? produitAEditer.image.split('/').pop() : '');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const produitId = produitAEditer?.id ?? produitAEditer?.numProduit;
+        console.log("ID pour update :", produitId);
+
+        if (produitAEditer && !produitId) {
+            alert("ID manquant !");
+            return;
+        }
+
         const formData = new FormData();
         formData.append('nomProduit', nom);
         formData.append('prix', prix);
         formData.append('poids', poids);
         formData.append('quantiteStock', quantiteStock);
         formData.append('numCategorie', numCategorie);
-        if (image instanceof File) formData.append('image', image);
         if (numPromotion) formData.append('numPromotion', numPromotion);
 
+        if (image instanceof File) {
+            formData.append('image', image);
+        }
+
         try {
-            const produitEnregistre = produitAEditer 
-                ? await updateProduit(produitAEditer.id, formData) 
-                : await createProduit(formData);
-            onSave(produitEnregistre);
+            let result;
+            if (produitAEditer) {
+                console.log("MISE À JOUR → updateProduit(", produitId, ")");
+                result = await updateProduit(produitId, formData);
+            } else {
+                console.log("CRÉATION → createProduit()");
+                result = await createProduit(formData);
+            }
+            onSave(result);
+            onClose();
         } catch (error) {
-            console.error(error);
-            alert("Erreur lors de l'enregistrement du produit !");
+            console.error("Erreur sauvegarde:", error);
+            alert("Erreur ! Vérifie la console.");
         }
     };
 
+    const boutonTexte = produitAEditer ? 'Confirmer' : 'Créer';
+
     return (
-        <div className="modal-overlay-bo">
-            <div className="modal-container-bo">
+        <div className="modal-overlay-bo" onClick={onClose}>
+            <div className="modal-container-bo" onClick={e => e.stopPropagation()}>
                 <div className="modal-header-bo">
-                    <h2 className="modal-titre-bo">{produitAEditer ? 'Éditer le produit' : 'Nouveau produit'}</h2>
-                    <button onClick={onClose} className="modal-fermer-bo">&times;</button>
+                    <h2 className="modal-titre-bo">
+                        {produitAEditer ? 'Modifier le produit' : 'Ajouter un produit'}
+                    </h2>
+                    <button onClick={onClose} className="modal-fermer-bo">×</button>
                 </div>
+
                 <form onSubmit={handleSubmit} className="modal-form-bo">
                     <div className="form-groupe-bo">
-                        <label className="form-label-bo">Nom *</label>
-                        <input type="text" className="form-input-bo" value={nom} onChange={(e) => setNom(e.target.value)} required />
+                        <label>Nom *</label>
+                        <input type="text" value={nom} onChange={e => setNom(e.target.value)} required />
                     </div>
+
                     <div className="form-row-bo">
                         <div className="form-groupe-bo">
-                            <label className="form-label-bo">Prix (Ar) *</label>
-                            <input type="number" className="form-input-bo" value={prix} onChange={(e) => setPrix(e.target.value)} required min="0" step="0.01"/>
+                            <label>Prix (Ar) *</label>
+                            <input type="number" value={prix} onChange={e => setPrix(e.target.value)} required min="0" step="0.01" />
                         </div>
                         <div className="form-groupe-bo">
-                            <label className="form-label-bo">Quantité en Stock *</label>
-                            <input type="number" className="form-input-bo" value={quantiteStock} onChange={(e) => setQuantiteStock(e.target.value)} required min="0"/>
+                            <label>Stock *</label>
+                            <input type="number" value={quantiteStock} onChange={e => setQuantiteStock(e.target.value)} required min="0" />
                         </div>
                     </div>
+
                     <div className="form-row-bo">
                         <div className="form-groupe-bo">
-                            <label className="form-label-bo">Poids (kg) *</label>
-                            <input type="number" className="form-input-bo" value={poids} onChange={(e) => setPoids(e.target.value)} required min="0" step="0.01"/>
+                            <label>Poids (kg) *</label>
+                            <input type="number" value={poids} onChange={e => setPoids(e.target.value)} required min="0" step="0.01" />
                         </div>
                         <div className="form-groupe-bo">
-                            <label className="form-label-bo">Catégorie *</label>
-                            <select className="form-select-bo" value={numCategorie} onChange={(e) => setNumCategorie(e.target.value)} required>
+                            <label>Catégorie *</label>
+                            <select value={numCategorie} onChange={e => setNumCategorie(e.target.value)} required>
                                 {categories.map(cat => (
-                                    <option key={cat.numCategorie} value={cat.numCategorie}>{cat.nomCategorie}</option>
+                                    <option key={cat.numCategorie} value={cat.numCategorie}>
+                                        {cat.nomCategorie}
+                                    </option>
                                 ))}
                             </select>
                         </div>
                     </div>
+
                     <div className="form-groupe-bo">
-                        <label className="form-label-bo">Image {produitAEditer ? '' : '*'}</label>
-                        <input type="file" className="form-input-bo" onChange={handleFileChange} required={!produitAEditer} />
-                        {imageFileName && <p className="image-info-bo">Image actuelle: {imageFileName}</p>}
+                        <label>Image {produitAEditer ? '' : '*'}</label>
+                        <input type="file" accept="image/*" onChange={handleFileChange} />
+                        {imageFileName && <p className="image-info-bo">Fichier : {imageFileName}</p>}
                     </div>
+
                     <div className="form-groupe-bo">
-                        <label className="form-label-bo">Promotion</label>
-                        <select className="form-select-bo" value={numPromotion || ''} onChange={(e) => setNumPromotion(e.target.value)}>
+                        <label>Promotion</label>
+                        <select value={numPromotion || ''} onChange={e => setNumPromotion(e.target.value)}>
                             <option value="">Aucune</option>
                             {promotions.map(promo => (
                                 <option key={promo.numPromotion} value={promo.numPromotion}>
@@ -135,9 +182,14 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
                             ))}
                         </select>
                     </div>
+
                     <div className="form-actions-bo">
-                        <button type="button" className="btn-annuler-bo" onClick={onClose}>Annuler</button>
-                        <button type="submit" className="btn-enregistrer-bo">{produitAEditer ? 'Sauvegarder' : 'Créer'}</button>
+                        <button type="button" onClick={onClose} className="btn-annuler-bo">
+                            Annuler
+                        </button>
+                        <button type="submit" className="btn-enregistrer-bo">
+                            {boutonTexte}
+                        </button>
                     </div>
                 </form>
             </div>
