@@ -1,83 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import AjouterArticleModal from './AjouterArticleModal';
+import { fetchArticles, createArticle, updateArticle, deleteArticle } from '../../../services/articleService';
 import '../../../styles/back-office/article.css';
 
-const initialArticles = [
-    {
-        numArticle: 1,
-        titre: "Les Tendances du Marché Bio en 2025",
-        auteur: "Jeanne Dupont",
-        datePublication: "2025-10-25",
-        resume: "Un aperçu des fruits et légumes qui domineront les étals l'année prochaine...",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
-        image: 'tendances_bio.jpg'
-    },
-    {
-        numArticle: 2,
-        titre: "Cuisiner le Chou : 10 Recettes Originales",
-        auteur: "Pierre Martin",
-        datePublication: "2025-11-01",
-        resume: "Découvrez des façons inattendues d'intégrer le chou dans vos repas quotidiens.",
-        description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...",
-        image: 'recettes_chou.png'
-    },
-];
-
-const articles = () => {
-    const [articles, setArticles] = useState(initialArticles);
+const Articles = () => {
+    const [articles, setArticles] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [articleAEditer, setArticleAEditer] = useState(null);
 
-    const getNextId = () => {
-        const maxId = articles.reduce((max, a) => Math.max(max, a.numArticle || 0), 0);
-        return maxId + 1;
-    };
+    useEffect(() => {
+        const getArticles = async () => {
+            try {
+                const data = await fetchArticles();
+                setArticles(data);
+            } catch (err) {
+                console.error('Erreur lors du fetch des articles', err);
+            }
+        };
+        getArticles();
+    }, []);
 
-    const handleSaveArticle = (articleData) => {
-        let articleMisAJour = { ...articleData };
-        
-        if (articleAEditer) {
-            setArticles(articles.map(a => 
-                a.numArticle === articleMisAJour.numArticle ? articleMisAJour : a
-            ));
-        } else {
-            articleMisAJour.numArticle = getNextId();
-            setArticles([articleMisAJour, ...articles]);
-        }
-        
+    const openAjouterModal = () => {
         setArticleAEditer(null);
-        setIsModalOpen(false);
+        setIsModalOpen(true);
     };
 
     const handleEdit = (article) => {
         setArticleAEditer(article);
         setIsModalOpen(true);
     };
-    
-    const handleDelete = (numArticle) => {
+
+    const handleDelete = async (numArticle) => {
         if (window.confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
-            setArticles(articles.filter(a => a.numArticle !== numArticle));
+            try {
+                await deleteArticle(numArticle);
+                setArticles(articles.filter(a => a.numArticle !== numArticle));
+            } catch (err) {
+                console.error('Erreur lors de la suppression', err);
+            }
         }
     };
-    
-    const openAjouterModal = () => {
-        setArticleAEditer(null); 
-        setIsModalOpen(true);
+
+    const handleSaveArticle = async (formData) => {
+        try {
+            let savedArticle;
+            if (articleAEditer) {
+                savedArticle = await updateArticle(articleAEditer.numArticle, formData);
+                setArticles(articles.map(a => a.numArticle === savedArticle.numArticle ? savedArticle : a));
+            } else {
+                savedArticle = await createArticle(formData);
+                setArticles([savedArticle, ...articles]);
+            }
+            setArticleAEditer(null);
+            setIsModalOpen(false);
+        } catch (err) {
+            console.error('Erreur lors de l’enregistrement de l’article', err);
+        }
     };
 
     return (
         <div className="gestion-articles-bo">
             <header className="header-articles-bo">
                 <h1 className="titre-page-bo">📰 Gestion des Articles de Blog</h1>
-                <button
-                    className="btn-ajouter-article-bo"
-                    onClick={openAjouterModal}
-                >
-                    <svg className="icone-plus-bo" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                <button className="btn-ajouter-article-bo" onClick={openAjouterModal}>
+                    <svg className="icone-plus-bo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
                     Ajouter un Article
                 </button>
             </header>
-            
             <div className="table-container-bo">
                 <table className="articles-table-bo">
                     <thead>
@@ -86,7 +77,7 @@ const articles = () => {
                             <th>Titre</th>
                             <th>Auteur</th>
                             <th>Date Pub.</th>
-                            <th>Résumé</th>
+                            <th>Description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -96,19 +87,12 @@ const articles = () => {
                                 <td>{article.numArticle}</td>
                                 <td>{article.titre}</td>
                                 <td>{article.auteur}</td>
-                                
-                                <td>{article.datePublication}</td>
-                                <td className="resume-col">{article.resume.substring(0, 50)}...</td>
+                                <td>{article.datePublication?.substring(0, 10)}</td>
+                                <td>{article.description?.substring(0, 50)}...</td>
                                 <td>
                                     <div className="actions-cell-bo">
-                                        <button 
-                                            className="btn-action-editer"
-                                            onClick={() => handleEdit(article)}
-                                        > Éditer</button>
-                                        <button 
-                                            className="btn-action-supprimer"
-                                            onClick={() => handleDelete(article.numArticle)}
-                                        > Supprimer</button>
+                                        <button className="btn-action-editer" onClick={() => handleEdit(article)}>Éditer</button>
+                                        <button className="btn-action-supprimer" onClick={() => handleDelete(article.numArticle)}>Supprimer</button>
                                     </div>
                                 </td>
                             </tr>
@@ -116,7 +100,6 @@ const articles = () => {
                     </tbody>
                 </table>
             </div>
-
             {isModalOpen && (
                 <AjouterArticleModal
                     isOpen={isModalOpen}
@@ -132,4 +115,4 @@ const articles = () => {
     );
 };
 
-export default articles;
+export default Articles;

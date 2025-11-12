@@ -19,7 +19,7 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
                 const data = await fetchPromotions();
                 setPromotions(data);
             } catch (error) {
-                console.error("Erreur chargement promotions :", error);
+                console.error(error);
             }
         };
         loadPromotions();
@@ -73,15 +73,12 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
         if (numPromotion) formData.append('numPromotion', numPromotion);
 
         try {
-            let produitEnregistre;
-            if (produitAEditer) {
-                produitEnregistre = await updateProduit(produitAEditer.id, formData);
-            } else {
-                produitEnregistre = await createProduit(formData);
-            }
+            const produitEnregistre = produitAEditer 
+                ? await updateProduit(produitAEditer.id, formData) 
+                : await createProduit(formData);
             onSave(produitEnregistre);
         } catch (error) {
-            console.error('Erreur d’enregistrement du produit:', error);
+            console.error(error);
             alert("Erreur lors de l'enregistrement du produit !");
         }
     };
@@ -90,9 +87,7 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
         <div className="modal-overlay-bo">
             <div className="modal-container-bo">
                 <div className="modal-header-bo">
-                    <h2 className="modal-titre-bo">
-                        {produitAEditer ? 'Éditer le produit' : 'Nouveau produit'}
-                    </h2>
+                    <h2 className="modal-titre-bo">{produitAEditer ? 'Éditer le produit' : 'Nouveau produit'}</h2>
                     <button onClick={onClose} className="modal-fermer-bo">&times;</button>
                 </div>
                 <form onSubmit={handleSubmit} className="modal-form-bo">
