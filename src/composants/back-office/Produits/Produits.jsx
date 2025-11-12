@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AjouterProduitModal from './AjouterProduitModal';
 import ProduitCard from './ProduitCard';
-import GestionCategories from './categorie';
+import GestionCategories from './Categorie';
 import { fetchProduits, deleteProduit } from '../../../services/produitService';
 import "../../../styles/back-office/produits.css";
 
@@ -21,7 +21,7 @@ const Produits = () => {
       setProducts(data);
       setError(null);
     } catch (err) {
-      setError(err.response?.status === 401 ? "Veuillez vous connecter pour accéder aux produits" : "Erreur lors du chargement des produits");
+      setError(err.response?.status === 401 ? "Veuillez vous connecter" : "Erreur chargement produits");
     } finally {
       setLoading(false);
     }
@@ -38,14 +38,11 @@ const Produits = () => {
     return cat ? cat.nomCategorie : "N/A";
   };
 
-  const handleSaveProduit = (produitMisAJour) => {
+  const handleSaveProduit = (produit) => {
     setProducts(prev => {
-      const existe = prev.find(p => p.id === produitMisAJour.id);
-      if (existe) {
-        return prev.map(p => p.id === produitMisAJour.id ? produitMisAJour : p);
-      } else {
-        return [produitMisAJour, ...prev];
-      }
+      const existe = prev.find(p => p.id === produit.id);
+      if (existe) return prev.map(p => p.id === produit.id ? produit : p);
+      return [produit, ...prev];
     });
     setProduitAEditer(null);
     setIsModalOpen(false);
@@ -57,53 +54,39 @@ const Produits = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
+    if (!window.confirm("Supprimer ce produit ?")) return;
     try {
       await deleteProduit(id);
-      await loadProduits();
+      setProducts(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       alert("Erreur lors de la suppression du produit");
     }
   };
 
   if (error) return <p className="error-message">{error}</p>;
+  if (loading) return <p>Chargement des produits...</p>;
 
   return (
     <div className="gestion-produits-bo">
       <header className="header-produits-bo">
         <h1 className="titre-page-bo">Gestion des Produits</h1>
-        <button className="btn-ajouter-produit-bo" onClick={() => setIsModalOpen(true)}>+</button>
+        <button className="btn-ajouter-produit-bo" onClick={() => { setProduitAEditer(null); setIsModalOpen(true); }}>+</button>
       </header>
       <hr className="separateur-bo"/>
       <GestionCategories onCategoriesChange={setCategories} />
       <hr className="separateur-bo"/>
       <div className="filtre-container-bo">
         <label className="filtre-label-bo">Filtrer par catégorie :</label>
-<<<<<<< HEAD
         <select className="filtre-select-bo" value={categorieFiltre} onChange={(e) => setCategorieFiltre(parseInt(e.target.value, 10))}>
           <option value={0}>Toutes les catégories</option>
-          {categories.map(cat => (
-            <option key={cat.numCategorie} value={cat.numCategorie}>{cat.nomCategorie}</option>
-=======
-        <select
-          className="filtre-select-bo"
-          value={categorieFiltre}
-          onChange={(e) => setCategorieFiltre(parseInt(e.target.value, 10))}
-        >
-          <option value={0}>Toutes les catégories</option>
-          {categories.map(cat => (
-            <option key={cat.numCategorie} value={cat.numCategorie}>
-              {cat.nomCategorie}
-            </option>
->>>>>>> 95c0e233250fc2f70e2cd80ceef6fe0f37dfc1dc
-          ))}
+          {categories.map(cat => <option key={cat.numCategorie} value={cat.numCategorie}>{cat.nomCategorie}</option>)}
         </select>
       </div>
       <section className="section-catalogue-bo">
         <div className="liste-produits-grid-bo">
-          {produitsFiltres.length > 0 ? produitsFiltres.map(produit => (
+          {produitsFiltres.length > 0 ? produitsFiltres.map((produit, index) => (
             <ProduitCard
-              key={produit.id || produit.nomProduit}
+              key={produit.id ?? index}
               produit={produit}
               onEdit={handleEdit}
               onDelete={handleDelete}
@@ -116,7 +99,7 @@ const Produits = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveProduit}
-        produitAEditer={produitAEditer}
+        produitAModifier={produitAEditer}
         categories={categories}
       />
     </div>
