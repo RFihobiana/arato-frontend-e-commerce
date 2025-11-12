@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import AjouterProduitModal from "./AjouterProduitModal";
 import ProduitCard from "./ProduitCard";
 import GestionCategories from "./Categorie";
-import { fetchProduits, deleteProduit } from "../../../services/produitService";
+import { fetchProduits, deleteProduit } from 
+"../../../services/produitService";
 import "../../../styles/back-office/produits.css";
 
 const Produits = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categorieFiltre, setCategorieFiltre] = useState(0);
+  const [isOnPromoFiltre, setIsOnPromoFiltre] = useState(false);
+  const [termeRecherche, setTermeRecherche] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [produitAEditer, setProduitAEditer] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,10 +38,27 @@ const Produits = () => {
     loadProduits();
   }, []);
 
-  const produitsFiltres =
-    categorieFiltre === 0
-      ? products
-      : products.filter((p) => p.numCategorie === categorieFiltre);
+  // LOGIQUE DE FILTRAGE COMBINÉE MISE À JOUR
+  const produitsFiltres = products.filter((produit) => {
+    const categorieMatch =
+      categorieFiltre === 0 || produit.numCategorie === categorieFiltre;
+
+    // CORRECTION 1: Vérifie si produit.promotion existe (comme dans ProduitCard)
+    const estEnPromotion = !!produit.promotion?.valeur;
+    const promoMatch = !isOnPromoFiltre || estEnPromotion;
+
+    // CORRECTION 2: Utilise produit.nomProduit (comme dans ProduitCard)
+    const nomProduit = produit.nomProduit ? produit.nomProduit.toLowerCase() : "";
+    const descriptionProduit = produit.description ? produit.description.toLowerCase() : "";
+    const terme = termeRecherche.trim().toLowerCase();
+    
+    const rechercheMatch =
+      terme === "" ||
+      nomProduit.includes(terme) ||
+      descriptionProduit.includes(terme);
+
+    return categorieMatch && promoMatch && rechercheMatch;
+  });
 
   const getNomCategorie = (numCategorie) => {
     const cat = categories.find((c) => c.numCategorie === numCategorie);
@@ -100,6 +120,26 @@ const Produits = () => {
             </option>
           ))}
         </select>
+
+        <div className="filtre-promo-bo">
+          <input
+            type="checkbox"
+            id="promoFiltre"
+            checked={isOnPromoFiltre}
+            onChange={(e) => setIsOnPromoFiltre(e.target.checked)}
+          />
+          <label htmlFor="promoFiltre" className="filtre-label-bo">
+            En promotion
+          </label>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Rechercher un produit..."
+          className="recherche-input-bo"
+          value={termeRecherche}
+          onChange={(e) => setTermeRecherche(e.target.value)}
+        />
       </div>
       <section className="section-catalogue-bo">
         <div className="liste-produits-grid-bo">
@@ -115,7 +155,7 @@ const Produits = () => {
             ))
           ) : (
             <p className="message-vide-bo">
-              Aucun produit trouvé pour ce filtre.
+              Aucun produit trouvé pour les filtres actuels.
             </p>
           )}
         </div>
