@@ -14,7 +14,7 @@ export default function Accueil(){
         <ProduitsSection/>
         <PointsFortSection/>
         <AProposSection/>
-       
+
         <NewsLetterSection/>
         <FooterSection/>
        
