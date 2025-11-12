@@ -38,7 +38,7 @@ const SideBar = () => {
   return (
     <div className="sidebar">
       <h2 className="sidebar-title"> 
-        <img src={profile} alt="admin-profile" /> {JSON.parse(localStorage.getItem('userData')).nomUtilisateur} Admin
+        <img src={profile} alt="admin-profile" style={{width: '38%'}} /> {JSON.parse(localStorage.getItem('userData')).nomUtilisateur} Admin
       </h2>
       
       <nav className="sidebar-menu">
