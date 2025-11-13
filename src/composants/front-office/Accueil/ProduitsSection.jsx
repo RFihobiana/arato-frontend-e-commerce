@@ -1,74 +1,92 @@
 import React, { useEffect, useState } from "react";
-import carotte from "../../../assets/images/carotte.png";
-import tomate from "../../../assets/images/tomate.png";
-import chou from "../../../assets/images/chou.png";
-import pommeDeTerre from "../../../assets/images/pommeDeTerre.png";
-import viande from "../../../assets/images/legume3.jpg";
 import panier from "../../../assets/icones/panier.png";
 import "../../../styles/front-office/global.css";
 import "../../../styles/front-office/Accueil/produitSection.css";
-
 import PaginationProduits from './PaginationProduits';
-const produits = [
-  { id: 1, nom: "Carotte", prix: "500Ar/kg", image: carotte, promotion:{valeur:'-50%'},numCategorie:1},
-  { id: 2, nom: "Tomate", prix: "500Ar/kg", image: tomate ,numCategorie:1},
-  { id: 3, nom: "chou", prix: "500Ar/kg", image: chou,numCategorie:1 },
-  { id: 4, nom: "Viande", prix: "500Ar/kg", image: viande ,promotion: { valeur: '-20%' },numCategorie:2},
-  { id: 5, nom: "Pomme de Terre", prix: "500Ar/kg", image: pommeDeTerre ,promotion: { valeur: '-20%' },numCategorie:1},
-  
-];
+import { fetchProduits } from '../../../services/produitService'; // Assure-toi que ça existe
 
-const ProduitsSection = ({categorieActive, showHeader=true}) => {
-const [page,setPage]=useState(1);
-const produitsParPage=4;
+const ProduitsSection = ({ categorieActive, showHeader = true }) => {
+  const [produits, setProduits] = useState([]);
+  const [page, setPage] = useState(1);
+  const produitsParPage = 4;
 
-const produitsFiltre = categorieActive ? produits.filter(p=>p.numCategorie ===categorieActive) : produits;
-const indexDepart =(page - 1) * produitsParPage;
-const produitsAffiches = produitsFiltre.slice(indexDepart,indexDepart + produitsParPage);
+  // URL de base pour accéder aux images depuis le backend
+  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8000/storage/produits/";
 
-useEffect(()=>{
-  setPage(1);
-},[categorieActive])
-return (
+  useEffect(() => {
+    const loadProduits = async () => {
+      try {
+        const data = await fetchProduits(); // récupère les produits depuis l'API
+        setProduits(data || []);
+      } catch (err) {
+        console.error("Erreur récupération produits :", err);
+      }
+    };
+    loadProduits();
+  }, []);
+
+  useEffect(() => {
+    setPage(1); // reset page quand la catégorie change
+  }, [categorieActive]);
+
+  // Filtre par catégorie si nécessaire
+  const produitsFiltre = categorieActive
+    ? produits.filter(p => p.numCategorie === categorieActive)
+    : produits;
+
+  const indexDepart = (page - 1) * produitsParPage;
+  const produitsAffiches = produitsFiltre.slice(indexDepart, indexDepart + produitsParPage);
+
+  return (
     <section className="produit-section">
-     
-        {showHeader && ( <div className="produit-header">
-           <h3>Nos produits</h3>
-      <p>
-        Découvrez nos produits frais et de qualité directement depuis nos champs
-        et élévages
-      </p>
-        </div>)}
-     
-      
-      <div className="produit-grid">
-        {produitsAffiches.map((produit) => (
-        
-          <div key={produit.id} className="produit-card">
-            {produit.promotion && produit.promotion.valeur && (<span className="promo-cercle">{produit.promotion.valeur}</span>)}
-            
-            <div className="produit-image-container">
-            <img src={produit.image} alt={produit.nom}  />
-            </div>
-            <div className="produit-text">
-            <h2>{produit.nom}</h2>
-            <div className="produit-text-icon">
-            <p>{produit.prix}</p>
-            <a> <img src={panier} className="header-icons" /></a>
-             </div>
-             </div>
-          </div>
-          
-          
-        ))}
+      {showHeader && (
+        <div className="produit-header">
+          <h3>Nos produits</h3>
+          <p>
+            Découvrez nos produits frais et de qualité directement depuis nos champs et élevages
+          </p>
+        </div>
+      )}
 
-        
+      <div className="produit-grid">
+        {produitsAffiches.length > 0 ? (
+          produitsAffiches.map(produit => (
+            <div key={produit.id ?? produit.numProduit} className="produit-card">
+              {produit.promotion?.valeur && (
+                <span className="promo-cercle">
+                  {produit.promotion.valeur}
+                  {produit.promotion.typePromotion === "Pourcentage" ? "%" : "Ar"}
+                </span>
+              )}
+              <div className="produit-image-container">
+                <img
+                  src={produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png"}
+                  alt={produit.nomProduit || "Produit"}
+                  onError={(e) => { e.target.src = "/placeholder.png"; }}
+                />
+              </div>
+              <div className="produit-text">
+                <h2>{produit.nomProduit}</h2>
+                <div className="produit-text-icon">
+                  <p>{Number(produit.prix || 0).toLocaleString()} Ar/kg</p>
+                  <a>
+                    <img src={panier} className="header-icons" alt="Panier" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p style={{ textAlign: "center", width: "100%" }}>Aucun produit disponible</p>
+        )}
       </div>
+
       {/* Pagination */}
-      <PaginationProduits 
-      totalProduits={produitsFiltre.length}
-      produitsParPage={produitsParPage}
-      onPageChange={setPage}/>
+      <PaginationProduits
+        totalProduits={produitsFiltre.length}
+        produitsParPage={produitsParPage}
+        onPageChange={setPage}
+      />
     </section>
   );
 };

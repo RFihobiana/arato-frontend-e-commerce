@@ -18,7 +18,8 @@ import Commandes from "../composants/back-office/Commande/Commandes";
 import CommandeDetails from "../composants/back-office/Commande/CommandeDetails";
 import Clients from "../composants/back-office/Client/Clients";
 import ChangePasswordAdmin from "../composants/front-office/Profil/ChangePasswordAdmin";
-
+import Livraisons from "../composants/back-office/Livraison/Livraisons";
+import FraisLivraison from "../composants/back-office/Livraison/FraisLivraison";
 export default function AppRoutes() {
   return (
     <Router>
@@ -31,9 +32,11 @@ export default function AppRoutes() {
         <Route path="/commandes" element={<PrivateRoute role="client"><SuiviCommande /></PrivateRoute>} />
         <Route path="/livraisons/:id" element={<PrivateRoute role="client"><SuiviLivraison /></PrivateRoute>} />
         <Route path="/profil" element={<Profil />} />
-
+       
         <Route path="/admin" element={<PrivateRoute role="admin"><TableauLayout /></PrivateRoute>}>
-          
+           <Route path="livraisons" element={<Livraisons />} />
+           <Route path="livraisons/frais" element={<FraisLivraison />} />
+
           <Route path="change-password" element={<ChangePasswordAdmin />} />
 
           <Route index element={<TableauDeBord />} />

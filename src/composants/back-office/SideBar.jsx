@@ -11,7 +11,9 @@ import {
   FaUserCircle,  
   FaLock,         
   FaSignOutAlt,   
-  FaHome          
+  FaHome,
+  FaTruck
+
 } from 'react-icons/fa';
 import "../../styles/back-office/SideBar.css";
 
@@ -26,6 +28,7 @@ const SideBar = () => {
     { label: "Paiements", path: "/admin/paiement", icon: FaCreditCard },
     { label: "Promotions", path: "/admin/promotion", icon: FaTag },
     { label: "Clients", path: "/admin/clients", icon: FaUsers },
+    { label: "Livraisons", path: "/admin/livraisons", icon: FaTruck },
   ];
 
   const handleLogout = () => {

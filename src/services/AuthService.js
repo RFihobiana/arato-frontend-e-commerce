@@ -2,7 +2,7 @@ import api from './api';
 
 export const registerUser = async (userData) => {
   const res = await api.post('/register', {
-    nomUtilisateur: userData.nomUtilisateur,      // correspond au backend
+    nomUtilisateur: userData.nomUtilisateur,     
     email: userData.email,
     contact: userData.contact,
     motDePasse: userData.motDePasse,

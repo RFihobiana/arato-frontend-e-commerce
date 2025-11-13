@@ -1,0 +1,287 @@
+/* styles/back-office/fraisLivraison.css */
+.frais-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #EBF4FF 0%, #E0E7FF 100%);
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.frais-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.frais-header h2 {
+  color: #1e293b;
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.btn-retour {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-retour:hover {
+  background: #4b5563;
+}
+
+.frais-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.frais-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.frais-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.frais-form .form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.frais-form .form-group input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.frais-form .form-group input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.frais-form .btn-save {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 1rem;
+  width: auto;
+  margin-top: 0.5rem;
+}
+
+.frais-form .btn-save:hover {
+  background: #4338ca;
+}
+
+.frais-search-bar {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s;
+}
+
+.frais-search-bar:focus-within {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.frais-search-bar svg {
+  color: #6b7280;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.frais-search-bar input {
+  flex: 1;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  color: #1e293b;
+  background: transparent;
+}
+
+.frais-search-bar input::placeholder {
+  color: #9ca3af;
+}
+
+.frais-search-bar .btn-clear {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.frais-search-bar .btn-clear:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.frais-table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-collapse: collapse;
+}
+
+.frais-table thead {
+  background: #4f46e5;
+  color: white;
+}
+
+.frais-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.frais-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s;
+}
+
+.frais-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.frais-table td {
+  padding: 1rem 1.5rem;
+  color: #374151;
+  text-align: left;
+}
+
+.frais-table td:nth-child(1) {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.frais-table td:nth-child(4) {
+  font-weight: 700;
+  color: #059669;
+  font-size: 1.1rem;
+}
+
+.frais-table .btn-edit,
+.frais-table .btn-delete {
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  margin-right: 0.5rem;
+}
+
+.frais-table .btn-edit {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.frais-table .btn-edit:hover {
+  background: #bfdbfe;
+}
+
+.frais-table .btn-delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.frais-table .btn-delete:hover {
+  background: #fecaca;
+}
+
+.frais-table tbody tr td[colspan] {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .frais-container {
+    padding: 1rem;
+  }
+
+  .frais-form .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .frais-table {
+    font-size: 0.875rem;
+  }
+
+  .frais-table th,
+  .frais-table td {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .frais-table thead {
+    display: none;
+  }
+
+  .frais-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .frais-table td {
+    display: block;
+    text-align: right;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .frais-table td:last-child {
+    border-bottom: none;
+  }
+
+  .frais-table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #374151;
+  }
+}
