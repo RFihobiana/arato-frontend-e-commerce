@@ -1,21 +1,36 @@
-import api from './api';
+import api from "./api";
+
+const ARTICLE_URL = "/articles";
+
+const getConfig = (isFormData = false) => {
+  const token = localStorage.getItem("userToken");
+  if (!token) throw new Error("Utilisateur non authentifié");
+
+  const headers = { Authorization: `Bearer ${token}` };
+  if (isFormData) headers["Content-Type"] = "multipart/form-data";
+
+  return { headers, withCredentials: true };
+};
 
 export const fetchArticles = async () => {
-    const res = await api.get('/articles'); // publique
-    return res.data;
+  const res = await api.get(ARTICLE_URL,getConfig());
+  return res.data;
 };
 
-export const createArticle = async (articleData) => {
-    const res = await api.post('/articles', articleData); // protégé
-    return res.data;
+
+export const createArticle = async (formData) => {
+  const res = await api.post(ARTICLE_URL, formData, getConfig(true));
+  return res.data;
 };
 
-export const updateArticle = async (id, articleData) => {
-    const res = await api.put(`/articles/${id}`, articleData); // protégé
-    return res.data;
+
+export const updateArticle = async (id, formData) => {
+  const res = await api.post(`${ARTICLE_URL}/${id}?_method=PUT`, formData, getConfig(true));
+  return res.data;
 };
+
 
 export const deleteArticle = async (id) => {
-    const res = await api.delete(`/articles/${id}`); // protégé
-    return res.data;
+  const res = await api.delete(`${ARTICLE_URL}/${id}`, getConfig());
+  return res.data;
 };

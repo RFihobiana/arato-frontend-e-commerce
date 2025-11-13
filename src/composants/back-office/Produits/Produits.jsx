@@ -38,17 +38,12 @@ const Produits = () => {
     loadProduits();
   }, []);
 
-  // LOGIQUE DE FILTRAGE COMBINÉE MISE À JOUR
-  const produitsFiltres = products.filter((produit) => {
+   const produitsFiltres = products.filter((produit) => {
     const categorieMatch =
       categorieFiltre === 0 || produit.numCategorie === categorieFiltre;
-
-    // CORRECTION 1: Vérifie si produit.promotion existe (comme dans ProduitCard)
     const estEnPromotion = !!produit.promotion?.valeur;
     const promoMatch = !isOnPromoFiltre || estEnPromotion;
-
-    // CORRECTION 2: Utilise produit.nomProduit (comme dans ProduitCard)
-    const nomProduit = produit.nomProduit ? produit.nomProduit.toLowerCase() : "";
+   const nomProduit = produit.nomProduit ? produit.nomProduit.toLowerCase() : "";
     const descriptionProduit = produit.description ? produit.description.toLowerCase() : "";
     const terme = termeRecherche.trim().toLowerCase();
     
@@ -87,8 +82,7 @@ const Produits = () => {
   };
 
   if (error) return <p className="error-message">{error}</p>;
-  if (loading) return <p>Chargement des produits...</p>;
-
+ 
   return (
     <div className="gestion-produits-bo">
       <header className="header-produits-bo">

@@ -1,98 +1,167 @@
 import React, { useState, useEffect } from 'react';
+import { createArticle, updateArticle } from '../../../services/articleService';
 
-const AjouterArticleModal = ({ isOpen, onClose, onSave, article }) => {
-    const initialState = {
-        numArticle: article ? article.numArticle : null,
-        titre: '',
-        description: '', // correspond à 'contenu' côté back
-        auteur: '',
-        datePublication: new Date().toISOString().substring(0, 10),
-        image: null, // on stocke le fichier
-    };
+const AjouterArticleModal = ({ isOpen, onClose, onSave, articleAEditer }) => {
+    const today = new Date().toISOString().split('T')[0]; 
 
-    const [formData, setFormData] = useState(initialState);
+    const [titre, setTitre] = useState('');
+    const [description, setDescription] = useState('');
+    const [contenu, setContenu] = useState(''); 
+    const [auteur, setAuteur] = useState('');
+    const [datePublication, setDatePublication] = useState(today);
+    const [image, setImage] = useState(null);
+const [imageFileName, setImageFileName] = useState('');
 
     useEffect(() => {
-        if (article) {
-            setFormData({
-                numArticle: article.numArticle,
-                titre: article.titre || '',
-                description: article.description || '',
-                auteur: article.auteur || '',
-                datePublication: article.datePublication ? article.datePublication.substring(0, 10) : new Date().toISOString().substring(0, 10),
-                image: null, // le fichier sera sélectionné à nouveau si besoin
-            });
+        if (articleAEditer) {
+            setTitre(articleAEditer.titre || '');
+            setDescription(articleAEditer.description || '');
+            setContenu(articleAEditer.contenu || ''); 
+            setAuteur(articleAEditer.auteur || '');
+            setDatePublication(articleAEditer.datePublication ? articleAEditer.datePublication.split(' ')[0] : today);
+            setImage(null);
+             setImageFileName(articleAEditer.image ? articleAEditer.image.split('/').pop() : '');
+
+            
         } else {
-            setFormData(initialState);
+            setTitre('');
+            setDescription('');
+            setContenu('');
+            setAuteur('');
+            setDatePublication(today);
+            setImage(null);
+             setImageFileName('');
         }
-    }, [article]);
+    }, [articleAEditer]);
 
     if (!isOpen) return null;
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === 'image') {
-            setFormData(prev => ({ ...prev, image: files[0] }));
+     const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+            setImageFileName(file.name);
         } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            setImage(null);
+            setImageFileName(articleAEditer?.image ? produitAEditer.image.split('/').pop() : '');
         }
     };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = new FormData();
-        data.append('titre', formData.titre);
-        data.append('description', formData.description);
-        data.append('contenu', formData.description); // si ton back utilise 'contenu'
-        data.append('auteur', formData.auteur);
-        data.append('datePublication', formData.datePublication);
 
-        if (formData.image) {
-            data.append('image', formData.image);
+        if (datePublication < today) {
+            alert(" La date de publication ne peut pas être antérieure à aujourd'hui !");
+            return;
         }
 
-        onSave(data); // le parent doit utiliser articleService avec multipart/form-data
-        onClose();
+        const formData = new FormData();
+        formData.append('titre', titre);
+        formData.append('description', description);
+        formData.append('contenu', contenu); 
+        formData.append('auteur', auteur);
+        formData.append('datePublication', datePublication);
+          if (image instanceof File) {
+            formData.append('image', image);
+        }
+        if (articleAEditer) formData.append('_method', 'PUT'); 
+
+        try {
+            if (articleAEditer) {
+                await updateArticle(articleAEditer.numArticle, formData);
+            } else {
+                await createArticle(formData);
+            }
+            onSave();
+            onClose();
+        } catch (error) {
+            console.error("Erreur de sauvegarde de l’article :", error);
+            alert("Erreur lors de sauvegarde de l’article.");
+        }
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content-bo modal-article">
-                <header className="modal-header-bo">
-                    <h2>{article ? 'Éditer' : 'Ajouter'} un Article</h2>
-                    <button className="btn-fermer-modal-bo" onClick={onClose}>&times;</button>
+        <div className="bo-modal-overlay">
+            <div className="bo-modal-container">
+                <header className="bo-modal-header">
+                    <h3 className="bo-modal-title">{articleAEditer ? "Modifier l’article" : "Ajouter un nouvel article"}</h3>
+                    <button className="bo-modal-close-btn" onClick={onClose}>&times;</button>
                 </header>
                 
-                <form className="modal-form-bo" onSubmit={handleSubmit}>
-                    <div className="form-group-bo">
-                        <label htmlFor="titre">Titre de l'Article</label>
-                        <input type="text" id="titre" name="titre" value={formData.titre} onChange={handleChange} required />
+                <form onSubmit={handleSubmit} className="bo-modal-form">
+                    <div className="bo-form-group">
+                        <label className="bo-form-label">Titre</label>
+                        <input
+                            type="text"
+                            className="bo-form-input"
+                            value={titre}
+                            onChange={(e) => setTitre(e.target.value)}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="bo-form-group">
+                        <label className="bo-form-label">Résumé/Description (Max 255)</label>
+                        <textarea
+                            className="bo-form-input"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            rows="3"
+                            required
+                        />
                     </div>
 
-                    <div className="form-group-bo">
-                        <label htmlFor="auteur">Auteur</label>
-                        <input type="text" id="auteur" name="auteur" value={formData.auteur} onChange={handleChange} required />
+                    <div className="bo-form-group">
+                        <label className="bo-form-label">Contenu Complet</label>
+                        <textarea
+                            className="bo-form-input"
+                            value={contenu}
+                            onChange={(e) => setContenu(e.target.value)}
+                            rows="6"
+                            required
+                        />
                     </div>
 
-                    <div className="form-group-bo">
-                        <label htmlFor="datePublication">Date de Publication</label>
-                        <input type="date" id="datePublication" name="datePublication" value={formData.datePublication} onChange={handleChange} required />
+                    <div className="bo-form-group-row">
+                        <div className="bo-form-group">
+                             <label className="bo-form-label">Auteur</label>
+                            <input
+                                type="text"
+                                className="bo-form-input"
+                                value={auteur}
+                                onChange={(e) => setAuteur(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="bo-form-group">
+                            <label className="bo-form-label">Date de Publication</label>
+                            <input
+                                type="date"
+                                className="bo-form-input"
+                                value={datePublication}
+                                onChange={(e) => setDatePublication(e.target.value)}
+                                min={today}
+                                required
+                            />
+                        </div>
                     </div>
-
-                    <div className="form-group-bo">
-                        <label htmlFor="description">Contenu / Description</label>
-                        <textarea id="description" name="description" value={formData.description} onChange={handleChange} rows="6" required />
-                    </div>
-
-                    <div className="form-group-bo">
-                        <label htmlFor="image">Image de l'article</label>
-                        <input type="file" id="image" name="image" accept="image/*" onChange={handleChange} />
-                    </div>
-
+                    
+                    <div className="bo-form-group">
+                        <label className="bo-form-label">Image de l'article</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="bo-form-input-file"
+                            onChange={handleFileChange}
+                                required={!articleAEditer}
+                        />
+                            {imageFileName && <p className="image-info-bo">Fichier : {imageFileName}</p>}
                  
-                        <button type="button" className="btn-annuler-bo" onClick={onClose}>Annuler</button>
-                        <button type="submit" className="btn-sauvegarder-bo">Sauvegarder</button>
-                  
+                    </div>
+
+                    <div className="bo-modal-actions">
+                        <button type="submit" className="bo-btn-primaire">Enregistrer</button>
+                        <button type="button" className="bo-btn-annuler" onClick={onClose}>Annuler</button>
+                    </div>
                 </form>
             </div>
         </div>

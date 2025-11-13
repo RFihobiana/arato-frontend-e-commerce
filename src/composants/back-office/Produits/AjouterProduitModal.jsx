@@ -105,11 +105,9 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
         try {
             let result;
             if (produitAEditer) {
-                console.log("MISE À JOUR → updateProduit(", produitId, ")");
-                result = await updateProduit(produitId, formData);
+                  result = await updateProduit(produitId, formData);
             } else {
-                console.log("CRÉATION → createProduit()");
-                result = await createProduit(formData);
+                    result = await createProduit(formData);
             }
             onSave(result);
             onClose();

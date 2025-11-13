@@ -14,7 +14,7 @@ const ProduitCard = ({ produit, onEdit, onDelete, getNomCategorie }) => {
     const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
     const handleEdit = () => {
-        console.log("CLIC ÉDITER →", produit);
+       
         onEdit(produit);
     };
 
