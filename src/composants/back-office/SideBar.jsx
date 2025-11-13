@@ -15,6 +15,7 @@ import {
   FaTruck
 
 } from 'react-icons/fa';
+import profile from '../../assets/icones/log.png';
 import "../../styles/back-office/SideBar.css";
 
 const SideBar = () => {
@@ -39,7 +40,9 @@ const SideBar = () => {
 
   return (
     <div className="sidebar">
-      <h2 className="sidebar-title">Admin</h2>
+      <h2 className="sidebar-title"> 
+        <img src={profile} alt="admin-profile" style={{width: '38%'}} /> {JSON.parse(localStorage.getItem('userData')).nomUtilisateur} Admin
+      </h2>
       
       <nav className="sidebar-menu">
         {menuItems.map((item) => {
