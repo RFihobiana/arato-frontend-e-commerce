@@ -36,7 +36,7 @@ const Authentifier = () => {
       localStorage.setItem('userToken', response.access_token);
       localStorage.setItem('userData', JSON.stringify(response.user));
 
-      navigate('/client/dashboard');
+      navigate('/profil');
     } catch (err) {
       if (err.response?.data?.message) setErreur(err.response.data.message);
       else setErreur('Erreur lors de l\'inscription.');
