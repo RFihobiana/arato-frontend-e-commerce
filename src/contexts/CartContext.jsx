@@ -1,19 +1,26 @@
-
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext();
 
+
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem("data");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (produit) => {
     setCartItems(prevItems => {
       const existing = prevItems.find(item => item.id === produit.id);
       if (existing) {
-        return prevItems.map(item => 
+        return prevItems.map(item =>
           item.id === produit.id
-          ? { ...item, quantityKg: item.quantityKg + 1 }
-          : item
+            ? { ...item, quantityKg: item.quantityKg + 1 }
+            : item
         );
       } else {
         return [...prevItems, { ...produit, quantityKg: 1, cuttingOption: "entier" }];
@@ -26,9 +33,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (id, quantity) => {
-    setCartItems(prevItems => prevItems.map(item =>
-      item.id === id ? { ...item, quantityKg: quantity } : item
-    ));
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, quantityKg: quantity } : item
+      )
+    );
   };
 
   return (

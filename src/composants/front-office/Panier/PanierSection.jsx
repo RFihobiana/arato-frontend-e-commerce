@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaTrash, FaMobileAlt, FaCreditCard, FaUniversity, FaLock, FaTruck } from "react-icons/fa";
 import Pagination from "../Accueil/PaginationProduits";
 import panierImage from "../../../assets/images/panierList.png";
@@ -20,7 +20,12 @@ const cuttingOptions = [
 const PanierSection = () => {
   const { cartItems, removeFromCart, updateQuantity } = useContext(CartContext);
 
-  // Pagination
+  useEffect(() => {
+  const storedData = localStorage.getItem("data");
+  console.log("local s :", storedData);
+}, []);
+
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -28,18 +33,15 @@ const PanierSection = () => {
   const currentItems = cartItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);
 
-  // Modals
   const [activeModal, setActiveModal] = useState(null);
   const openModal = (mode) => setActiveModal(mode);
   const closeModal = () => setActiveModal(null);
 
-  // Totaux
   const sousTotal = cartItems.reduce((acc, item) => acc + (item.prixPerKg * item.quantityKg), 0);
   const fraisDeService = 1.0;
   const livraisonOfferte = 0.0;
   const montantAPayer = sousTotal + fraisDeService + livraisonOfferte;
 
-  // Gestion quantité et suppression
   const handleQuantityChange = (itemId, increment) => {
     const item = cartItems.find(i => i.id === itemId);
     if (item) updateQuantity(itemId, Math.max(1, item.quantityKg + increment));
@@ -155,19 +157,45 @@ const PanierSection = () => {
             <FaLock /> Passer la commande
           </button>
         </div>
-
-        <div className="paiement-section">
+ <div className="paiement-section">
           <h3>Choisir un mode de paiement</h3>
-          <div onClick={() => openModal('mvola')}><FaMobileAlt /> Mvola</div>
-          <div onClick={() => openModal('carte')}><FaCreditCard /> Carte Bancaire</div>
-          <div onClick={() => openModal('virement')}><FaUniversity /> Virement Bancaire</div>
+          <div className="paiement-option" onClick={() => openModal('mvola')}>
+            <FaMobileAlt className="icon mvola" />
+            <div>
+              <h4>Mvola</h4>
+              <p>Paiement mobile instantané</p>
+            </div>
+            <span className="arrow">›</span>
+          </div>
+          <div className="paiement-option" onClick={() => openModal('carte')}>
+            <FaCreditCard className="icon carte" />
+            <div>
+              <h4>Carte Bancaire</h4>
+              <p>Visa, Mastercard</p>
+            </div>
+            <span className="arrow">›</span>
+          </div>
+          <div className="paiement-option" onClick={() => openModal('virement')}>
+            <FaUniversity className="icon virement" />
+            <div>
+              <h4>Virement Bancaire</h4>
+              <p>Transfert depuis votre banque</p>
+            </div>
+            <span className="arrow">›</span>
+          </div>
         </div>
+        
       </div>
-
-      {activeModal === 'mvola' && <MVolaModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
-      {activeModal === 'carte' && <CarteBancaireModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
-      {activeModal === 'virement' && <VirementBancaireModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
-    </section>
+      {activeModal === 'mvola' && (
+        <MVolaModal montant={montantAPayer.toFixed(2).replace('.', ',')} onClose={closeModal} />
+      )}
+      {activeModal === 'carte' && (
+        <CarteBancaireModal montant={montantAPayer.toFixed(2).replace('.', ',')} onClose={closeModal} />
+      )}
+      {activeModal === 'virement' && (
+        <VirementBancaireModal montant={montantAPayer.toFixed(2).replace('.', ',')} onClose={closeModal} />
+      )}
+   </section>
   );
 };
 

@@ -42,22 +42,22 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
   const indexDepart = (page - 1) * produitsParPage;
   const produitsAffiches = produitsFiltre.slice(indexDepart, indexDepart + produitsParPage);
 
-  // Ajouter au panier
   const handleAddToCart = (produit) => {
-    const produitId = produit.id ?? produit.numProduit;
-    if (!produitId) {
-      console.warn("Produit sans ID, impossible d'ajouter au panier :", produit);
-      return;
-    }
-    addToCart({
-      id: produitId,
-      nom: produit.nomProduit,
-      prixPerKg: Number(produit.prix) || 0,
-      quantityKg: 1,
-      image: produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png",
-      cuttingOption: "entier",
-    });
-  };
+  const produitId = produit.id ?? produit.numProduit;
+  if (!produitId) {
+    console.warn("Produit sans ID, impossible d'ajouter au panier :", produit);
+    return;
+  }
+
+  addToCart({
+    id: produitId,
+    nom: produit.nomProduit,
+    prixPerKg: Number(produit.prix) || 0,
+    quantityKg: 1,
+    image: produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png",
+    cuttingOption: "entier",
+  });
+};
 
   return (
     <section className="produit-section">
@@ -112,3 +112,5 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
 };
 
 export default ProduitsSection;
+
+
