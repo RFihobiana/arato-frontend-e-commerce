@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiUser, FiMail, FiPhone, FiLock } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../../services/AuthService';
@@ -12,6 +12,11 @@ const Authentifier = () => {
   const [confirmerMotDePasse, setConfirmerMotDePasse] = useState('');
   const [erreur, setErreur] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    if (token) navigate('/profil'); // redirige si déjà connecté
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +33,7 @@ const Authentifier = () => {
         email,
         contact,
         motDePasse,
-        confirmerMotDePasse
+        motDePasse_confirmation: confirmerMotDePasse
       };
 
       const response = await registerUser(userData);
@@ -36,10 +41,10 @@ const Authentifier = () => {
       localStorage.setItem('userToken', response.access_token);
       localStorage.setItem('userData', JSON.stringify(response.user));
 
-      navigate('/client/dashboard');
+      navigate('/profil');
     } catch (err) {
       if (err.response?.data?.message) setErreur(err.response.data.message);
-      else setErreur('Erreur lors de l\'inscription.');
+      else setErreur("Erreur lors de l'inscription.");
       console.error(err);
     }
   };
@@ -53,6 +58,7 @@ const Authentifier = () => {
         </div>
 
         <div className='groupe'>
+          {/* Nom */}
           <div className="groupe-formulaire">
             <label>Nom *</label>
             <div className="champ-avec-icone">
@@ -67,6 +73,7 @@ const Authentifier = () => {
             </div>
           </div>
 
+          {/* Email */}
           <div className="groupe-formulaire">
             <label>Email *</label>
             <div className="champ-avec-icone">
@@ -81,6 +88,7 @@ const Authentifier = () => {
             </div>
           </div>
 
+          {/* Contact */}
           <div className="groupe-formulaire">
             <label>Téléphone *</label>
             <div className="champ-avec-icone">
@@ -96,6 +104,7 @@ const Authentifier = () => {
             </div>
           </div>
 
+          {/* Mot de passe */}
           <div className="groupe-formulaire">
             <label>Mot de passe *</label>
             <p>Votre mot de passe doit contenir au moins 6 caractères.</p>
@@ -111,6 +120,7 @@ const Authentifier = () => {
             </div>
           </div>
 
+          {/* Confirmer mot de passe */}
           <div className="groupe-formulaire">
             <label>Confirmer le mot de passe *</label>
             <div className="champ-avec-icone">

@@ -1,64 +1,59 @@
-import api from './api';
+// panierService.js
+import api from "./api";
 
-// Récupérer les paniers de l'utilisateur connecté
-export const fetchPaniers = async () => {
-  const res = await api.get('/panier');
-  return res.data;
-};
+const PANIER_LOCAL_KEY = "panier_local";
 
-// Mettre à jour un détail panier
-export const updateDetailPanier = async (numDetailPanier, data) => {
-  const res = await api.put(`/detail_panier/${numDetailPanier}`, data);
-  return res.data;
-};
-
-// Supprimer un produit du panier
-export const deleteDetailPanier = async (numDetailPanier) => {
-  const res = await api.delete(`/detail_panier/${numDetailPanier}`);
-  return res.data;
-};
-
-// Ajouter un produit au panier
-export const ajouterAuPanier = async (produit) => {
-  const userId = localStorage.getItem("userId");
-
-  if (userId) {
-    try {
-      let panier = JSON.parse(localStorage.getItem("panierId") || "null");
-
-      if (!panier) {
-        const res = await api.post("/panier", {});
-        panier = res.data.numPanier;
-        localStorage.setItem("panierId", panier);
-      }
-
-      await api.post("/detail_panier", {
-        numPanier: panier,
-        numProduit: produit.numProduit,
-        quantite: 1,
-        decoupeOption: "entier"
-      });
-
-      // Mise à jour automatique du panier dans le frontend
-      window.dispatchEvent(new CustomEvent('panierUpdated'));
-
-      alert("Produit ajouté au panier");
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'ajout au panier");
-    }
-  } else {
-    const localPanier = JSON.parse(localStorage.getItem("panier") || "[]");
-    const exist = localPanier.find(p => p.numProduit === produit.numProduit);
-
-    if (exist) {
-      exist.quantityKg += 1;
-    } else {
-      localPanier.push({ ...produit, quantityKg: 1, cuttingOption: "entier" });
-    }
-
-    localStorage.setItem("panier", JSON.stringify(localPanier));
-    window.dispatchEvent(new CustomEvent('panierUpdated'));
-    alert("Produit ajouté au panier (local)");
+export const getOrCreatePanier = async (connected = false) => {
+  if (!connected) {
+    return JSON.parse(localStorage.getItem(PANIER_LOCAL_KEY) || "[]");
   }
+  const res = await api.post("/panier", {});
+  return res.data.numPanier;
+};
+
+export const ajouterAuPanier = async (produit, connected = false) => {
+  if (!connected) {
+    let panierLocal = JSON.parse(localStorage.getItem(PANIER_LOCAL_KEY) || "[]");
+    const existing = panierLocal.find(p => p.numProduit === produit.numProduit);
+    if (existing) existing.poids += 1;
+    else panierLocal.push({ ...produit, poids: 1, decoupe: "entier" });
+    localStorage.setItem(PANIER_LOCAL_KEY, JSON.stringify(panierLocal));
+    return true;
+  }
+
+  const panierId = await getOrCreatePanier(true);
+  await api.post("/detail_panier", {
+    numPanier: panierId,
+    numProduit: produit.numProduit,
+    poids: 1,
+    decoupe: "entier",
+  });
+  return true;
+};
+
+export const getPanierWithDetails = async (connected = false) => {
+  if (!connected) return JSON.parse(localStorage.getItem(PANIER_LOCAL_KEY) || "[]");
+  const panierId = await getOrCreatePanier(true);
+  const res = await api.get(`/detail_panier/${panierId}`);
+  return res.data;
+};
+
+export const updateDetailPanier = async (numProduit, updates, connected = false) => {
+  if (!connected) {
+    let panierLocal = JSON.parse(localStorage.getItem(PANIER_LOCAL_KEY) || "[]");
+    panierLocal = panierLocal.map(p => p.numProduit === numProduit ? { ...p, ...updates } : p);
+    localStorage.setItem(PANIER_LOCAL_KEY, JSON.stringify(panierLocal));
+    return true;
+  }
+  return await api.put(`/detail_panier/${numProduit}`, updates);
+};
+
+export const deleteDetailPanier = async (numProduit, connected = false) => {
+  if (!connected) {
+    let panierLocal = JSON.parse(localStorage.getItem(PANIER_LOCAL_KEY) || "[]");
+    panierLocal = panierLocal.filter(p => p.numProduit !== numProduit);
+    localStorage.setItem(PANIER_LOCAL_KEY, JSON.stringify(panierLocal));
+    return true;
+  }
+  return await api.delete(`/detail_panier/${numProduit}`);
 };
