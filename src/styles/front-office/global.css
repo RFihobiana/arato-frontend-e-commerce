@@ -179,7 +179,7 @@ footer{
 .footer-form input:focus,
 .footer-form textarea:focus {
   border-color: #28a458;
-  border-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 .footer-bottom {
   font-family: var(--font-main);
