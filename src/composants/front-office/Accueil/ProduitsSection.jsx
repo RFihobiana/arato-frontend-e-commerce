@@ -7,7 +7,7 @@ import { fetchProduits } from '../../../services/produitService';
 import { CartContext } from "../../../contexts/CartContext";
 
 const ProduitsSection = ({ categorieActive, showHeader = true }) => {
-  const { addToCart } = useContext(CartContext);
+  const { cartItems, addToCart, updateQuantity } = useContext(CartContext);
   const [produits, setProduits] = useState([]);
   const [page, setPage] = useState(1);
   const produitsParPage = 4;
@@ -19,7 +19,6 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
     const loadProduits = async () => {
       try {
         const data = await fetchProduits();
-        console.log("Produits récupérés :", data);
         setProduits(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Erreur récupération produits :", err);
@@ -29,12 +28,10 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
     loadProduits();
   }, []);
 
-  // Reset page quand catégorie change
   useEffect(() => {
     setPage(1);
   }, [categorieActive]);
 
-  // Filtrage par catégorie
   const produitsFiltre = categorieActive
     ? produits.filter(p => p.numCategorie === categorieActive)
     : produits;
@@ -43,21 +40,21 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
   const produitsAffiches = produitsFiltre.slice(indexDepart, indexDepart + produitsParPage);
 
   const handleAddToCart = (produit) => {
-  const produitId = produit.id ?? produit.numProduit;
-  if (!produitId) {
-    console.warn("Produit sans ID, impossible d'ajouter au panier :", produit);
-    return;
-  }
-
-  addToCart({
-    id: produitId,
-    nom: produit.nomProduit,
-    prixPerKg: Number(produit.prix) || 0,
-    quantityKg: 1,
-    image: produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png",
-    cuttingOption: "entier",
-  });
-};
+    const existingItem = cartItems.find(item => item.nom === produit.nomProduit);
+    if (existingItem) {
+      updateQuantity(existingItem.id, existingItem.quantityKg + 1);
+    } else {
+      const produitId = produit.numProduit + "-" + Date.now();
+      addToCart({
+        id: produitId,
+        nom: produit.nomProduit,
+        prixPerKg: Number(produit.prix) || 0,
+        quantityKg: 1,
+        image: produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png",
+        cuttingOption: "entier",
+      });
+    }
+  };
 
   return (
     <section className="produit-section">
@@ -70,38 +67,68 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
 
       <div className="produit-grid">
         {produitsAffiches.length > 0 ? (
-          produitsAffiches.map(produit => (
-            <div key={produit.numProduit} className="produit-card">
-              {produit.promotion?.valeur && (
-                <span className="promo-cercle">
-                  {produit.promotion.valeur}
-                  {produit.promotion.typePromotion === "Pourcentage" ? "%" : "Ar"}
-                </span>
-              )}
-              <div className="produit-image-container">
-                <img
-                  src={produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png"}
-                  alt={produit.nomProduit || "Produit"}
-                  onError={(e) => { e.target.src = "/placeholder.png"; }}
-                />
-              </div>
-              <div className="produit-text">
-                <h2>{produit.nomProduit}</h2>
-                <div className="produit-text-icon">
-                  <p>{Number(produit.prix || 0).toLocaleString()} Ar/kg</p>
-                  <button onClick={() => handleAddToCart(produit)} className="add-to-cart-btn">
-                    <img src={panierIcon} className="header-icons" alt="Panier" />
-                  </button>
+          produitsAffiches.map(produit => {
+            const inCart = cartItems.some(item => item.nom === produit.nomProduit);
+            const cartItem = cartItems.find(item => item.nom === produit.nomProduit);
+
+            return (
+              <div key={produit.numProduit} className="produit-card">
+                {produit.promotion?.valeur && (
+                  <span className="promo-cercle">
+                    {produit.promotion.valeur}
+                    {produit.promotion.typePromotion === "Pourcentage" ? "%" : "Ar"}
+                  </span>
+                )}
+                <div className="produit-image-container">
+                  <img
+                    src={produit.image ? `${IMAGE_BASE_URL}${produit.image}` : "/placeholder.png"}
+                    alt={produit.nomProduit || "Produit"}
+                    onError={(e) => { e.target.src = "/placeholder.png"; }}
+                  />
+                </div>
+                <div className="produit-text">
+                  <h2>{produit.nomProduit}</h2>
+                  <div className="produit-text-icon">
+                    <p>{Number(produit.prix || 0).toLocaleString()} Ar/kg</p>
+
+                    {inCart ? (
+                      <div className="quantite-control-group">
+                        <button
+                          onClick={() => {
+                            if (cartItem.quantityKg > 1) {
+                              updateQuantity(cartItem.id, cartItem.quantityKg - 1);
+                            }
+                          }}
+                          className="quantity-btn"
+                        >
+                          -
+                        </button>
+                        <h1 className="quantity">{cartItem.quantityKg}</h1>
+                        <button
+                          onClick={() => updateQuantity(cartItem.id, cartItem.quantityKg + 1)}
+                          className="quantity-btn"
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleAddToCart(produit)}
+                        className="add-to-cart-btn"
+                      >
+                        <img src={panierIcon} className="header-icons" alt="Panier" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p style={{ textAlign: "center", width: "100%" }}>Aucun produit disponible</p>
         )}
       </div>
 
-      {/* Pagination */}
       <PaginationProduits
         totalProduits={produitsFiltre.length}
         produitsParPage={produitsParPage}
@@ -112,5 +139,3 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
 };
 
 export default ProduitsSection;
-
-
