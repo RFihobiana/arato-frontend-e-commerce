@@ -1,47 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { fetchFrais, createFrais, updateFrais, deleteFrais } from "../../../services/livraisonService";
+import "../../../styles/back-office/fraisLivraison.css";
+import { useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 
-import { fetchFrais,createLivraison} from "../../../services/livraisonService";
-import "../../../styles/back-office/livraisonModal.css";
+const FraisLivraison = () => {
+  const [fraisList, setFraisList] = useState([]);
+  const [form, setForm] = useState({ poidsMin: "", poidsMax: "", frais: "" });
+  const [editingId, setEditingId] = useState(null);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
-const LivraisonModal = ({ onClose, onSave, livraisonAEditer }) => {
-  const [form, setForm] = useState({
-    numCommande: "",
-    transporteur: "",
-    referenceColis: "",
-    lieuLivraison: "",
-    dateExpedition: "",
-    dateLivraison: "",
-    poidsTotal: "",
-    fraisLivraison: "",
-  });
-
-  const [fraisTranches, setFraisTranches] = useState([]);
-
-  // Charger les tranches de frais
   useEffect(() => {
-    fetchFrais().then((data) => setFraisTranches(data));
+    loadFrais();
   }, []);
 
-  // Remplir le formulaire si on édite
-  useEffect(() => {
-    if (livraisonAEditer) setForm(livraisonAEditer);
-  }, [livraisonAEditer]);
-
-  // Calcul automatique du frais selon le poids
-  useEffect(() => {
-    if (!form.poidsTotal || fraisTranches.length === 0) return;
-
-    const poids = parseFloat(form.poidsTotal);
-    const tranche = fraisTranches.find(
-      (f) => poids >= f.poidsMin && poids <= f.poidsMax
-    );
-
-    if (tranche) {
-      setForm((prev) => ({ ...prev, fraisLivraison: tranche.frais }));
-    } else {
-      setForm((prev) => ({ ...prev, fraisLivraison: "Hors tranche" }));
-    }
-  }, [form.poidsTotal, fraisTranches]);
+  const loadFrais = async () => {
+    const data = await fetchFrais();
+    setFraisList(data);
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,116 +26,125 @@ const LivraisonModal = ({ onClose, onSave, livraisonAEditer }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.poidsMin || !form.poidsMax || !form.frais) {
+      alert("Tous les champs sont obligatoires !");
+      return;
+    }
     try {
-      await createLivraison(form);
-      alert("Livraison enregistrée avec succès !");
-      onSave();
-      onClose();
+      if (editingId) {
+        await updateFrais(editingId, form);
+        alert("Tranche mise à jour !");
+      } else {
+        await createFrais(form);
+        alert("Nouvelle tranche ajoutée !");
+      }
+      setForm({ poidsMin: "", poidsMax: "", frais: "" });
+      setEditingId(null);
+      loadFrais();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l'enregistrement");
+      alert("Erreur lors de l'enregistrement.");
     }
   };
 
+  const handleEdit = (item) => {
+    setForm({ poidsMin: item.poidsMin, poidsMax: item.poidsMax, frais: item.frais });
+    setEditingId(item.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Supprimer cette tranche ?")) return;
+    await deleteFrais(id);
+    loadFrais();
+  };
+
+  const filteredFrais = fraisList.filter((item) => {
+    const s = search.toLowerCase();
+    return (
+      item.poidsMin.toString().includes(s) ||
+      item.poidsMax.toString().includes(s) ||
+      item.frais.toString().includes(s)
+    );
+  });
+
   return (
-    <div className="modal-overlay">
-      <div className="modal-livraison">
-        <h3>Nouvelle Livraison</h3>
-        <form onSubmit={handleSubmit} className="livraison-form">
-          <div className="form-group">
-            <label>Numéro Commande</label>
-            <input
-              name="numCommande"
-              value={form.numCommande}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Transporteur</label>
-            <input
-              name="transporteur"
-              value={form.transporteur}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Référence Colis</label>
-            <input
-              name="referenceColis"
-              value={form.referenceColis}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Lieu Livraison</label>
-            <input
-              name="lieuLivraison"
-              value={form.lieuLivraison}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Date Expédition</label>
-              <input
-                type="date"
-                name="dateExpedition"
-                value={form.dateExpedition}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Date Livraison</label>
-              <input
-                type="date"
-                name="dateLivraison"
-                value={form.dateLivraison}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Poids total (kg)</label>
-              <input
-                type="number"
-                name="poidsTotal"
-                value={form.poidsTotal}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Frais de livraison (automatique)</label>
-              <input
-                type="text"
-                name="fraisLivraison"
-                value={form.fraisLivraison}
-                readOnly
-                className="readonly"
-              />
-            </div>
-          </div>
-
-          <div className="modal-actions">
-            <button type="submit" className="btn-save">💾 Enregistrer</button>
-            <button type="button" className="btn-cancel" onClick={onClose}>❌ Fermer</button>
-          </div>
-        </form>
+    <div className="frais-container">
+      <div className="frais-header">
+        <h2>Gestion des frais de livraison</h2>
+        <button className="btn-retour" onClick={() => navigate("/admin/livraisons")}>
+          ⬅ Retour aux livraisons
+        </button>
       </div>
+
+      <form onSubmit={handleSubmit} className="frais-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label>Poids min (kg)</label>
+            <input type="number" name="poidsMin" value={form.poidsMin} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label>Poids max (kg)</label>
+            <input type="number" name="poidsMax" value={form.poidsMax} onChange={handleChange} required />
+          </div>
+          <div className="form-group">
+            <label>Frais (Ar)</label>
+            <input type="number" name="frais" value={form.frais} onChange={handleChange} required />
+          </div>
+        </div>
+        <button type="submit" className="btn-save">
+          {editingId ? "Mettre à jour" : "Ajouter"}
+        </button>
+      </form>
+
+      <div className="frais-search-bar">
+        <FaSearch />
+        <input
+          type="text"
+          placeholder="Rechercher par poids ou frais..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {search && (
+          <button className="btn-clear" onClick={() => setSearch("")}>
+            ✕ Effacer
+          </button>
+        )}
+      </div>
+
+      <table className="frais-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Poids min (kg)</th>
+            <th>Poids max (kg)</th>
+            <th>Frais (Ar)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredFrais.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.poidsMin}</td>
+              <td>{item.poidsMax}</td>
+              <td>{item.frais}</td>
+              <td>
+                <button className="btn-edit" onClick={() => handleEdit(item)}>✏️</button>
+                <button className="btn-delete" onClick={() => handleDelete(item.id)}>🗑️</button>
+              </td>
+            </tr>
+          ))}
+          {filteredFrais.length === 0 && (
+            <tr>
+              <td colSpan="5" style={{ textAlign: "center", color: "#777" }}>
+                {search ? "Aucun résultat trouvé" : "Aucune tranche enregistrée"}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default LivraisonModal;
+export default FraisLivraison;
