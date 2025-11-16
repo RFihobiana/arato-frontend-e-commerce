@@ -13,8 +13,6 @@ const getConfig = (isFormData = false) => {
   return { headers, withCredentials: true };
 };
 
-
-// Récupérer toutes les livraisons
 export const fetchLivraisons = async () => {
   const res = await api.get(LIVRAISON_URL, getConfig());
   return res.data;

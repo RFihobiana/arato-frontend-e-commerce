@@ -5,13 +5,10 @@ const PrivateRoute = ({ children, role }) => {
   const token = localStorage.getItem('userToken');
   const user = JSON.parse(localStorage.getItem('userData') || '{}');
 
-  if (!token || !user.role) {
-    return <Navigate to="/profil" replace />;
-  }
+  if (!token) return <Navigate to="/profil" replace />;
 
-  if (role && user.role !== role) {
-    return <Navigate to="/" replace />;
-  }
+  // si rôle non autorisé → rediriger vers page d'accueil
+  if (role && user.role !== role) return <Navigate to="/" replace />;
 
   return children;
 };

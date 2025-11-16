@@ -9,8 +9,7 @@ export const CartProvider = ({ children }) => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      console.error("Erreur lecture localStorage cart:", e);
+    } catch {
       return [];
     }
   });
@@ -18,20 +17,29 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItems));
-    } catch (e) {
-      console.error("Erreur écriture localStorage cart:", e);
-    }
+    } catch {}
   }, [cartItems]);
 
-    const addToCart = (item) => {
+  const addToCart = (item) => {
     setCartItems(prev => {
-         const existingIndex = prev.findIndex(ci => ci.numProduit && item.numProduit ? ci.numProduit === item.numProduit : ci.nom === item.nom);
+      const existingIndex = prev.findIndex(ci =>
+        ci.numProduit && item.numProduit
+          ? ci.numProduit === item.numProduit
+          : ci.nom === item.nom
+      );
+
       if (existingIndex !== -1) {
         const next = [...prev];
-        next[existingIndex].quantityKg = (Number(next[existingIndex].quantityKg) || 0) + (Number(item.quantityKg) || 1);
+        next[existingIndex].quantityKg =
+          (Number(next[existingIndex].quantityKg) || 0) +
+          (Number(item.quantityKg) || 1);
         return next;
       }
-       const id = item.numProduit ? `${item.numProduit}-${Date.now()}` : `${item.nom}-${Date.now()}`;
+
+      const id = item.numProduit
+        ? `${item.numProduit}-${Date.now()}`
+        : `${item.nom}-${Date.now()}`;
+
       return [...prev, { id, ...item }];
     });
   };
@@ -40,16 +48,48 @@ export const CartProvider = ({ children }) => {
     setCartItems(prev => prev.filter(i => i.id !== itemId));
   };
 
-  const updateQuantity = (itemId, newQuantity) => {
-    setCartItems(prev => prev.map(i => i.id === itemId ? { ...i, quantityKg: newQuantity } : i));
+  const updateQuantity = (itemId, newQuantity, newCuttingOption) => {
+    setCartItems(prev =>
+      prev.map(i => {
+        if (i.id === itemId) {
+          return { 
+            ...i, 
+            quantityKg: newQuantity,
+            cuttingOption: newCuttingOption !== undefined ? newCuttingOption : i.cuttingOption
+          };
+        }
+        return i;
+      })
+    );
   };
 
   const clearCart = () => {
     setCartItems([]);
   };
 
+  const totalWeight = cartItems.reduce(
+    (sum, item) => sum + Number(item.quantityKg || 0),
+    0
+  );
+
+  const subtotal = cartItems.reduce(
+    (sum, item) =>
+      sum + Number(item.prixPerKg || item.prix || 0) * Number(item.quantityKg || 0),
+    0
+  );
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        totalWeight,
+        subtotal
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

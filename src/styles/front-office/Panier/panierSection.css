@@ -411,8 +411,8 @@
   margin: 0;
 }
 
-.total-line .total-prix-to-pay {
-  font-size: 1.8rem;
+.total-prix-to-pay {
+  font-size: 2rem;
   font-weight: 700;
   color: var(--color-green-primary);
   margin: 0;
@@ -444,7 +444,6 @@
   cursor: not-allowed;
 }
 
-/* Section Paiement */
 .paiement-section {
   background: var(--color-background-white);
 }
