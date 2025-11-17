@@ -18,7 +18,13 @@ const cuttingOptions = [
 ];
 
 const PanierSection = () => {
-  const { cartItems, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+  const { cartItems,
+
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        totalWeight,
+        subtotal} = useContext(CartContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
@@ -38,31 +44,23 @@ const PanierSection = () => {
   useEffect(() => {
     const loadFrais = async () => {
       const data = await fetchFrais();
+      console.log("Données de frais reçues :", data); 
       setFraisList(data);
     };
     loadFrais();
   }, []);
 
-  const totalPoids = cartItems.reduce(
-    (acc, item) => acc + Number(item.quantityKg || item.poids || 0),
-    0
-  );
+  
+const totalPoids = totalWeight;
 
   const tranche = fraisList.find(
     (f) =>
-      totalPoids >= Number(f.montant1) &&
-      totalPoids <= Number(f.montant2)
+      totalPoids >= Number(f.poidsMin) &&
+      totalPoids <= Number(f.poidsMax)
   );
 
-  const fraisLivraison = tranche ? Number(tranche.frais_env) : 0;
-
-  const sousTotal = cartItems.reduce(
-    (acc, item) =>
-      acc +
-      Number(item.prixPerKg || item.prix) *
-        Number(item.quantityKg || item.poids || 0),
-    0
-  );
+  const fraisLivraison = tranche ? Number(tranche.frais) : 0;
+ const sousTotal = subtotal;
 
   const montantBrut = sousTotal + fraisLivraison;
   const montantAPayer = montantBrut - remise;
@@ -73,7 +71,7 @@ const PanierSection = () => {
     if (code === "WELCOME10") {
       const newRemise = Math.min(montantBrut * 0.1, 10);
       setRemise(newRemise);
-      alert(`Code "${code}" appliqué ! ${newRemise.toFixed(2)} € de réduction.`);
+          alert(`Code "${code}" appliqué ! ${newRemise.toFixed(2)} Ar de réduction.`);
     } else {
       setRemise(0);
       alert("Code promo non valide.");
@@ -131,7 +129,7 @@ const PanierSection = () => {
   const handleCuttingOptionChange = (itemId, newOption) => {
     const item = cartItems.find(i => i.id === itemId);
     if (!item) return;
-    updateQuantity(itemId, Number(item.quantityKg || item.poids));
+    updateQuantity(itemId, Number(item.quantityKg || item.poids), newOption);
   };
 
   const handleDelete = (itemId) => {
@@ -170,7 +168,7 @@ const PanierSection = () => {
                     {produit.precommande && <p className="precommande">[Précommande]</p>}
                     <p className="produit-nom">{produit.nom}</p>
                     <p className="prix-per-kg">
-                      {(Number(produit.prixPerKg || produit.prix)).toFixed(2).replace(".", ",")} € / kg
+                      {(Number(produit.prixPerKg || produit.prix)).toFixed(2).replace(".", ",")} Ar / kg
                     </p>
                     {produit.description && <p className="produit-description">{produit.description}</p>}
                   </div>
@@ -266,7 +264,7 @@ const PanierSection = () => {
           </div>
           {remise > 0 && (
             <p className="remise-applied-message">
-              {remise.toFixed(2).replace(".", ",")} € de remise appliquée !
+              {remise.toFixed(2).replace(".", ",")} Ar de remise appliquée !
             </p>
           )}
         </div>
@@ -276,16 +274,16 @@ const PanierSection = () => {
             <div className="total-card-top">
               <div className="text">
                 <h2>Sous-Total</h2>
-                <p>{sousTotal} Ar</p>
+                <p>{sousTotal.toFixed(2).replace(".", ",")} Ar</p>
               </div>
               <div className="text">
                 <h2><FaTruck /> Frais de Livraison</h2>
-                <p>{fraisLivraison} Ar</p>
+                <p>{fraisLivraison.toFixed(2).replace(".", ",")} Ar</p>
               </div>
               {remise > 0 && (
                 <div className="text discount-line">
                   <h2>Remise Code Promo</h2>
-                  <p>-{remise} Ar</p>
+                  <p>-{remise.toFixed(2).replace(".", ",")} Ar</p>
                 </div>
               )}
             </div>
@@ -343,7 +341,7 @@ const PanierSection = () => {
             </div>
             <div className="text-info">
               <h4>Virement Bancaire</h4>
-           
+              <p>Traitement en 24 à 48h.</p>
             </div>
             <FaChevronRight className="arrow-icon" />
           </div>

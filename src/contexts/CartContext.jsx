@@ -21,8 +21,8 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (item) => {
-    setCartItems(prev => {
-      const existingIndex = prev.findIndex(ci =>
+    setCartItems((prev) => {
+      const existingIndex = prev.findIndex((ci) =>
         ci.numProduit && item.numProduit
           ? ci.numProduit === item.numProduit
           : ci.nom === item.nom
@@ -36,26 +36,33 @@ export const CartProvider = ({ children }) => {
         return next;
       }
 
-      const id = item.numProduit
-        ? `${item.numProduit}-${Date.now()}`
-        : `${item.nom}-${Date.now()}`;
+      const generatedId = `${Date.now()}-${Math.random()}`;
 
-      return [...prev, { id, ...item }];
+      return [
+        ...prev,
+        {
+          ...item,
+          id: generatedId
+        }
+      ];
     });
   };
 
   const removeFromCart = (itemId) => {
-    setCartItems(prev => prev.filter(i => i.id !== itemId));
+    setCartItems((prev) => prev.filter((i) => i.id !== itemId));
   };
 
   const updateQuantity = (itemId, newQuantity, newCuttingOption) => {
-    setCartItems(prev =>
-      prev.map(i => {
+    setCartItems((prev) =>
+      prev.map((i) => {
         if (i.id === itemId) {
-          return { 
-            ...i, 
-            quantityKg: newQuantity,
-            cuttingOption: newCuttingOption !== undefined ? newCuttingOption : i.cuttingOption
+          return {
+            ...i,
+            quantityKg: Number(newQuantity),
+            cuttingOption:
+              newCuttingOption !== undefined
+                ? newCuttingOption
+                : i.cuttingOption
           };
         }
         return i;
@@ -74,7 +81,9 @@ export const CartProvider = ({ children }) => {
 
   const subtotal = cartItems.reduce(
     (sum, item) =>
-      sum + Number(item.prixPerKg || item.prix || 0) * Number(item.quantityKg || 0),
+      sum +
+      Number(item.prixPerKg || item.prix || 0) *
+        Number(item.quantityKg || 0),
     0
   );
 

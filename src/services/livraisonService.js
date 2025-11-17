@@ -38,7 +38,7 @@ export const deleteLivraison = async (id) => {
 };
 
 export const fetchFrais = async () => {
-  const res = await api.get(FRAIS_URL, getConfig());
+  const res = await api.get(FRAIS_URL);
   return res.data;
 };
 

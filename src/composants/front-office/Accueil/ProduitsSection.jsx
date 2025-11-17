@@ -14,7 +14,6 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
 
   const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:8000";
 
-  // Chargement des produits
   useEffect(() => {
     const loadProduits = async () => {
       try {
@@ -46,7 +45,7 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
     } else {
       const produitId = produit.numProduit + "-" + Date.now();
       addToCart({
-        id: produitId,
+        numProduit: produit.numProduit,
         nom: produit.nomProduit,
         prixPerKg: Number(produit.prix) || 0,
         quantityKg: 1,
