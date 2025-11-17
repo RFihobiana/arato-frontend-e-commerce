@@ -24,13 +24,51 @@
   color: var(--color-text-dark);
 }
 
-/* ========== CONTENEUR PRINCIPAL ========== */
-.conteneur {
-  background-color: var(--color-background-white);
-  padding: 2rem;
+:root {
+  --color-green-primary: #28a458;
+  --color-green-secondary: #5ebb82;
+  --color-text-dark: #3d3b3b;
+  --color-background-white: #ffffff;
+  --color-background-light: #f5f0e1;
+  --largeur-sidebar: 250px;
+  --rayon: 12px;
+  --transition: all 0.3s ease;
+
+  --color-red-error: #d9534f;
+}
+
+.dashboard-layout {
+  display: flex;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--largeur-sidebar);
+  width: calc(100% - var(--largeur-sidebar));
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #fafafa;
+  min-height: calc(100vh - 80px);
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .dashboard-content {
+    padding: 1rem;
+    min-height: calc(100vh - 140px);
+  }
 }
 
 /* ========== HEADER MOBILE ========== */
@@ -52,8 +90,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-/* ========== FILTRES PÉRIODE ========== */
 .filtre-periode-client {
   padding: 1.5rem;
   background-color: var(--color-background-white);
@@ -101,7 +137,6 @@
   font-weight: 600;
 }
 
-/* ========== SECTION INDICATEURS ========== */
 .section-indicateurs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -139,7 +174,6 @@
   color: var(--color-green-primary);
 }
 
-/* ========== SECTION GRAPHIQUES ========== */
 .section-graphiques {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -182,7 +216,6 @@
   font-size: 0.9rem;
 }
 
-/* ========== SECTION CLASSEMENT / TABLEAUX ========== */
 .section-classement {
   margin-top: 2rem;
 }
@@ -243,7 +276,6 @@
   font-size: 0.8rem;
 }
 
-/* ========== BOUTONS ACTION ========== */
 .btn-action {
   background-color: var(--color-green-secondary);
   color: var(--color-background-white);
@@ -262,7 +294,6 @@
   box-shadow: 0 4px 12px rgba(40, 164, 88, 0.3);
 }
 
-/* ========== RESPONSIVE LARGE SCREENS ========== */
 @media (max-width: 1440px) {
   .conteneur {
     max-width: 1200px;
@@ -287,8 +318,6 @@
     font-size: 1.8rem;
   }
 }
-
-/* ========== RESPONSIVE TABLET ========== */
 @media (max-width: 1024px) {
   .conteneur {
     padding: 1.5rem;
@@ -318,7 +347,6 @@
   }
 }
 
-/* ========== RESPONSIVE MOBILE ========== */
 @media (max-width: 768px) {
   .mobile-header {
     display: flex;
