@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SweetAlert from 'sweetalert2'
-import {ToastContainer, toast} from 'react-toastify'
+import {toast} from 'react-toastify'
 import AjouterProduitModal from "./AjouterProduitModal";
 import ProduitCard from "./ProduitCard";
 import GestionCategories from "./Categorie";
@@ -81,13 +81,13 @@ const Produits = () => {
       cancelButtonText: 'Non',
       confirmButtonText: 'Oui'
     })
-    if(result.isDenied) return;
+    if(!result.isConfirmed) return;
     
     try {
       await deleteProduit(id);
       await loadProduits();
     } catch (err) {
-      toast.error('Échec de la suppréssion', "Erreur lors de la suppression du produit.");
+      toast.error("Erreur lors de la suppression du produit.");
     }
   };
 
@@ -163,7 +163,6 @@ const Produits = () => {
             </p>
           )}
         </div>
-          <ToastContainer position="bottom-right"/>
       </section>
       <AjouterProduitModal
         isOpen={isModalOpen}

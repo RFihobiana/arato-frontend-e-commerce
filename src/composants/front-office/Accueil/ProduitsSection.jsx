@@ -5,6 +5,7 @@ import "../../../styles/front-office/Accueil/produitSection.css";
 import PaginationProduits from "./PaginationProduits";
 import { fetchProduits } from "../../../services/produitService";
 import { ajouterAuPanier } from "../../../services/panierService";
+import { toast } from "react-toastify";
 
 const ProduitsSection = ({ categorieActive, showHeader = true }) => {
   const [produits, setProduits] = useState([]);
@@ -44,7 +45,7 @@ const ProduitsSection = ({ categorieActive, showHeader = true }) => {
   const handleAddToCart = async (produit) => {
     try {
       await ajouterAuPanier(produit);
-      alert(`${produit.nomProduit} ajouté au panier !`);
+      toast.success(`${produit.nomProduit} ajouté au panier !`);
     } catch (err) {
       console.error("Erreur ajout panier", err);
     }

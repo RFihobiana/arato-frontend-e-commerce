@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AjouterPromotionModal from './AjouterPromotionModal';
 import { fetchPromotions, createPromotion, updatePromotion, deletePromotion } from '../../../services/promotionService';
 import "../../../styles/back-office/Promotions.css";
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const Promotions = () => {
     const [promotions, setPromotions] = useState([]);
@@ -36,7 +38,7 @@ const Promotions = () => {
         } catch (error) {
             console.error("Erreur sauvegarde promotion:", error);
             // Afficher l'erreur pour l'utilisateur si possible
-            alert(error.response?.data?.message || "Une erreur est survenue lors de la sauvegarde.");
+            toast.error(error.response?.data?.message || "Une erreur est survenue lors de la sauvegarde.");
         }
     };
 
@@ -46,13 +48,13 @@ const Promotions = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Êtes-vous sûr de vouloir supprimer cette promotion ?")) {
+        if ((await Swal.fire("Êtes-vous sûr de vouloir supprimer cette promotion ?")).isConfirmed) {
             try {
                 await deletePromotion(id);
                 setPromotions(promotions.filter(p => p.numPromotion !== id));
             } catch (error) {
                 console.error("Erreur suppression promotion:", error);
-                alert(error.response?.data?.message || "Une erreur est survenue lors de la suppression.");
+                toast.error(error.response?.data?.message || "Une erreur est survenue lors de la suppression.");
             }
         }
     };

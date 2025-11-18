@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createProduit, updateProduit } from '../../../services/produitService';
 import { fetchPromotions } from '../../../services/promotionService';
+import { toast } from 'react-toastify';
 
 const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categories }) => {
     const [nom, setNom] = useState('');
@@ -86,7 +87,7 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
         console.log("ID pour update :", produitId);
 
         if (produitAEditer && !produitId) {
-            alert("ID manquant !");
+            toast("ID manquant !");
             return;
         }
 
@@ -113,7 +114,7 @@ const AjouterProduitModal = ({ isOpen, onClose, onSave, produitAEditer, categori
             onClose();
         } catch (error) {
             console.error("Erreur sauvegarde:", error);
-            alert("Erreur ! Vérifie la console.");
+            toast.error("Erreur ! Vérifie la console.");
         }
     };
 

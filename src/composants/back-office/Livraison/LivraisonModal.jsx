@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { fetchFrais,createLivraison} from "../../../services/livraisonService";
 import "../../../styles/back-office/livraisonModal.css";
+import { toast } from "react-toastify";
 
 const LivraisonModal = ({ onClose, onSave, livraisonAEditer }) => {
   const [form, setForm] = useState({
@@ -51,12 +52,12 @@ const LivraisonModal = ({ onClose, onSave, livraisonAEditer }) => {
     e.preventDefault();
     try {
       await createLivraison(form);
-      alert("Livraison enregistrée avec succès !");
+      toast.success("Livraison enregistrée avec succès !");
       onSave();
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l'enregistrement");
+      toast.error("Erreur lors de l'enregistrement");
     }
   };
 

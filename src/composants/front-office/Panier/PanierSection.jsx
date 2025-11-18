@@ -17,6 +17,7 @@ import {
 } from '../../../services/panierService';
 
 import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 const cuttingOptions = [
   { value: "entier", label: "Entier " },
@@ -88,12 +89,12 @@ const PanierSection = ({ connected = false }) => {
     try {
       const panierId = connected ? await api.get("/panier/active").then(r => r.data.numPanier) : null;
       await api.post("/commande", { panierId });
-      alert("Commande passée avec succès !");
+      toast.success("Commande passée avec succès !");
       setCartItems([]);
       if (!connected) localStorage.removeItem("panier_local");
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la commande");
+      toast.error("Erreur lors de la commande");
     }
   };
 

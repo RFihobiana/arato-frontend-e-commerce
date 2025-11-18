@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import {toast} from 'react-toastify'
 import {usePagination} from '../../../pages/hooks/hooks';
 import '../../../styles/back-office/paiements.css';
+import Swal from 'sweetalert2';
 const paiementsApiData = [
     {
         numPaiement: 1,
@@ -106,12 +108,12 @@ const Paiements = () => {
     };
 
     const handleUpdateStatut = (numPaiement) => {
-        alert(`Action: Modifier le statut du paiement #${numPaiement} (Appel à PaiementController@update)`);
+        toast(`Action: Modifier le statut du paiement #${numPaiement} (Appel à PaiementController@update)`);
          };
 
-    const handleDeletePaiement = (numPaiement) => {
-        if (window.confirm(`Êtes-vous sûr de vouloir supprimer le paiement #${numPaiement} ? (Appel à PaiementController@destroy)`)) {
-            alert(`Paiement #${numPaiement} supprimé.`);
+    const handleDeletePaiement = async (numPaiement) => {
+        if ((await Swal.fire(`Êtes-vous sûr de vouloir supprimer le paiement #${numPaiement} ? (Appel à PaiementController@destroy)`)).isConfirmed) {
+            toast.success(`Paiement #${numPaiement} supprimé.`);
            
         }
     };

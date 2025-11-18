@@ -4,6 +4,7 @@ import LivraisonModal from "./LivraisonModal";
 import { FaPlus, FaTruck, FaSearch } from "react-icons/fa";
 import "../../../styles/back-office/livraison.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Livraisons = () => {
   const [livraisons, setLivraisons] = useState([]);
@@ -78,8 +79,8 @@ const Livraisons = () => {
                 <button className="btn-edit">✏️</button>
                 <button
                   className="btn-delete"
-                  onClick={() => {
-                    if (window.confirm("Supprimer cette livraison ?"))
+                  onClick={ async () => {
+                    if ((await Swal.fire({title: "Supprimer cette livraison ?", showDenyButton: true})).isConfirmed)
                       deleteLivraison(l.numLivraison).then(loadData);
                   }}
                 >

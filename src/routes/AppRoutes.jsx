@@ -24,6 +24,7 @@ import CommandeDetails from "../composants/back-office/Commande/CommandeDetails"
 import Clients from "../composants/back-office/Client/Clients";
 import Livraisons from "../composants/back-office/Livraison/Livraisons";
 import FraisLivraison from "../composants/back-office/Livraison/FraisLivraison";
+import { ToastContainer } from "react-toastify";
 
 export default function AppRoutes() {
   return (
@@ -88,6 +89,8 @@ export default function AppRoutes() {
         </Route>
 
       </Routes>
+
+      <ToastContainer position="bottom-right"/>
     </Router>
   );
 }

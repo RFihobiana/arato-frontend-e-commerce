@@ -4,6 +4,7 @@ import ClientModal from "./AjouterClientModal";
 import { usePagination } from "../../../pages/hooks/hooks";
 import '../../../styles/front-office/Accueil/Pagination.css';
 import "../../../styles/back-office/clients.css";
+import Swal from "sweetalert2";
 
 const Clients = () => {
   const [clientsData, setClientsData] = useState([
@@ -77,8 +78,13 @@ const Clients = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      text: "Êtes-vous sûr de vouloir supprimer ce client ?",
+      showDenyButton: true
+    })
+
+    if (result.isConfirmed) {
       console.log(`Supprimer client ${id}`);
       // Logique de suppression (Appel API)
       setClientsData(clientsData.filter((c) => c.id !== id));
