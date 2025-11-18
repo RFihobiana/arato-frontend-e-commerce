@@ -1,5 +1,3 @@
-/* ========== TABLEAUDEBORD.CSS ========== */
-
 :root {
   --color-green-primary: #28a458;
   --color-green-secondary: #5ebb82;
@@ -14,7 +12,13 @@
   --font-main: "Poppins", sans-serif;
   --font-size-base: 16px;
   --transition: all 0.3s ease;
+  --color-red-error: #d9534f;
+  --color-blue-info: #5bc0de;
 }
+
+/* ==================================== */
+/* 1. STYLES GÉNÉRAUX & STRUCTURE       */
+/* ==================================== */
 
 * {
   box-sizing: border-box;
@@ -24,59 +28,12 @@
   color: var(--color-text-dark);
 }
 
-:root {
-  --color-green-primary: #28a458;
-  --color-green-secondary: #5ebb82;
-  --color-text-dark: #3d3b3b;
-  --color-background-white: #ffffff;
-  --color-background-light: #f5f0e1;
-  --largeur-sidebar: 250px;
-  --rayon: 12px;
-  --transition: all 0.3s ease;
-
-  --color-red-error: #d9534f;
-}
-
-.dashboard-layout {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.dashboard-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-left: var(--largeur-sidebar);
-  width: calc(100% - var(--largeur-sidebar));
-}
-
-.dashboard-content {
-  flex: 1;
+.conteneur {
   padding: 2rem;
-  background-color: #fafafa;
-  min-height: calc(100vh - 80px);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  .dashboard-main {
-    margin-left: 0;
-    width: 100%;
-  }
-  
-  .dashboard-content {
-    padding: 1rem;
-    min-height: calc(100vh - 140px);
-  }
-}
-
-/* ========== HEADER MOBILE ========== */
-.mobile-header {
-  display: none;
-}
-
-/* ========== EN-TÊTE CLIENT ========== */
 .entete-client {
   margin-bottom: 2rem;
 }
@@ -90,52 +47,10 @@
   align-items: center;
   gap: 0.5rem;
 }
-.filtre-periode-client {
-  padding: 1.5rem;
-  background-color: var(--color-background-white);
-  box-shadow: var(--ombre-carte);
-  border-radius: var(--rayon);
-  margin-bottom: 1.5rem;
-}
 
-.titre-periode {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: var(--color-text-dark);
-}
-
-.boutons-periode {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
-
-.bouton-filtre {
-  padding: 0.6rem 1.2rem;
-  border: 1px solid var(--color-background-light);
-  background-color: var(--color-background-white);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: var(--transition);
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.bouton-filtre:hover {
-  background-color: var(--color-green-primary);
-  color: var(--color-background-white);
-  border-color: var(--color-green-primary);
-  transform: translateY(-2px);
-}
-
-.bouton-filtre.actif {
-  background-color: var(--color-green-primary);
-  color: var(--color-background-white);
-  border-color: var(--color-green-primary);
-  font-weight: 600;
-}
+/* ==================================== */
+/* 2. INDICATEURS (Cartes)              */
+/* ==================================== */
 
 .section-indicateurs {
   display: grid;
@@ -147,7 +62,7 @@
 .carte {
   background-color: var(--color-background-white);
   border-radius: 20px;
-  box-shadow: var(--ombre-carte-hover);
+  box-shadow: var(--ombre-carte);
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -157,7 +72,7 @@
 }
 
 .carte:hover {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--ombre-carte-hover);
   transform: translateY(-5px);
 }
 
@@ -173,6 +88,10 @@
   font-weight: 700;
   color: var(--color-green-primary);
 }
+
+/* ==================================== */
+/* 3. GRAPHIQUES                        */
+/* ==================================== */
 
 .section-graphiques {
   display: grid;
@@ -200,25 +119,93 @@
   margin-bottom: 1.5rem;
 }
 
-.pie-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 1rem;
-}
-
-.pie-legend {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
+/* ==================================== */
+/* 4. CLASSEMENT & CONTRÔLES            */
+/* ==================================== */
 
 .section-classement {
   margin-top: 2rem;
 }
+
+.controles-classement {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filtre-recherche {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.input-recherche {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 150px;
+  transition: var(--transition);
+}
+
+.input-recherche:focus {
+  border-color: var(--color-green-primary);
+  box-shadow: 0 0 0 3px rgba(40, 164, 88, 0.2);
+  outline: none;
+}
+
+.actions-groupe {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-envoyer-groupe {
+  background-color: var(--color-blue-info);
+  color: var(--color-background-white);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.btn-envoyer-groupe:hover:not(:disabled) {
+  background-color: #46b8da;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 192, 222, 0.3);
+}
+
+.btn-envoyer-groupe:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-annuler {
+  background-color: var(--color-red-error);
+  color: var(--color-background-white);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.btn-annuler:hover {
+  background-color: #c9302c;
+}
+
+
+/* ==================================== */
+/* 5. TABLEAU CLIENTS (Tableau-data)    */
+/* ==================================== */
 
 .tableau-client {
   background-color: var(--color-background-white);
@@ -261,19 +248,54 @@
   border-bottom: none;
 }
 
-.data p {
-  font-size: 0.9rem;
-  margin: 0.25rem 0;
+.ligne-selectionnee {
+  background-color: rgba(40, 164, 88, 0.1);
+  box-shadow: 0 0 5px rgba(40, 164, 88, 0.5);
 }
 
-.data p:first-child {
+.ligne-selectionnee:hover {
+  background-color: rgba(40, 164, 88, 0.15);
+}
+
+.top-client {
   font-weight: 600;
-  color: var(--color-text-dark);
+  /* Optionnel: pour mettre en évidence les meilleurs clients */
 }
 
-.data p:last-child {
-  color: #6b7280;
+/* ==================================== */
+/* 6. ÉLÉMENTS SPÉCIFIQUES DU TABLEAU   */
+/* ==================================== */
+
+.checkbox-selection {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.badge-commandes {
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: var(--color-text-dark);
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
   font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.montant-total {
+  font-weight: 600;
+  color: var(--color-green-primary);
+}
+
+/* Statuts d'envoi */
+.statut-pret {
+  color: var(--color-green-secondary);
+  font-weight: 500;
+}
+
+.statut-envoye {
+  color: var(--color-blue-info);
+  font-weight: 600;
 }
 
 .btn-action {
@@ -288,11 +310,22 @@
   font-size: 0.9rem;
 }
 
-.btn-action:hover {
+.btn-action:hover:not(:disabled) {
   background-color: var(--color-green-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(40, 164, 88, 0.3);
 }
+
+.btn-action:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* ==================================== */
+/* 7. RESPONSIVE (MÉDIAS REPRIS)        */
+/* ==================================== */
 
 @media (max-width: 1440px) {
   .conteneur {
@@ -348,65 +381,12 @@
 }
 
 @media (max-width: 768px) {
-  .mobile-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background-color: var(--color-background-white);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 500;
-    margin-bottom: 1rem;
-  }
-
-  .mobile-header-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .mobile-header-logo img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-  }
-
-  .mobile-header-logo h3 {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--color-green-primary);
-    margin: 0;
-  }
-
   .conteneur {
     padding: 1rem;
   }
 
   .titre-section {
     font-size: 1.3rem;
-  }
-
-  .filtre-periode-client {
-    padding: 1rem;
-  }
-
-  .titre-periode {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .boutons-periode {
-    gap: 0.5rem;
-  }
-
-  .bouton-filtre {
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
-    flex: 1 1 calc(50% - 0.25rem);
-    min-width: 0;
-    justify-content: center;
   }
 
   .section-indicateurs {
@@ -485,54 +465,38 @@
     align-items: flex-end;
   }
 
-  .tableau-data td.data p {
-    text-align: right;
-    margin: 0;
-    font-size: 0.85rem;
-  }
-
   .btn-action {
     width: 100%;
     margin-top: 0.5rem;
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
   }
+
+  .controles-classement {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions-groupe {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .btn-envoyer-groupe, .btn-annuler {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+  }
 }
 
-/* ========== RESPONSIVE PETIT MOBILE ========== */
 @media (max-width: 480px) {
-  .mobile-header {
-    padding: 0.75rem;
-  }
-
-  .mobile-header-logo img {
-    width: 35px;
-    height: 35px;
-  }
-
-  .mobile-header-logo h3 {
-    font-size: 1rem;
-  }
-
   .conteneur {
     padding: 0.75rem;
   }
 
   .titre-section {
     font-size: 1.2rem;
-  }
-
-  .filtre-periode-client {
-    padding: 0.75rem;
-  }
-
-  .titre-periode {
-    font-size: 0.9rem;
-  }
-
-  .bouton-filtre {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.75rem;
   }
 
   .section-indicateurs {
@@ -564,29 +528,19 @@
     font-size: 0.7rem;
   }
 
-  .data p {
-    font-size: 0.8rem;
-  }
-
   .btn-action {
     padding: 0.6rem 1rem;
     font-size: 0.85rem;
   }
+
+  .actions-groupe {
+    flex-direction: column;
+  }
 }
 
-/* ========== TRÈS PETIT ÉCRAN ========== */
 @media (max-width: 360px) {
-  .mobile-header-logo h3 {
-    font-size: 0.9rem;
-  }
-
   .titre-section {
     font-size: 1.1rem;
-  }
-
-  .bouton-filtre {
-    font-size: 0.75rem;
-    padding: 0.45rem 0.6rem;
   }
 
   .carte h1 {

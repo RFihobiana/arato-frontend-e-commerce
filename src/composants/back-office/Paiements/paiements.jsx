@@ -1,273 +1,381 @@
-import React, { useState, useEffect } from 'react';
-import {usePagination} from '../../../pages/hooks/hooks';
-import '../../../styles/back-office/paiements.css';
-const paiementsApiData = [
-    {
-        numPaiement: 1,
-        datePaiement: '2023-10-25 14:32:00',
-        montantApayer: 149.99,
-        statut: 'effectué',
-        commande: {
-            numCommande: 4892,
-            utilisateur: { nom: 'Dupont', prenom: 'Jean', email: 'jean.dupont@email.com' }
-        },
-        mode_paiement: { nomMode: 'Carte Visa' }
-    },
-    {
-        numPaiement: 2,
-        datePaiement: '2023-10-25 11:15:00',
-        montantApayer: 79.50,
-        statut: 'en attente',
-        commande: {
-            numCommande: 4891,
-            utilisateur: { nom: 'Lambert', prenom: 'Marie', email: 'marie.lambert@email.com' }
-        },
-        mode_paiement: { nomMode: 'PayPal' }
-    },
-    {
-        numPaiement: 3,
-        datePaiement: '2023-10-24 09:00:00',
-        montantApayer: 25.00,
-        statut: 'échoué',
-        commande: {
-            numCommande: 4890,
-            utilisateur: { nom: 'Petit', prenom: 'Luc', email: 'luc.petit@email.com' }
-        },
-        mode_paiement: { nomMode: 'Virement' }
-    },
-    {
-        numPaiement: 4,
-        datePaiement: '2023-10-24 16:00:00',
-        montantApayer: 500.25,
-        statut: 'effectué',
-        commande: {
-            numCommande: 4889,
-            utilisateur: { nom: 'Bernard', prenom: 'Sophie', email: 'sophie.b@email.com' }
-        },
-        mode_paiement: { nomMode: 'MasterCard' }
-    },
-   
-];
-
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { 
+  FaSearch, 
+  FaPlus, 
+  FaCreditCard, 
+  FaMoneyBillWave, 
+  FaClock, 
+  FaTimes,
+  FaChartLine,
+  FaDownload,
+  FaEdit,
+  FaTrash
+} from "react-icons/fa";
+import "../../../styles/back-office/paiements.css";
+import PaiementModal from "./PaiementModal";
+import ModePaiementModal from "./ModePaiementModal";
+import { 
+  fetchPaiements, 
+  createPaiement, 
+  updatePaiement, 
+  deletePaiement, 
+  fetchModes, 
+  createMode, 
+  updateMode, 
+  deleteMode 
+} from "../../../services/paiementService";
 
 const Paiements = () => {
-    const [paiements, setPaiements] = useState([]);
-    const [statutFiltre, setStatutFiltre] = useState('Tous les statuts');
-    const [periodeFiltre, setPeriodeFiltre] = useState('Toutes les périodes');
-    const [recherche, setRecherche] = useState('');
-    const [stats, setStats] = useState({ caTotal: '0', nbTransactions: 0, tauxReussite: '0%' });
-    useEffect(() => {
-               setPaiements(paiementsApiData);
+  const [paiements, setPaiements] = useState([]);
+  const [modes, setModes] = useState([]);
+  const [search, setSearch] = useState("");
+  const [isPaiementModalOpen, setIsPaiementModalOpen] = useState(false);
+  const [isModeModalOpen, setIsModeModalOpen] = useState(false);
+  const [editingPaiementId, setEditingPaiementId] = useState(null);
+  const [editingModeId, setEditingModeId] = useState(null);
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    pendingPayments: 0,
+    failedPayments: 0
+  });
+  const navigate = useNavigate();
 
-        const paiementsReussis = paiementsApiData.filter(p => p.statut === 'effectué');
-        const ca = paiementsReussis.reduce((sum, p) => sum + p.montantApayer, 0);
-        const taux = paiementsApiData.length > 0
-            ? ((paiementsReussis.length / paiementsApiData.length) * 100).toFixed(1) + '%'
-            : '0%';
+  const loadPaiements = async () => {
+    try {
+      const data = await fetchPaiements();
+      setPaiements(data);
+      calculateStats(data);
+    } catch (error) {
+      console.error("Erreur lors du chargement des paiements:", error);
+    }
+  };
 
-        setStats({
-            caTotal: ca.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }),
-            nbTransactions: paiementsApiData.length,
-            tauxReussite: taux
-        });
-    }, []);
+  const loadModes = async () => {
+    try {
+      const data = await fetchModes();
+      setModes(data);
+    } catch (error) {
+      console.error("Erreur lors du chargement des modes:", error);
+    }
+  };
 
-    const paiementsFiltres = paiements.filter(paiement => {
-        const statutMatch = statutFiltre === 'Tous les statuts' || paiement.statut === statutFiltre;
+  const calculateStats = (paiementsData) => {
+    const totalRevenue = paiementsData
+      .filter(p => p.statut === "effectué")
+      .reduce((sum, p) => sum + p.montantApayer, 0);
+    
+    const pendingPayments = paiementsData.filter(p => p.statut === "en attente").length;
+    const failedPayments = paiementsData.filter(p => p.statut === "échoué").length;
 
-        const clientNomComplet = `${paiement.commande.utilisateur.prenom} ${paiement.commande.utilisateur.nom}`;
-        const rechercheMatch = String(paiement.numPaiement).toLowerCase().includes(recherche.toLowerCase()) ||
-                               clientNomComplet.toLowerCase().includes(recherche.toLowerCase()) ||
-                               paiement.commande.utilisateur.email.toLowerCase().includes(recherche.toLowerCase());
-
-              return statutMatch && rechercheMatch;
+    setStats({
+      totalRevenue,
+      pendingPayments,
+      failedPayments
     });
+  };
 
-    const {currentRows: filteredPaymentRow, goToPage, currentPage} = usePagination(paiementsFiltres, 5);
+  useEffect(() => {
+    loadPaiements();
+    loadModes();
+  }, []);
 
-       const getStatutClass = (statut) => {
-        switch (statut) {
-            case 'effectué':
-                return 'statut-reussi';
-            case 'en attente':
-                return 'statut-attente';
-            case 'échoué':
-                return 'statut-echoue';
-            default:
-                return 'statut-default';
-        }
-    };
-    const formaterDate = (dateString) => {
-        const date = new Date(dateString);
-        return {
-            date: date.toLocaleDateString('fr-FR'),
-            heure: date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-        };
-    };
+  const filteredPaiements = paiements.filter(p =>
+    [p.numPaiement, p.commande.numCommande, p.commande.utilisateur.nom, p.commande.utilisateur.email]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
-    const handleUpdateStatut = (numPaiement) => {
-        alert(`Action: Modifier le statut du paiement #${numPaiement} (Appel à PaiementController@update)`);
-         };
+  const filteredModes = modes.filter(m =>
+    m.nomMode.toLowerCase().includes(search.toLowerCase())
+  );
 
-    const handleDeletePaiement = (numPaiement) => {
-        if (window.confirm(`Êtes-vous sûr de vouloir supprimer le paiement #${numPaiement} ? (Appel à PaiementController@destroy)`)) {
-            alert(`Paiement #${numPaiement} supprimé.`);
-           
-        }
-    };
+  const handleDeletePaiement = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce paiement ?")) return;
+    try {
+      await deletePaiement(id);
+      await loadPaiements();
+    } catch (error) {
+      alert("Erreur lors de la suppression du paiement");
+    }
+  };
 
-    return (
-        <div className="paiements-container">
-            <h1 className="paiements-header">
-                <span className="icon-emoji">💳</span> Gestion des Paiements
-            </h1>
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <p className="stat-label">CHIFFRE D'AFFAIRES TOTAL</p>
-                    <p className="stat-value">{stats.caTotal}</p>
-                    <p className="stat-change stat-change-up">
-                        <span className="stat-arrow">↑</span>{stats.tauxReussite} de Réussite
-                    </p>
-                </div>
-                <div className="stat-card">
-                    <p className="stat-label">TOTAL TRANSACTIONS</p>
-                    <p className="stat-value">{stats.nbTransactions}</p>
-                    <p className="stat-change stat-change-default">
-                        (Effectuées, en attente, échouées)
-                    </p>
-                </div>
-                <div className="stat-card">
-                    <p className="stat-label">PAIEMENTS EN ATTENTE</p>
-                    <p className="stat-value">{paiements.filter(p => p.statut === 'en attente').length}</p>
-                    <p className="stat-change stat-change-up">
-                        Nécessite une vérification (ex: virement manuel)
-                    </p>
-                </div>
-            </div>
+  const handleDeleteMode = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce mode de paiement ?")) return;
+    try {
+      await deleteMode(id);
+      await loadModes();
+    } catch (error) {
+      alert("Erreur lors de la suppression du mode de paiement");
+    }
+  };
 
-            <hr className="divider" />
+  const getStatusBadge = (statut) => {
+    switch (statut) {
+      case "effectué":
+        return "status-badge status-success";
+      case "en attente":
+        return "status-badge status-pending";
+      case "échoué":
+        return "status-badge status-failed";
+      default:
+        return "status-badge";
+    }
+  };
 
-            {/* Historique des Paiements */}
-            <div className="paiements-historique-card">
-                <div className="historique-header">
-                    <h2 className="historique-title">Historique des Paiements (Admin)</h2>
-                    <button className="btn btn-export">
-                        <span className="icon-emoji">⬇️</span> Exporter
-                    </button>
-                </div>
 
-                {/* Filtres et Recherche */}
-                <div className="filtres-recherche-zone">
-                    <div className="filtre-group">
-                        <label htmlFor="statutFiltre" className="filtre-label">Statut</label>
-                        <select
-                            id="statutFiltre"
-                            value={statutFiltre}
-                            onChange={(e) => setStatutFiltre(e.target.value)}
-                            className="filtre-select"
-                        >
-                            <option>Tous les statuts</option>
-                            <option>effectué</option>
-                            <option>en attente</option>
-                            <option>échoué</option>
-                        </select>
-                    </div>
 
-                    <div className="filtre-group">
-                        <label htmlFor="recherche" className="filtre-label">Recherche</label>
-                        <input
-                            type="text"
-                            id="recherche"
-                            value={recherche}
-                            onChange={(e) => setRecherche(e.target.value)}
-                            placeholder="ID, client, email..."
-                            className="filtre-input"
-                        />
-                    </div>
-                </div>
-
-                {/* Tableau des Paiements */}
-                <div className="table-wrapper">
-                    <table className="paiements-table">
-                        <thead>
-                            <tr>
-                                <th>ID PAIEMENT</th>
-                                <th>CLIENT / EMAIL</th>
-                                <th>COMMANDE N°</th>
-                                <th>DATE</th>
-                                <th>MONTANT</th>
-                                <th>MODE</th>
-                                <th>STATUT</th>
-                                <th>ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPaymentRow.map((p) => {
-                                const { date, heure } = formaterDate(p.datePaiement);
-                                const clientNom = `${p.commande.utilisateur.prenom} ${p.commande.utilisateur.nom}`;
-                                return (
-                                    <tr key={p.numPaiement} className="paiement-row">
-                                        <td className="paiement-id">
-                                            #{p.numPaiement}
-                                        </td>
-                                        <td>
-                                            <div className="client-name">{clientNom}</div>
-                                            <div className="client-email">{p.commande.utilisateur.email}</div>
-                                        </td>
-                                        <td className="paiement-commande-id">
-                                            #{p.commande.numCommande}
-                                        </td>
-                                        <td>
-                                            {date} <span className="paiement-heure">à {heure}</span>
-                                        </td>
-                                        <td className="paiement-montant">
-                                            {p.montantApayer.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
-                                        </td>
-                                        <td>
-                                            {p.mode_paiement.nomMode}
-                                        </td>
-                                        <td>
-                                            <span className={`statut-badge ${getStatutClass(p.statut)}`}>
-                                                {p.statut}
-                                            </span>
-                                        </td>
-                                        <td className="paiement-actions">
-                                            <button onClick={() => handleUpdateStatut(p.numPaiement)} className="btn-action btn-modifier">Modifier</button>
-                                            <button onClick={() => handleDeletePaiement(p.numPaiement)} className="btn-action btn-supprimer">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-
-                    <div className="pagination-controls">
-                        <button
-                            className="pagination-btn"
-                            disabled={filteredPaymentRow.length === 0 || filteredPaymentRow[0].numPaiement === paiementsFiltres[0].numPaiement}
-                            onClick={() => goToPage(currentPage - 1)}
-                        >
-                            &lt;
-                        </button>
-                        
-                        <button
-                            className="pagination-btn"
-                            disabled={filteredPaymentRow.length === 0 || filteredPaymentRow[filteredPaymentRow.length - 1].numPaiement === paiementsFiltres[paiementsFiltres.length - 1].numPaiement}
-                            onClick={() => goToPage(filteredPaymentRow[filteredPaymentRow.length - 1].numPaiement + 1)}
-                        >
-                            &gt;
-                        </button>
-                    </div>
-                </div>
-
-                {filteredPaymentRow.length === 0 && (
-                    <div className="no-result">
-                        Aucun paiement trouvé pour la recherche et les filtres actuels.
-                    </div>
-                )}
-            </div>
+  return (
+    <div className="paiements-container">
+      {/* En-tête */}
+      <div className="paiements-header">
+        <h2>
+          <FaCreditCard /> Gestion des Paiements
+        </h2>
+        <div className="paiements-tabs">
+          <button className="tab-active">Tableau de bord</button>
+          <button onClick={() => navigate("/admin/paiements/historique")}>Historique complet</button>
         </div>
-    );
+      </div>
+
+      {/* Cartes de statistiques */}
+      <div className="stats-grid">
+        <div className="stat-card revenue">
+          <div className="stat-label">Revenu Total</div>
+          <div className="stat-value">
+            {stats.totalRevenue.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+          </div>
+          <div className="stat-change positive">
+            <FaChartLine /> 
+          </div>
+        </div>
+        
+        <div className="stat-card pending">
+          <div className="stat-label">Paiements en Attente</div>
+          <div className="stat-value">{stats.pendingPayments}</div>
+          <div className="stat-change">
+            <FaClock /> Nécessitent une attention
+          </div>
+        </div>
+        
+        <div className="stat-card failed">
+          <div className="stat-label">Paiements Échoués</div>
+          <div className="stat-value">{stats.failedPayments}</div>
+          <div className="stat-change negative">
+            <FaTimes /> 
+          </div>
+        </div>
+      </div>
+
+      {/* Barre de recherche et actions */}
+      <div className="paiements-search-bar">
+        <div className="search-input">
+          <FaSearch />
+          <input
+            type="text"
+            placeholder="Rechercher un paiement, client, email ou commande..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        
+        <button 
+          className="btn-primary"
+          onClick={() => { setEditingPaiementId(null); setIsPaiementModalOpen(true); }}
+        >
+          <FaPlus /> Nouveau Paiement
+        </button>
+        
+        <button 
+          className="btn-secondary"
+          onClick={() => { setEditingModeId(null); setIsModeModalOpen(true); }}
+        >
+          <FaMoneyBillWave /> Nouveau Mode
+        </button>
+        
+
+      </div>
+
+      {/* Section Paiements Récents */}
+      <div className="table-section">
+        <div className="table-header">
+          <h3>Paiements Récents</h3>
+          <span className="text-muted">{filteredPaiements.length} paiement(s)</span>
+        </div>
+        
+        <div className="table-wrapper">
+          <table className="paiements-table">
+            <thead>
+              <tr>
+                <th>ID Paiement</th>
+                <th>Client</th>
+                <th>Commande</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Mode</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPaiements.slice(0, 10).map(p => (
+                <tr key={p.numPaiement}>
+                  <td className="paiement-id">#{p.numPaiement}</td>
+                  <td>
+                    <div className="client-name">
+                      {p.commande.utilisateur.prenom} {p.commande.utilisateur.nom}
+                    </div>
+                    <div className="client-email">
+                      {p.commande.utilisateur.email}
+                    </div>
+                  </td>
+                  <td className="paiement-commande-id">#{p.commande.numCommande}</td>
+                  <td>
+                    {new Date(p.datePaiement).toLocaleDateString("fr-FR")}
+                    <div className="paiement-heure">
+                      {new Date(p.datePaiement).toLocaleTimeString("fr-FR", { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
+                  </td>
+                  <td className="paiement-montant">
+                    {p.montantApayer.toLocaleString("fr-FR", { 
+                      style: "currency", 
+                      currency: "EUR" 
+                    })}
+                  </td>
+                  <td>{p.mode_paiement.nomMode}</td>
+                  <td>
+                    <span className={getStatusBadge(p.statut)}>
+                      {p.statut}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="actions-cell">
+                      <button 
+                        className="action-btn edit"
+                        onClick={() => { 
+                          setEditingPaiementId(p.numPaiement); 
+                          setIsPaiementModalOpen(true); 
+                        }}
+                        title="Modifier"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button 
+                        className="action-btn delete"
+                        onClick={() => handleDeletePaiement(p.numPaiement)}
+                        title="Supprimer"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              
+              {filteredPaiements.length === 0 && (
+                <tr>
+                  <td colSpan="8" className="empty-state">
+                    <FaCreditCard />
+                    <div>
+                      {search ? "Aucun paiement trouvé" : "Aucun paiement enregistré"}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Section Modes de Paiement */}
+      <div className="modes-section">
+        <div className="table-header">
+          <h3>Modes de Paiement</h3>
+          <span className="text-muted">{modes.length} mode(s) disponible(s)</span>
+        </div>
+        
+        <div className="table-wrapper">
+          <table className="modes-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom du Mode</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredModes.map(mode => (
+                <tr key={mode.id}>
+                  <td>{mode.id}</td>
+                  <td>{mode.nomMode}</td>
+                  <td>
+                    <div className="actions-cell">
+                      <button 
+                        className="action-btn edit"
+                        onClick={() => { 
+                          setEditingModeId(mode.id); 
+                          setIsModeModalOpen(true); 
+                        }}
+                        title="Modifier"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button 
+                        className="action-btn delete"
+                        onClick={() => handleDeleteMode(mode.id)}
+                        title="Supprimer"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              
+              {filteredModes.length === 0 && (
+                <tr>
+                  <td colSpan="3" className="empty-state">
+                    <FaMoneyBillWave />
+                    <div>
+                      {search ? "Aucun mode trouvé" : "Aucun mode de paiement configuré"}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modals */}
+      {isPaiementModalOpen && (
+        <PaiementModal
+          onClose={() => {
+            setIsPaiementModalOpen(false);
+            setEditingPaiementId(null);
+          }}
+          onSave={loadPaiements}
+          modes={modes}
+          editingId={editingPaiementId}
+        />
+      )}
+
+      {isModeModalOpen && (
+        <ModePaiementModal
+          onClose={() => {
+            setIsModeModalOpen(false);
+            setEditingModeId(null);
+          }}
+          onSave={loadModes}
+          editingId={editingModeId}
+        />
+      )}
+    </div>
+  );
 };
 
 export default Paiements;

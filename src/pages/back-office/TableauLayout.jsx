@@ -8,11 +8,11 @@ const TableauLayout = () => {
   return (
     <div className="dashboard-layout">
       <SideBar />
-      <div className="dashboard-main">
-        <Header />
+        
         <div className="dashboard-content">
+          <Header />
           <Outlet />
-        </div>
+        
       </div>
     </div>
   );

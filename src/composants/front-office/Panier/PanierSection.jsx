@@ -9,7 +9,7 @@ import CarteBancaireModal from './CarteBancaireModal';
 import VirementBancaireModal from './VirementBancaireModal';
 import { CartContext } from "../../../contexts/CartContext";
 import { createCommande } from "../../../services/commandeService";
-import { fetchFrais } from "../../../services/livraisonService";
+ import { fetchFrais, fetchLieux } from "../../../services/livraisonService";
 
 const cuttingOptions = [
   { value: "entier", label: "Entier" },
@@ -40,17 +40,23 @@ const PanierSection = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [fraisList, setFraisList] = useState([]);
+ 
+const [lieuxList, setLieuxList] = useState([]);
+useEffect(() => {
+  const loadFraisEtLieux = async () => {
+    try {
+      const fraisData = await fetchFrais();
+      setFraisList(fraisData);
 
-  useEffect(() => {
-    const loadFrais = async () => {
-      const data = await fetchFrais();
-      console.log("Données de frais reçues :", data); 
-      setFraisList(data);
-    };
-    loadFrais();
-  }, []);
+      const lieuxData = await fetchLieux();
+      setLieuxList(lieuxData);
+    } catch (err) {
+      console.error("Erreur fetch frais ou lieux :", err);
+    }
+  };
+  loadFraisEtLieux();
+}, []);
 
-  
 const totalPoids = totalWeight;
 
   const tranche = fraisList.find(
@@ -236,14 +242,20 @@ const totalPoids = totalWeight;
         <div className="panier-total-card livraison-info-card">
           <h3><FaTruck /> Informations de Livraison</h3>
           <div className="livraison-input-group">
-            <FaMapMarkerAlt className="input-icon" />
-            <input
-              type="text"
-              placeholder="Lieu de livraison (ex: Anosy, Antananarivo)"
-              value={lieuLivraison}
-              onChange={(e) => setLieuLivraison(e.target.value)}
-            />
-          </div>
+  <FaMapMarkerAlt className="input-icon" />
+  <select
+    value={lieuLivraison}
+    onChange={(e) => setLieuLivraison(e.target.value)}
+  >
+    <option value="">Sélectionnez un lieu de livraison</option>
+    {lieuxList.map(lieu => (
+      <option key={lieu.numLieu} value={lieu.nomLieu}>
+        {lieu.nomLieu}
+      </option>
+    ))}
+  </select>
+</div>
+
           <div className="livraison-input-group">
             <FaCalendarAlt className="input-icon" />
             <input
@@ -293,13 +305,7 @@ const totalPoids = totalWeight;
               <p className="total-prix-to-pay">{formattedMontant} Ar</p>
             </div>
           </div>
-          <button
-            className="passer-commande-btn"
-            onClick={handlePasserCommandeClick}
-            disabled={cartItems.length === 0}
-          >
-            <FaLock /> Valider la Livraison et Payer
-          </button>
+         
         </div>
 
         <div className="paiement-section">
@@ -356,6 +362,13 @@ const totalPoids = totalWeight;
             <VirementBancaireModal montant={formattedMontant} onClose={closeModal} onConfirm={handleModalConfirm} />
           )}
         </div>
+         <button
+            className="passer-commande-btn"
+            onClick={handlePasserCommandeClick}
+            disabled={cartItems.length === 0}
+          >
+            <FaLock /> Valider la Livraison et Payer
+          </button>
       </div>
     </section>
   );

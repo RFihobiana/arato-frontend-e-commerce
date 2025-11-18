@@ -37,11 +37,11 @@ const AjouterPromotionModal = ({ isOpen, onClose, onSave, promotionAEditer }) =>
         const promotionEnregistree = {
             codePromo: code,
             nomPromotion: nom,
-            typePromotion: type, // Envoie la clé attendue par le backend
+            typePromotion: type, 
             valeur,
             dateDebut,
             dateFin,
-            montantMinimum,
+            montantMinimum: montantMinimum || 0,
             statutPromotion: 'Active',
         };
 
@@ -85,7 +85,7 @@ const AjouterPromotionModal = ({ isOpen, onClose, onSave, promotionAEditer }) =>
 
                     <div className="form-groupe-bo">
                         <label className="form-label-bo">Montant minimum d'achat (Ar) *</label>
-                        <input type="number" className="form-input-bo" value={montantMinimum} onChange={(e) => setMontantMinimum(e.target.value)} required min="0" step="0.01"/>
+                        <input type="number" className="form-input-bo" value={montantMinimum} onChange={(e) => setMontantMinimum(e.target.value)}/>
                     </div>
 
                     <div className="form-row-bo">
