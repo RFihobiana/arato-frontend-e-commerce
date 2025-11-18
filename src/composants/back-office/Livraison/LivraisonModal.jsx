@@ -3,6 +3,7 @@ import { fetchFrais, createFrais, updateFrais, deleteFrais } from "../../../serv
 import "../../../styles/back-office/fraisLivraison.css";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const FraisLivraison = () => {
   const [fraisList, setFraisList] = useState([]);
@@ -33,17 +34,17 @@ const FraisLivraison = () => {
     try {
       if (editingId) {
         await updateFrais(editingId, form);
-        alert("Tranche mise à jour !");
+        toast("Tranche mise à jour !");
       } else {
         await createFrais(form);
-        alert("Nouvelle tranche ajoutée !");
+        toast("Nouvelle tranche ajoutée !");
       }
       setForm({ poidsMin: "", poidsMax: "", frais: "" });
       setEditingId(null);
       loadFrais();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l'enregistrement.");
+      toast.error("Erreur lors de l'enregistrement.");
     }
   };
 

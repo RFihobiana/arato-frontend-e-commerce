@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2'
+import { toast } from 'react-toastify';
 import { getCategories, createCategorie, deleteCategorie, updateCategorie } from '../../../services/categorieService';
 
 const Categorie = ({ onCategoriesChange }) => {
@@ -30,7 +32,7 @@ const Categorie = ({ onCategoriesChange }) => {
     const checkAuth = () => {
         const token = localStorage.getItem('userToken');
         if (!token) {
-            alert("Veuillez vous connecter pour effectuer cette action.");
+            toast("Veuillez vous connecter pour effectuer cette action.");
             return false;
         }
         return true;
@@ -49,9 +51,9 @@ const Categorie = ({ onCategoriesChange }) => {
         } catch (err) {
             console.error("Erreur création:", err);
             if (err.response?.status === 422) {
-                alert("Cette catégorie existe déjà !");
+                toast.error("Cette catégorie existe déjà !");
             } else {
-                alert(err.response?.data?.message || "Erreur lors de la création de la catégorie");
+                toast.error(err.response?.data?.message || "Erreur lors de la création de la catégorie");
             }
         }
     };
@@ -75,7 +77,7 @@ const Categorie = ({ onCategoriesChange }) => {
                 onCategoriesChange?.(newCategories);
             } catch (err) {
                 console.error("Erreur mise à jour:", err);
-                alert(err.response?.data?.message || "Erreur lors de la mise à jour de la catégorie");
+                toast.error(err.response?.data?.message || "Erreur lors de la mise à jour de la catégorie");
             }
         } else {
             setCategorieAEditer(cat);
@@ -89,7 +91,12 @@ const Categorie = ({ onCategoriesChange }) => {
     };
 
     const handleSupprimerCategorie = async (id) => {
-        if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?") || !checkAuth()) return;
+        if(
+            !(await Swal.fire({
+                text: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
+                showDenyButton: true,
+            })).isConfirmed || !checkAuth()
+        ) return;
         
         try {
             await deleteCategorie(id);
@@ -98,7 +105,7 @@ const Categorie = ({ onCategoriesChange }) => {
             onCategoriesChange?.(newCategories);
         } catch (err) {
             console.error("Erreur suppression:", err);
-            alert(err.response?.data?.message || "Erreur lors de la suppression de la catégorie");
+            toast.error(err.response?.data?.message || "Erreur lors de la suppression de la catégorie");
         }
     };
 

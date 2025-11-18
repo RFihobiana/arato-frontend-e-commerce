@@ -7,9 +7,10 @@ import "../../../styles/front-office/Panier/panierSection.css";
 import MVolaModal from './MvolaModal';
 import CarteBancaireModal from './CarteBancaireModal';
 import VirementBancaireModal from './VirementBancaireModal';
+import { toast } from "react-toastify";
 import { CartContext } from "../../../contexts/CartContext";
 import { createCommande } from "../../../services/commandeService";
- import { fetchFrais, fetchLieux } from "../../../services/livraisonService";
+import { fetchFrais, fetchLieux } from "../../../services/livraisonService";
 
 const cuttingOptions = [
   { value: "entier", label: "Entier" },
@@ -116,11 +117,11 @@ const totalPoids = totalWeight;
     try {
       setIsCreating(true);
       const res = await createCommande(payload);
-      alert("Commande créée avec succès (numCommande: " + (res.numCommande || res.id || "n/a") + ")");
+      toast.success("Commande créée avec succès (numCommande: " + (res.numCommande || res.id || "n/a") + ")");
       clearCart();
     } catch (err) {
       const msg = err?.response?.data?.error || err?.message || "Erreur lors de la création de la commande";
-      alert("Erreur : " + msg);
+      toast.error("Erreur : " + msg);
     } finally {
       setIsCreating(false);
     }

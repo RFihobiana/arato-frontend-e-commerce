@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { createArticle, updateArticle } from '../../../services/articleService';
 
 const AjouterArticleModal = ({ isOpen, onClose, onSave, articleAEditer }) => {
@@ -50,7 +51,7 @@ const [imageFileName, setImageFileName] = useState('');
         e.preventDefault();
 
         if (datePublication < today) {
-            alert(" La date de publication ne peut pas être antérieure à aujourd'hui !");
+            toast(" La date de publication ne peut pas être antérieure à aujourd'hui !");
             return;
         }
 
@@ -75,7 +76,7 @@ const [imageFileName, setImageFileName] = useState('');
             onClose();
         } catch (error) {
             console.error("Erreur de sauvegarde de l’article :", error);
-            alert("Erreur lors de sauvegarde de l’article.");
+            toast.error("Erreur lors de sauvegarde de l’article.");
         }
     };
 

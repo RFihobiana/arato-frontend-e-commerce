@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import SweetAlert from 'sweetalert2'
+import {toast} from 'react-toastify'
 import AjouterProduitModal from "./AjouterProduitModal";
 import ProduitCard from "./ProduitCard";
 import GestionCategories from "./Categorie";
@@ -72,12 +74,20 @@ const Produits = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Supprimer ce produit ?")) return;
+    const result = await SweetAlert.fire({
+      title: 'Supprimer?',
+      text: "Supprimer ce produit ?",
+      showCancelButton: true,
+      cancelButtonText: 'Non',
+      confirmButtonText: 'Oui'
+    })
+    if(!result.isConfirmed) return;
+    
     try {
       await deleteProduit(id);
       await loadProduits();
     } catch (err) {
-      alert("Erreur lors de la suppression du produit");
+      toast.error("Erreur lors de la suppression du produit.");
     }
   };
 

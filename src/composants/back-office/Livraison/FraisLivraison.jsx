@@ -3,6 +3,8 @@ import { fetchFrais, createFrais, updateFrais, deleteFrais } from "../../../serv
 import "../../../styles/back-office/fraisLivraison.css";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const FraisLivraison = () => {
   const [fraisList, setFraisList] = useState([]);
@@ -32,7 +34,7 @@ const FraisLivraison = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (!form.poidsMin || !form.poidsMax || !form.frais) {
-    alert("Tous les champs sont obligatoires !");
+    toast("Tous les champs sont obligatoires !");
     return;
   }
 
@@ -41,7 +43,7 @@ const handleSubmit = async (e) => {
   const fraisValue = parseFloat(form.frais);
 
   if (poidsMax <= poidsMin) {
-    alert("Le poids max doit être supérieur au poids min !");
+    toast("Le poids max doit être supérieur au poids min !");
     return;
   }
 
@@ -51,7 +53,7 @@ const handleSubmit = async (e) => {
   });
 
   if (poids) {
-    alert("ce poids existe deja !");
+    toast("ce poids existe deja !");
     return;
   }
 
@@ -61,7 +63,7 @@ const handleSubmit = async (e) => {
   });
 
   if (fraisExist) {
-    alert("Ce montant de frais existe déjà !");
+    toast("Ce montant de frais existe déjà !");
     return;
   }
 
@@ -70,10 +72,10 @@ const handleSubmit = async (e) => {
   try {
     if (editingId) {
       await updateFrais(editingId, payload);
-      alert("Tranche mise à jour !");
+      toast("Tranche mise à jour !");
     } else {
       await createFrais(payload);
-      alert("Nouvelle tranche ajoutée !");
+      toast.success("Nouvelle tranche ajoutée !");
     }
     setForm({ poidsMin: "", poidsMax: "", frais: "" });
     setEditingId(null);
@@ -97,7 +99,7 @@ const handleSubmit = async (e) => {
       loadFrais();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la suppression");
+      toast.error("Erreur lors de la suppression");
     }
   };
 

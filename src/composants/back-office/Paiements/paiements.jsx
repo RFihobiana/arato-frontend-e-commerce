@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
+import {toast} from 'react-toastify'
 import { useNavigate } from "react-router-dom";
 import { 
   FaSearch, 
@@ -90,16 +92,22 @@ const Paiements = () => {
   const filteredModes = modes.filter(m =>
     m.nomMode.toLowerCase().includes(search.toLowerCase())
   );
+  
+  const handleUpdateStatut = (numPaiement) => {
+        toast(`Action: Modifier le statut du paiement #${numPaiement} (Appel à PaiementController@update)`);
+         };
 
-  const handleDeletePaiement = async (id) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce paiement ?")) return;
-    try {
-      await deletePaiement(id);
-      await loadPaiements();
-    } catch (error) {
-      alert("Erreur lors de la suppression du paiement");
-    }
-  };
+    const handleDeletePaiement = async (id) => {
+        if ((await Swal.fire("Êtes-vous sûr de vouloir supprimer ce paiement ?")).isConfirmed) {
+          try {
+            await deletePaiement(id);
+            await loadPaiements();
+            toast.success(`Paiement #${id} supprimé.`);
+          } catch (error) {
+            toast.error("Erreur lors de la suppression du paiement");
+          }
+        }
+    };
 
   const handleDeleteMode = async (id) => {
     if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce mode de paiement ?")) return;

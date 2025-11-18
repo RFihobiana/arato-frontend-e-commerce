@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { fetchArticles, deleteArticle } from "../../../services/articleService";
 import AjouterArticleModal from "./AjouterArticleModal";
 import "../../../styles/back-office/article.css";
+import Swal from "sweetalert2";
 
 const Articles = () => {
   const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
@@ -46,12 +48,19 @@ const Articles = () => {
   }, [searchTerm, articles]);
 
   const handleSupprimer = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer cet article ?")) {
+    if (
+      (
+        await Swal.fire({
+          text: "Voulez-vous vraiment supprimer cet article ?",
+          showDenyButton: true
+        })
+      ).isConfirmed
+    ) {
       try {
         await deleteArticle(id);
         chargerArticles();
       } catch (error) {
-        alert("Erreur lors de la suppression de l'article.");
+        toast.error("Erreur lors de la suppression de l'article.");
       }
     }
   };
@@ -65,7 +74,6 @@ const Articles = () => {
     setArticleAEditer(null);
     setIsModalOpen(true);
   };
-
 
   if (error)
     return (
