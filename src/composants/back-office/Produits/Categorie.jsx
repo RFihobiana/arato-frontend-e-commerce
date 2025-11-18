@@ -89,17 +89,19 @@ const Categorie = ({ onCategoriesChange }) => {
     };
 
     const handleSupprimerCategorie = async (id) => {
-        if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?") || !checkAuth()) return;
+        // if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?") || !checkAuth()) return;
+        // Toastify.success('Uhm', 'Are you ok?')
+        return;
         
-        try {
+        /* try {
             await deleteCategorie(id);
             const newCategories = categories.filter(cat => cat.numCategorie !== id);
             setCategories(newCategories);
             onCategoriesChange?.(newCategories);
         } catch (err) {
             console.error("Erreur suppression:", err);
-            alert(err.response?.data?.message || "Erreur lors de la suppression de la catégorie");
-        }
+            Toastify.error('Échec de la suppréssion', err.response?.data?.message || "Erreur lors de la suppression de la catégorie");
+        } */
     };
 
     if (loading) return <p>Chargement des catégories...</p>;

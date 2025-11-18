@@ -48,7 +48,9 @@ const ProduitCard = ({ produit, onEdit, onDelete, getNomCategorie }) => {
                     </button>
                     <button
                         className="btn-supprimer"
-                        onClick={() => onDelete(produitId)}
+                        onClick={() => {
+                            onDelete(produitId)
+                        }}
                         disabled={!produitId}
                     >
                         Supprimer
