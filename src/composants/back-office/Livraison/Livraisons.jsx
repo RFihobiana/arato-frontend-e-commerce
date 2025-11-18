@@ -35,6 +35,7 @@ const Livraisons = () => {
         <div className="livraison-tabs">
           <button className="tab-active">Livraisons</button>
           <button onClick={() => navigate("/admin/livraisons/frais")}>Frais de livraison</button>
+          <button onClick={() => navigate("/admin/livraisons/lieux")}>Lieux de livraison</button>
         </div>
       </div>
 

@@ -1,191 +1,376 @@
-// PanierSection.jsx
-import React, { useEffect, useState } from "react";
-import { FaTrash, FaMobileAlt, FaCreditCard, FaUniversity, FaLock, FaTruck } from "react-icons/fa";
-import Pagination from "../Accueil/PaginationProduits"; 
-import panierImage from "../../../assets/images/panierList.png"; 
+import React, { useContext, useState, useEffect } from "react";
+import { FaTrash, FaLock, FaTruck, FaMapMarkerAlt, FaCalendarAlt, FaChevronRight, FaTag, FaMobileAlt, FaCreditCard, FaUniversity } from "react-icons/fa";
+import Pagination from "../Accueil/PaginationProduits";
+import panierImage from "../../../assets/images/panierList.png";
 import "../../../styles/front-office/global.css";
 import "../../../styles/front-office/Panier/panierSection.css";
-
 import MVolaModal from './MvolaModal';
 import CarteBancaireModal from './CarteBancaireModal';
 import VirementBancaireModal from './VirementBancaireModal';
-
-import { 
-  getPanierWithDetails, 
-  updateDetailPanier, 
-  deleteDetailPanier 
-} from '../../../services/panierService';
-
-import api from "../../../services/api";
 import { toast } from "react-toastify";
+import { CartContext } from "../../../contexts/CartContext";
+import { createCommande } from "../../../services/commandeService";
+import { fetchFrais, fetchLieux } from "../../../services/livraisonService";
 
 const cuttingOptions = [
-  { value: "entier", label: "Entier " },
-  { value: "tranches", label: "En tranches " },
-  { value: "des", label: "En dés " },
-  { value: "mixte", label: "Découpe spécifique (à préciser)" },
+  { value: "entier", label: "Entier" },
+  { value: "tranches", label: "En tranches" },
+  { value: "des", label: "En dés" }
 ];
 
-const PanierSection = ({ connected = false }) => {
-  const [cartItems, setCartItems] = useState([]);
+const PanierSection = () => {
+  const { cartItems,
+
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        totalWeight,
+        subtotal} = useContext(CartContext);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const [promoCode, setPromoCode] = useState("");
-  const [activeModal, setActiveModal] = useState(null);
-
-  // Charger le panier
-  useEffect(() => {
-    const loadPanier = async () => {
-      try {
-        const data = await getPanierWithDetails(connected);
-        setCartItems(data || []);
-      } catch (err) {
-        console.error("Erreur chargement panier :", err);
-      }
-    };
-    loadPanier();
-  }, [connected]);
-
-  const sousTotal = cartItems.reduce((acc, item) => acc + (item.prix * item.poids), 0);
-  const fraisDeService = 1.0;
-  const livraisonOfferte = 0.0;
-  const montantAPayer = sousTotal + fraisDeService + livraisonOfferte;
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = cartItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);
 
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleQuantityChange = async (numProduit, increment) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.numProduit === numProduit
-          ? { ...item, poids: Math.max(1, item.poids + increment) }
-          : item
-      )
-    );
-    const updatedItem = cartItems.find(i => i.numProduit === numProduit);
-    if (updatedItem) await updateDetailPanier(numProduit, { poids: Math.max(1, updatedItem.poids + increment) }, connected);
-  };
-
-  const handleCuttingOptionChange = async (numProduit, newOption) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.numProduit === numProduit ? { ...item, decoupe: newOption } : item
-      )
-    );
-    await updateDetailPanier(numProduit, { decoupe: newOption }, connected);
-  };
-
-  const handleDelete = async (numProduit) => {
-    setCartItems(prev => prev.filter(item => item.numProduit !== numProduit));
-    await deleteDetailPanier(numProduit, connected);
-    if (currentItems.length === 1 && totalPages > 1) setCurrentPage(prev => Math.max(1, prev - 1));
-  };
-
-  const handleCommanderClick = async () => {
+  const [lieuLivraison, setLieuLivraison] = useState("");
+  const [dateLivraison, setDateLivraison] = useState("");
+  const [codePromo, setCodePromo] = useState("");
+  const [remise, setRemise] = useState(0);
+  const [activeModal, setActiveModal] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [fraisList, setFraisList] = useState([]);
+ 
+const [lieuxList, setLieuxList] = useState([]);
+useEffect(() => {
+  const loadFraisEtLieux = async () => {
     try {
-      const panierId = connected ? await api.get("/panier/active").then(r => r.data.numPanier) : null;
-      await api.post("/commande", { panierId });
-      toast.success("Commande passée avec succès !");
-      setCartItems([]);
-      if (!connected) localStorage.removeItem("panier_local");
+      const fraisData = await fetchFrais();
+      setFraisList(fraisData);
+
+      const lieuxData = await fetchLieux();
+      setLieuxList(lieuxData);
     } catch (err) {
-      console.error(err);
-      toast.error("Erreur lors de la commande");
+      console.error("Erreur fetch frais ou lieux :", err);
+    }
+  };
+  loadFraisEtLieux();
+}, []);
+
+const totalPoids = totalWeight;
+
+  const tranche = fraisList.find(
+    (f) =>
+      totalPoids >= Number(f.poidsMin) &&
+      totalPoids <= Number(f.poidsMax)
+  );
+
+  const fraisLivraison = tranche ? Number(tranche.frais) : 0;
+ const sousTotal = subtotal;
+
+  const montantBrut = sousTotal + fraisLivraison;
+  const montantAPayer = montantBrut - remise;
+  const formattedMontant = montantAPayer.toFixed(2).replace(".", ",");
+
+  const handleApplyCodePromo = () => {
+    const code = codePromo.trim().toUpperCase();
+    if (code === "WELCOME10") {
+      const newRemise = Math.min(montantBrut * 0.1, 10);
+      setRemise(newRemise);
+          alert(`Code "${code}" appliqué ! ${newRemise.toFixed(2)} Ar de réduction.`);
+    } else {
+      setRemise(0);
+      alert("Code promo non valide.");
     }
   };
 
-  const openModal = (mode) => setActiveModal(mode);
+  const getMinDate = () => {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  };
+
   const closeModal = () => setActiveModal(null);
+
+  const handleModalConfirm = async ({ numModePaiement, payerLivraison }) => {
+    if (cartItems.length === 0 || !lieuLivraison || !dateLivraison) {
+      alert("Panier vide ou informations de livraison manquantes.");
+      return;
+    }
+
+    const panierPayload = cartItems.map(item => ({
+      numProduit: item.numProduit,
+      poids: Number(item.quantityKg || item.poids),
+      prix: Number(item.prixPerKg || item.prix),
+      decoupe: item.cuttingOption || "entier"
+    }));
+
+    const payload = {
+      numModePaiement,
+      adresseDeLivraison: lieuLivraison,
+      payerLivraison: !!payerLivraison,
+      statut: "en cours",
+      panier: panierPayload
+    };
+
+    try {
+      setIsCreating(true);
+      const res = await createCommande(payload);
+      toast.success("Commande créée avec succès (numCommande: " + (res.numCommande || res.id || "n/a") + ")");
+      clearCart();
+    } catch (err) {
+      const msg = err?.response?.data?.error || err?.message || "Erreur lors de la création de la commande";
+      toast.error("Erreur : " + msg);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleQuantityChange = (itemId, increment) => {
+    const item = cartItems.find(i => i.id === itemId);
+    if (!item) return;
+    updateQuantity(itemId, Math.max(1, Number(item.quantityKg || item.poids) + increment));
+  };
+
+  const handleCuttingOptionChange = (itemId, newOption) => {
+    const item = cartItems.find(i => i.id === itemId);
+    if (!item) return;
+    updateQuantity(itemId, Number(item.quantityKg || item.poids), newOption);
+  };
+
+  const handleDelete = (itemId) => {
+    removeFromCart(itemId);
+    if (currentItems.length === 1 && totalPages > 1) {
+      setCurrentPage(Math.max(1, currentPage - 1));
+    }
+  };
+
+  const handlePasserCommandeClick = () => {
+    if (cartItems.length === 0 || !lieuLivraison || !dateLivraison) {
+      alert("Panier vide ou informations de livraison manquantes.");
+      return;
+    }
+    const paiementSection = document.querySelector(".paiement-section");
+    if (paiementSection) paiementSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <section className="panier-section">
       <div className="panier-produits">
         <div className="panier-header">
           <div className="panier-icon-container">
-            <img src={panierImage} className="panier-image" alt="Panier icône"/>
-            <h3>Panier ({cartItems.length} article{cartItems.length > 1 ? 's' : ''})</h3>
+            <img src={panierImage} className="panier-image" alt="Panier icône" />
+            <h3>Mon Panier ({cartItems.length} article{cartItems.length > 1 ? "s" : ""})</h3>
           </div>
         </div>
-        
+
         <div className="panier-item-container">
-          {currentItems.map((produit) => (
-            <div className="item-card" key={produit.numProduit}>
-              <div className="item-card-image-info">
-                <img src={produit.image} alt={produit.nomProduit} className="panier-img" />
-                <div className="produit-info-text">
-                  <p className="precommande">[Précommande]</p>
-                  <p className="produit-nom">{produit.nomProduit}</p>
-                  <p className="produit-description">{produit.description}</p>
-                </div>
-              </div>
-
-              <div className="produit-controls-row">
-                <div className="cutting-option-group">
-                  <label htmlFor={`cutting-${produit.numProduit}`}>Découpe :</label>
-                  <select
-                    id={`cutting-${produit.numProduit}`}
-                    value={produit.decoupe || "entier"} 
-                    onChange={(e) => handleCuttingOptionChange(produit.numProduit, e.target.value)}
-                  >
-                    {cuttingOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
+          {currentItems.length > 0 ? (
+            currentItems.map((produit) => (
+              <div className="item-card" key={produit.id}>
+                <div className="item-card-image-info">
+                  <img src={produit.image} alt={produit.nom} className="panier-img" />
+                  <div className="produit-info-text">
+                    {produit.precommande && <p className="precommande">[Précommande]</p>}
+                    <p className="produit-nom">{produit.nom}</p>
+                    <p className="prix-per-kg">
+                      {(Number(produit.prixPerKg || produit.prix)).toFixed(2).replace(".", ",")} Ar / kg
+                    </p>
+                    {produit.description && <p className="produit-description">{produit.description}</p>}
+                  </div>
                 </div>
 
-                <div className="quantite-control-group">
-                  <button onClick={() => handleQuantityChange(produit.numProduit, -1)}>-</button>
-                  <span>{produit.poids}</span>
-                  <button onClick={() => handleQuantityChange(produit.numProduit, 1)}>+</button>
+                <div className="produit-controls-row">
+                  <div className="cutting-option-group">
+                    <label htmlFor={`cutting-${produit.id}`}>Découpe :</label>
+                    <select
+                      id={`cutting-${produit.id}`}
+                      value={produit.cuttingOption || "entier"}
+                      onChange={(e) => handleCuttingOptionChange(produit.id, e.target.value)}
+                    >
+                      {cuttingOptions.map(option => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="quantite-control-group">
+                    <button
+                      onClick={() => handleQuantityChange(produit.id, -1)}
+                      disabled={Number(produit.quantityKg || produit.poids) <= 1}
+                    >
+                      -
+                    </button>
+                    <span>{Number(produit.quantityKg || produit.poids)}</span>
+                    <button onClick={() => handleQuantityChange(produit.id, 1)}>+</button>
+                  </div>
+                </div>
+
+                <div className="produit-final-row">
+                  <p className="total-item-prix">
+                    {(
+                      Number(produit.prixPerKg || produit.prix) *
+                      Number(produit.quantityKg || produit.poids)
+                    )
+                      .toFixed(2)
+                      .replace(".", ",")}{" "}
+                    Ar
+                  </p>
+                  <button className="delete-btn" onClick={() => handleDelete(produit.id)}>
+                    <FaTrash />
+                  </button>
                 </div>
               </div>
-
-              <div className="produit-final-row">
-                <p>{(produit.prix * produit.poids).toLocaleString()} Ar</p>
-                <button onClick={() => handleDelete(produit.numProduit)}><FaTrash /></button>
-              </div>
+            ))
+          ) : (
+            <div className="empty-cart-message">
+              <p>Votre panier est vide. Ajoutez des produits pour commencer votre commande !</p>
             </div>
-          ))}
+          )}
         </div>
 
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        {cartItems.length > itemsPerPage && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
 
       <div className="right-panel-wrapper">
-        <div className="panier-total-card">
-          <h2>Sous-Total : {sousTotal.toLocaleString()} €</h2>
-          <h2>Livraison : {livraisonOfferte.toFixed(2)} €</h2>
-          <h2>Frais service : {fraisDeService.toFixed(2)} €</h2>
-          <hr />
-          <h2>Montant à payer : {montantAPayer.toLocaleString()} €</h2>
+        <div className="panier-total-card livraison-info-card">
+          <h3><FaTruck /> Informations de Livraison</h3>
+          <div className="livraison-input-group">
+  <FaMapMarkerAlt className="input-icon" />
+  <select
+    value={lieuLivraison}
+    onChange={(e) => setLieuLivraison(e.target.value)}
+  >
+    <option value="">Sélectionnez un lieu de livraison</option>
+    {lieuxList.map(lieu => (
+      <option key={lieu.numLieu} value={lieu.nomLieu}>
+        {lieu.nomLieu}
+      </option>
+    ))}
+  </select>
+</div>
 
-          <div>
-            <p>Choisir jour livraison</p>
-            <input type="date" />
-            <p>Adresse de livraison</p>
-            <input type="text" placeholder="Ville / Région" />
-            <p>Code promo</p>
-            <input type="text" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
+          <div className="livraison-input-group">
+            <FaCalendarAlt className="input-icon" />
+            <input
+              type="date"
+              value={dateLivraison}
+              onChange={(e) => setDateLivraison(e.target.value)}
+              min={getMinDate()}
+            />
           </div>
+          <p className="delivery-note"><FaTruck /> Livraison rapide et fraîcheur garantie !</p>
+        </div>
 
-          <button onClick={handleCommanderClick}><FaLock /> Passer la commande</button>
+        <div className="panier-total-card promo-code-card">
+          <h3><FaTag /> Code Promo</h3>
+          <div className="promo-input-group">
+            <input type="text" value={codePromo} onChange={(e) => setCodePromo(e.target.value)} />
+            <button className="apply-promo-btn" onClick={handleApplyCodePromo}>Appliquer</button>
+          </div>
+          {remise > 0 && (
+            <p className="remise-applied-message">
+              {remise.toFixed(2).replace(".", ",")} Ar de remise appliquée !
+            </p>
+          )}
+        </div>
+
+        <div className="panier-total-card commande-globale-card">
+          <div className="total-card">
+            <div className="total-card-top">
+              <div className="text">
+                <h2>Sous-Total</h2>
+                <p>{sousTotal.toFixed(2).replace(".", ",")} Ar</p>
+              </div>
+              <div className="text">
+                <h2><FaTruck /> Frais de Livraison</h2>
+                <p>{fraisLivraison.toFixed(2).replace(".", ",")} Ar</p>
+              </div>
+              {remise > 0 && (
+                <div className="text discount-line">
+                  <h2>Remise Code Promo</h2>
+                  <p>-{remise.toFixed(2).replace(".", ",")} Ar</p>
+                </div>
+              )}
+            </div>
+            <hr />
+            <div className="text total-line">
+              <h2>Montant total</h2>
+              <p className="total-prix-to-pay">{formattedMontant} Ar</p>
+            </div>
+          </div>
+         
         </div>
 
         <div className="paiement-section">
-          <h3>Choisir un mode de paiement</h3>
-          <div onClick={() => openModal('mvola')}><FaMobileAlt /> Mvola</div>
-          <div onClick={() => openModal('carte')}><FaCreditCard /> Carte Bancaire</div>
-          <div onClick={() => openModal('virement')}><FaUniversity /> Virement</div>
-        </div>
-      </div>
+          <div
+            className={`paiement-option mvola-option ${activeModal === "mvola" ? "active" : ""}`}
+            onClick={() => setActiveModal("mvola")}
+          >
+            <div className="logo-container">
+              <FaMobileAlt className="logo-icon mvola" />
+            </div>
+            <div className="text-info">
+              <h4>Paiement Mobile Rapide</h4>
+              <p>Utilisez votre compte Mvola.</p>
+            </div>
+            <FaChevronRight className="arrow-icon" />
+          </div>
 
-      {activeModal === 'mvola' && <MVolaModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
-      {activeModal === 'carte' && <CarteBancaireModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
-      {activeModal === 'virement' && <VirementBancaireModal montant={montantAPayer.toFixed(2)} onClose={closeModal} />}
+          <div
+            className={`paiement-option carte-option ${activeModal === "carte" ? "active" : ""}`}
+            onClick={() => setActiveModal("carte")}
+          >
+            <div className="logo-container">
+              <span className="mini-logo visa">VISA</span>
+              <span className="mini-logo mastercard">MC</span>
+            </div>
+            <div className="text-info">
+              <h4>Carte Bancaire</h4>
+              <p>Paiement sécurisé.</p>
+            </div>
+            <FaChevronRight className="arrow-icon" />
+          </div>
+
+          <div
+            className={`paiement-option virement-option ${activeModal === "virement" ? "active" : ""}`}
+            onClick={() => setActiveModal("virement")}
+          >
+            <div className="logo-container">
+              <FaUniversity className="logo-icon virement" />
+            </div>
+            <div className="text-info">
+              <h4>Virement Bancaire</h4>
+              <p>Traitement en 24 à 48h.</p>
+            </div>
+            <FaChevronRight className="arrow-icon" />
+          </div>
+
+          {activeModal === "mvola" && (
+            <MVolaModal montant={formattedMontant} onClose={closeModal} onConfirm={handleModalConfirm} />
+          )}
+          {activeModal === "carte" && (
+            <CarteBancaireModal montant={formattedMontant} onClose={closeModal} onConfirm={handleModalConfirm} />
+          )}
+          {activeModal === "virement" && (
+            <VirementBancaireModal montant={formattedMontant} onClose={closeModal} onConfirm={handleModalConfirm} />
+          )}
+        </div>
+         <button
+            className="passer-commande-btn"
+            onClick={handlePasserCommandeClick}
+            disabled={cartItems.length === 0}
+          >
+            <FaLock /> Valider la Livraison et Payer
+          </button>
+      </div>
     </section>
   );
 };

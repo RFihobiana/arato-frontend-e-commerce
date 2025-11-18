@@ -25,7 +25,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Modification: utiliser space-between pour séparer le menu principal du menu du bas */
   justify-content: space-between; 
   width: var(--largeur-sidebar);
   height: 100vh;
@@ -38,6 +37,9 @@
 }
 
 .sidebar-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 2rem;
@@ -50,7 +52,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  flex-grow: 1; /* Permet au menu de prendre l'espace restant */
+  flex-grow: 1; 
   width: 100%;
   padding: 0 1rem;
   gap: 0.5rem;
@@ -72,7 +74,7 @@
 .sidebar-item:hover {
   background-color: rgba(40, 164, 88, 0.1);
   color: var(--color-green-primary);
-  transform: translateX(5px);
+
 }
 
 .sidebar-item.active {
@@ -89,8 +91,6 @@
   justify-content: center;
   min-width: 24px;
 }
-
-/* ========== NOUVEAUX STYLES: BOTTOM MENU / PROFIL ========== */
 
 .sidebar-bottom {
   width: 100%;

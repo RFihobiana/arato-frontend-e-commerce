@@ -52,24 +52,14 @@
   height: 300px;
   box-shadow: var(--box-shadow);
   gap: 2px;
+  padding: 10px 20px;
 }
 .produit-card:hover {
   transform: translateY(-10px) scale(1.03);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
-.produit-card span {
-  top: 10px;
-  right: 20px;
-  background-color: var(--color-green-primary);
-  color: var(--color-background-light);
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 25px;
-  position: absolute;
-  font-weight: bold;
-  text-align: justify;
-}
+
 .produit-image-container {
   position: relative;
   display: flex;
@@ -83,6 +73,7 @@
 .produit-image-container img{
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 .produit-text-icon img {
   width: auto;
@@ -108,18 +99,12 @@
 .produit-text h2 {
   border-radius: 20px;
   width: 80px;
-  color: var(--color-green-primary);
+  color: var(--color-text-dark);
   font-size: larger;
   text-align: justify;
   width: 100%;
 }
-.produit-text {
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  gap: 20px;
-  padding: 10px 10px;
-}
+
 .produit-text-icon {
   display: flex;
   align-items: center;
@@ -129,7 +114,11 @@
 .produit-card p {
   color: var(--color-green-primary);
   font-size: 16px;
-  font-weight: 600;
+ 
+}
+.quantite-control-group h1{
+ text-align: center;
+ 
 }
 @media (max-width: 900px) {
   .produit-section {

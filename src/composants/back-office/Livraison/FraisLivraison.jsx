@@ -18,66 +18,109 @@ const FraisLivraison = () => {
   }, []);
 
   const loadFrais = async () => {
-    const data = await fetchFrais();
-    console.log("Frais reçus du backend :", data);
-    setFraisList(data);
+    try {
+      const data = await fetchFrais();
+      setFraisList(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des frais :", err);
+      setFraisList([]);
+    }
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.poidsMin || !form.poidsMax || !form.frais) {
-      toast("Tous les champs sont obligatoires !");
-      return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!form.poidsMin || !form.poidsMax || !form.frais) {
+    toast("Tous les champs sont obligatoires !");
+    return;
+  }
+
+  const poidsMin = parseFloat(form.poidsMin);
+  const poidsMax = parseFloat(form.poidsMax);
+  const fraisValue = parseFloat(form.frais);
+
+  if (poidsMax <= poidsMin) {
+    toast("Le poids max doit être supérieur au poids min !");
+    return;
+  }
+
+  const poids = fraisList.some(item => {
+    if (editingId && (item.id === editingId || item.numFrais === editingId)) return false;
+    return (poidsMin <= item.poidsMax && poidsMax >= item.poidsMin);
+  });
+
+  if (poids) {
+    toast("ce poids existe deja !");
+    return;
+  }
+
+  const fraisExist = fraisList.some(item => {
+    if (editingId && (item.id === editingId || item.numFrais === editingId)) return false;
+    return item.frais === fraisValue;
+  });
+
+  if (fraisExist) {
+    toast("Ce montant de frais existe déjà !");
+    return;
+  }
+
+  const payload = { poidsMin, poidsMax, frais: fraisValue };
+
+  try {
+    if (editingId) {
+      await updateFrais(editingId, payload);
+      toast("Tranche mise à jour !");
+    } else {
+      await createFrais(payload);
+      toast.success("Nouvelle tranche ajoutée !");
     }
-    try {
-      if (editingId) {
-        await updateFrais(editingId, form);
-        toast("Tranche mise à jour !");
-      } else {
-        await createFrais(form);
-        toast("Nouvelle tranche ajoutée !");
-      }
-      setForm({ poidsMin: "", poidsMax: "", frais: "" });
-      setEditingId(null);
-      loadFrais();
-    } catch (err) {
-      console.error(err);
-      toast.error("Erreur lors de l'enregistrement.");
-    }
-  };
+    setForm({ poidsMin: "", poidsMax: "", frais: "" });
+    setEditingId(null);
+    loadFrais();
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de l'enregistrement.");
+  }
+};
+
 
   const handleEdit = (item) => {
     setForm({ poidsMin: item.poidsMin, poidsMax: item.poidsMax, frais: item.frais });
-    setEditingId(item.numFrais);
+    setEditingId(item.id || item.numFrais);
   };
 
-  const handleDelete = async (numFrais) => {
-    if (!(await Swal.fire({text: "Supprimer cette tranche ?", showDenyButton: true})).isConfirmed) return;
-    await deleteFrais(numFrais);
-    loadFrais();
+  const handleDelete = async (id) => {
+    if (!window.confirm("Supprimer cette tranche ?")) return;
+    try {
+      await deleteFrais(id);
+      loadFrais();
+    } catch (err) {
+      console.error(err);
+      toast.error("Erreur lors de la suppression");
+    }
   };
 
-  // Filtrer les frais selon la recherche
   const filteredFrais = fraisList.filter((item) => {
-    const searchLower = search.toLowerCase();
+    const s = search.toLowerCase();
     return (
-      item.poidsMin.toString().includes(searchLower) ||
-      item.poidsMax.toString().includes(searchLower) ||
-      item.frais.toString().includes(searchLower)
+      item.poidsMin.toString().includes(s) ||
+      item.poidsMax.toString().includes(s) ||
+      item.frais.toString().includes(s)
     );
   });
 
   return (
     <div className="frais-container">
       <div className="frais-header">
-        <h2>Gestion des frais de livraison</h2>
-        <button className="btn-retour" onClick={() => navigate("/admin/livraisons")}>
-          ⬅ Retour aux livraisons
-        </button>
+        <h2>Gestion des Frais de Livraison</h2>
+        <div className="livraison-tabs">
+          <button className="tab-inactive" onClick={() => navigate("/admin/livraisons")}>Livraisons</button>
+          <button className="tab-active">Frais de livraison</button>
+          <button className="tab-inactive" onClick={() => navigate("/admin/livraisons/lieux")}>Lieux de livraison</button>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="frais-form">
@@ -100,7 +143,6 @@ const FraisLivraison = () => {
         </button>
       </form>
 
-      {/* Barre de recherche */}
       <div className="frais-search-bar">
         <FaSearch />
         <input
@@ -128,14 +170,14 @@ const FraisLivraison = () => {
         </thead>
         <tbody>
           {filteredFrais.map((item) => (
-            <tr key={item.numFrais}>
-              <td>{item.numFrais}</td>
+            <tr key={item.id || item.numFrais}>
+              <td>{item.id || item.numFrais}</td>
               <td>{item.poidsMin}</td>
               <td>{item.poidsMax}</td>
               <td>{item.frais}</td>
               <td>
                 <button className="btn-edit" onClick={() => handleEdit(item)}>✏️</button>
-                <button className="btn-delete" onClick={() => handleDelete(item.numFrais)}>🗑️</button>
+                <button className="btn-delete" onClick={() => handleDelete(item.id || item.numFrais)}>🗑️</button>
               </td>
             </tr>
           ))}

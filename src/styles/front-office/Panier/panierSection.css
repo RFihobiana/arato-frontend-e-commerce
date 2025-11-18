@@ -1,4 +1,3 @@
-
 :root {
   --color-green-primary: #28a458; 
   --color-green-secondary: #5ebb82; 
@@ -67,28 +66,26 @@
   width: 100%;
 }
 
-.panier-item-container::before,
-.deco-image {
-  display: none; 
+.empty-cart-message {
+  text-align: center;
+  padding: 40px 20px;
 }
 
+.empty-cart-message p {
+  font-size: 1.1rem;
+  color: var(--color-text-medium);
+  margin: 0;
+}
 
 .item-card {
   display: flex;
   flex-direction: column;
   background-color: var(--color-background-white);
-  border-radius: 20px; 
+  border-radius: 12px; 
   padding: 18px; 
-  box-shadow: 4px 4px 4px 4px rgba(19, 151, 70, 0.1);
-  flex-grow: 1;
+  box-shadow: 0 2px 8px var(--color-shadow-light);
+  border: 1px solid var(--color-border-light);
   width: 100%;
-  align-items: flex-start;
-  transition: transform 0.2s ease, box-shadow 0.2s ease; 
-}
-
-.item-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 4px 4px 4px 4px rgba(19, 151, 70, 0.2);
 }
 
 .item-card-image-info {
@@ -118,6 +115,7 @@
 .precommande {
   font-weight: bold;
   color: var(--color-green-primary);
+  font-size: 0.85rem;
 }
 
 .produit-nom {
@@ -159,129 +157,85 @@
   white-space: nowrap; 
 }
 
-.select-wrapper {
-  position: relative;
-}
-
-.cutting-select {
-  padding: 8px 30px 8px 10px;
- 
+.cutting-option-group select {
+  padding: 8px 12px;
   border: 1px solid var(--color-border-medium);
-  border-radius: 8px; 
-  background-color: #f8fdfa; 
+  border-radius: 6px; 
+  background-color: var(--color-background-white);
   font-size: 0.95rem;
   color: var(--color-text-dark);
   cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 100%;
-  transition: border-color 0.2s;
+  min-width: 150px;
 }
-
-.cutting-select:hover, .cutting-select:focus {
-    border-color: var(--color-green-primary);
-}
-
 
 .quantite-control-group {
-    display: flex;
-    align-items: center;
-    
-    gap: 15px; 
-    flex-shrink: 0;
-}
-
-.quantite-control-group .prix-per-kg {
-    font-size: 0.85rem;
-    color: var(--color-text-light);
-    text-align: right;
-    min-width: 80px;
-}
-
-.produit-final-row {
   display: flex;
-  justify-content: space-between; 
   align-items: center;
-  width: 100%;
+  gap: 8px; 
 }
 
-.produit-final-row .total-item-prix {
-  font-weight: 700;
-  color: var(--color-green-primary);
-  font-size: 1.3rem;
-}
-
-
-.quantite-control {
-  display: flex;
-  flex-direction: row;
-  gap: 1px; 
-  background-color: #f0fdf4; 
-  border: 1px solid var(--color-green-secondary); 
-  padding: 3px 6px;
-  border-radius: 25px; 
-  align-items: center;
-}
-
-.quantite-control button {
-  background-color: var(--color-green-primary);
+.quantite-control-group button {
+  background: var(--color-green-primary);
   color: var(--color-background-white);
   border: none;
-  border-radius: 50%;
-  width: 20px; 
-  height: 20px;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
 }
 
-.quantite-control button:hover {
-  background-color: var(--color-green-secondary);
+.quantite-control-group button:hover:not(:disabled) {
+  background: var(--color-green-secondary);
 }
 
-.quantite-control span {
-  font-weight: 500; 
+.quantite-control-group button:disabled {
+  background: var(--color-border-medium);
+  cursor: not-allowed;
+}
+
+.quantite-control-group span {
+ 
   color: var(--color-text-dark);
-  font-size: 1.1rem;
-  min-width: 25px; 
+  
+  min-width: 30px;
   text-align: center;
 }
 
-.quantite-unit {
-  font-size: 0.85rem; 
-  color: var(--color-text-light); 
-  text-align: center;
+.quantite-control-group .prix-per-kg {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+  margin: 0;
+}
+
+.produit-final-row{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
   width: 100%;
+
 }
 
 .total-item-prix {
-  font-weight: bold;
-  color: var(--color-text-dark);
-  font-size: 1.2rem; 
-  text-align: right;
-  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--color-green-primary);
+  font-size: 1.3rem;
 }
 
 .delete-btn {
-  color: var(--color-red-error); 
+  color: var(--color-red-error);
   border: none;
   background-color: transparent;
   cursor: pointer;
   font-size: 1.2rem; 
-  transition: color 0.2s ease;
-}
-
-.delete-btn:hover {
-  color: #c9302c; 
+  padding: 8px;
 }
 
 
-
-/* --- Panneau Droit --- */
 
 .right-panel-wrapper {
   display: flex;
@@ -293,19 +247,114 @@
   min-width: 320px; 
 }
 
-.commande-globale-card {
+.panier-total-card {
   background-color: var(--color-background-white);
   border-radius: 12px; 
-  box-shadow: 0 5px 15px var(--color-shadow-light); 
+  box-shadow: 0 2px 8px var(--color-shadow-light);
+  padding: 20px;
+  border: 1px solid var(--color-border-light);
+}
+
+.panier-total-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 15px 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.livraison-input-group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.livraison-input-group .input-icon {
+  color: var(--color-green-primary);
+  font-size: 1.1rem;
+}
+
+.livraison-input-group input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  background-color: var(--color-background-white);
+}
+
+.livraison-input-group input:focus {
+  border-color: var(--color-green-primary);
+  outline: none;
+}
+
+.delivery-note {
+  font-size: 0.85rem;
+  color: var(--color-green-primary);
+  font-weight: 500;
+  margin: 10px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.promo-input-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.promo-input-group input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+}
+
+.promo-input-group input:focus {
+  border-color: var(--color-green-primary);
+  outline: none;
+}
+
+.apply-promo-btn {
+  background: var(--color-green-primary);
+  color: var(--color-background-white);
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.apply-promo-btn:hover {
+  background: var(--color-green-secondary);
+}
+
+.remise-applied-message {
+  color: var(--color-green-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 10px 0 0 0;
+  text-align: center;
+  background: rgba(40, 164, 88, 0.1);
+  padding: 8px;
+  border-radius: 4px;
 }
 
 .total-card {
-  padding: 20px 25px; 
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px; 
+  gap: 15px;
 }
 
 .total-card-top {
@@ -321,190 +370,115 @@
 }
 
 .text h2 {
-  font-weight: 500; 
-  font-size: 1.05rem; 
+  font-weight: 500;
+  font-size: 1rem;
   color: var(--color-text-medium);
   display: flex;
   align-items: center;
-  gap: 10px; 
-}
-
-.text h2 .delivery-icon {
-  font-size: 1.3rem; 
-  color: var(--color-text-light);
+  gap: 8px;
+  margin: 0;
 }
 
 .text p {
-  font-weight: 600; 
-  font-size: 1.1rem;
+  font-weight: 600;
+  font-size: 1rem;
   color: var(--color-text-dark);
+  margin: 0;
 }
 
-.total-card-middle {
+.discount-line h2,
+.discount-line p {
+  color: var(--color-green-primary);
+}
+
+.total-card hr {
   border: none;
-  border-top: 1px solid var(--color-border-medium); 
-  margin: 15px 0;
+  border-top: 1px solid var(--color-border-light);
+  margin: 8px 0;
 }
 
 .total-line {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 8px;
 }
 
 .total-line h2 {
-  font-size: 1.4rem; 
-  font-weight: 700; 
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--color-text-dark);
-}
-
-.total-line .total-prix-to-pay {
-  font-size: 2.0rem; 
-  font-weight: 800; 
-  color: var(--color-green-primary); 
-}
-
-.promo-code-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 20px 25px;
-  border-top: 1px solid var(--color-border-light);
-  background-color: var(--color-background-white); 
-  border-radius: 0 0 12px 12px; 
-}
-
-.promo-code-section p {
-  font-size: 0.95rem;
-  color: var(--color-text-medium);
-  font-weight: 500;
   margin: 0;
 }
 
-.livraison-input-group,
-.promo-input-group {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  align-items: center;
-}
-
-.livraison-input-group input,
-.promo-input-group input {
-  flex-grow: 1;
-  padding: 12px 15px;
-  border: 1px solid var(--color-border-medium);
-  outline: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: var(--color-text-dark);
-  background-color: #fdfdfd; 
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.livraison-input-group input:focus,
-.promo-input-group input:focus {
-    border-color: var(--color-green-primary);
-    box-shadow: 0 0 0 2px rgba(40, 164, 88, 0.2);
-}
-
-.livraison-input-group input[type="date"] {
+.total-prix-to-pay {
+  font-size: 2rem;
+  font-weight: 700;
   color: var(--color-green-primary);
-  bottom: 0;
-}
-
-
-.promo-ok-btn {
-  background-color: var(--color-green-primary);
-  color: var(--color-background-white);
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600; 
-  font-size: 1rem;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  flex-shrink: 0; 
-}
-
-.promo-ok-btn:hover {
-  background-color: var(--color-green-secondary);
-  box-shadow: 0 4px 10px rgba(40, 164, 88, 0.2);
+  margin: 0;
 }
 
 .passer-commande-btn {
-  width:100%;
-  background-color: var(--color-green-primary);
+  width: 100%;
+  background: var(--color-green-primary);
   color: var(--color-background-white);
   padding: 15px 20px;
   border: none;
-  border-radius: 12px; 
-  font-size: 1rem; 
- 
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 5px 15px rgba(40, 164, 88, 0.3); 
-  margin-top: 15px; 
+  margin-top: 15px;
 }
 
-.passer-commande-btn:hover {
-  background-color: var(--color-green-secondary);
-  box-shadow: 0 7px 20px rgba(40, 164, 88, 0.4);
+.passer-commande-btn:hover:not(:disabled) {
+  background: var(--color-green-secondary);
 }
 
-.passer-commande-btn .lock-icon {
-  font-size: 1.3rem; 
+.passer-commande-btn:disabled {
+  background: var(--color-border-medium);
+  cursor: not-allowed;
 }
 
 .paiement-section {
-  width: 100%; 
-  padding: 20px 25px;
-  background-color: var(--color-background-white);
-  border-radius: 12px; 
-  box-shadow: 0 5px 15px var(--color-shadow-light); 
-  display: flex;
-  flex-direction: column;
-  gap: 15px; 
+  background: var(--color-background-white);
 }
 
-.paiement-section h3 {
-  font-size: 1.4rem; 
-  font-weight: 700; 
-  color: var(--color-text-dark);
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--color-border-light);
-  margin-bottom: 10px;
+.paiement-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .paiement-option {
   display: flex;
   align-items: center;
-  padding: 15px; 
+  padding: 15px;
   cursor: pointer;
-  border-radius: 10px; 
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-  border: 1px solid var(--color-border-light); 
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-background-white);
 }
 
 .paiement-option:hover {
-  background-color: #f8fdfa; 
-  border-color: var(--color-green-secondary); 
+  background: #f8fdfa;
+  border-color: var(--color-green-primary);
 }
 
-.paiement-option .icon {
-  font-size: 2.2rem; 
-  margin-right: 20px;
-  min-width: 40px; 
-  text-align: center;
+.paiement-icon {
+  margin-right: 15px;
+}
+
+.paiement-icon .icon {
+  font-size: 2rem;
 }
 
 .icon.mvola {
-  color: var(--color-green-primary); 
+  color: var(--color-green-primary);
 }
 
 .icon.carte {
@@ -512,156 +486,173 @@
 }
 
 .icon.virement {
-  color: #ffc107;
+  color: #ff9800;
 }
 
-.paiement-option > div {
+.paiement-info {
   flex-grow: 1;
 }
 
-.paiement-option h4 {
-  margin: 0;
-  font-size: 1.1rem;
+.paiement-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-dark);
 }
 
-.paiement-option p {
+.paiement-info p {
   margin: 0;
   font-size: 0.85rem;
   color: var(--color-text-light);
 }
 
 .paiement-option .arrow {
-  font-size: 1.6rem;
-  color: #ccc;
-  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 15px;
+}
+
+.logo-icon {
+  font-size: 2rem;
+}
+
+.logo-icon.mvola {
+  color: var(--color-green-primary);
+}
+
+.logo-icon.carte {
+  color: #007bff;
+}
+
+.logo-icon.virement {
+  color: #ff9800;
+}
+
+.mini-logo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #f0f0f0;
+}
+
+.mini-logo.visa {
+  color: #1a1f71;
+  background: #f0f8ff;
+}
+
+.mini-logo.mastercard {
+  color: #eb001b;
+  background: #fff0f0;
+}
+
+.paiement-option {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-background-white);
+  transition: all 0.2s ease;
+}
+
+.paiement-option:hover {
+  background: #f8fdfa;
+  border-color: var(--color-green-primary);
+}
+
+.paiement-option.active {
+  border-color: var(--color-green-primary);
+  background: rgba(40, 164, 88, 0.05);
+}
+
+.text-info {
+  flex-grow: 1;
+}
+
+.text-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.text-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+.arrow-icon {
+  font-size: 1.1rem;
+  color: var(--color-text-light);
   margin-left: 10px;
-}
-
-.pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 25px; 
-    padding: 15px 0;
-    gap: 15px;
-    border-top: 1px solid var(--color-border-light);
-}
-
-.pagination-controls button {
-    background-color: transparent;
-    color: var(--color-green-primary);
-    border: 1px solid var(--color-green-primary);
-    padding: 8px 15px;
-    border-radius: 8px; 
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-.pagination-controls button:hover:not(:disabled) {
-    background-color: var(--color-green-primary);
-    color: var(--color-background-white);
-    box-shadow: 0 3px 8px rgba(40, 164, 88, 0.2);
-}
-
-.pagination-controls button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6; 
-    border: 1px solid #ccc;
-    color: #888;
-    box-shadow: none;
-}
-
-.page-numbers {
-    display: flex;
-    gap: 5px;
-}
-
-.page-numbers button {
-    padding: 6px 13px; 
-    background-color: #fcfcfc; 
-    color: var(--color-text-medium);
-    border: 1px solid var(--color-border-light);
-}
-
-.page-numbers button.active {
-    background-color: var(--color-green-primary);
-    color: var(--color-background-white);
-    border: 1px solid var(--color-green-primary);
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(40, 164, 88, 0.2);
 }
 .modal-overlay {
   position: fixed;
- width: 400px;
- top: 0;
-right: 0;
- overflow: hidden;
-  z-index: 1000; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
 }
 
 .modal-content {
-  background-color: var(--color-background-white);
-  border-radius: 12px;
-  width: 90%;
-  max-width: 450px; 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease-in-out; 
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  background: var(--color-background-white);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-green-primary);
+  color: white;
 }
 
 .modal-header h2 {
-  font-size: 1.5rem;
-  color: var(--color-text-dark);
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
 }
 
 .modal-header .close-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: var(--color-text-dark);
+  font-size: 1.3rem;
+  color: white;
   cursor: pointer;
-  transition: color 0.2s;
-}
-
-.modal-header .close-btn:hover {
-  color: var(--color-red-error);
+  padding: 5px;
 }
 
 .modal-body {
-  width: 100%;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .montant-a-payer {
-  background-color: #f8f8f8;
+  background: #f8f8f8;
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   text-align: center;
   border: 1px solid var(--color-border-medium);
 }
@@ -676,20 +667,20 @@ right: 0;
 .montant-a-payer p {
   margin: 0;
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-red-error);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
 .form-group label {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--color-text-dark);
-  margin-bottom: 8px;
 }
 
 .form-group input {
@@ -698,7 +689,7 @@ right: 0;
   border-radius: 6px;
   font-size: 1rem;
   color: var(--color-text-dark);
-  transition: border-color 0.2s;
+  background: var(--color-background-white);
 }
 
 .form-group input:focus {
@@ -709,36 +700,36 @@ right: 0;
 .form-row {
   display: flex;
   gap: 10px;
-
 }
 
-
-
+.form-row .form-group {
+  flex: 1;
+}
 
 .warning-box {
-  background-color: #fffbe6; 
-  border-left: 5px solid #ffcc00;
-  padding: 10px 20px;
+  background: #fff3e0;
+  border-left: 4px solid #ff9800;
+  padding: 12px 15px;
   border-radius: 4px;
-
 }
 
 .info-box {
-  background-color: #e6f7ff; 
-  border-left: 5px solid #007bff;
-  padding: 15px;
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 12px 15px;
   border-radius: 4px;
 }
 
-.warning-box p, .info-box p {
+.warning-box p,
+.info-box p {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--color-text-medium);
+  color: var(--color-text-dark);
   line-height: 1.4;
 }
 
 .modal-footer {
-  padding: 15px 25px;
+  padding: 15px 20px;
   border-top: 1px solid var(--color-border-light);
 }
 
@@ -746,27 +737,65 @@ right: 0;
   width: 100%;
   padding: 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
 
 .payer-btn:hover {
   opacity: 0.9;
 }
+
 .mvola-btn {
-  background-color: var(--color-green-primary);
+  background: var(--color-green-primary);
   color: white;
 }
 
 .carte-btn {
-  background-color: var(--color-green-primary); 
+  background: var(--color-green-primary);
   color: white;
 }
 
 .virement-btn {
-  background-color: var(--color-green-primary); 
+  background: var(--color-green-primary);
   color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .panier-section {
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 25px;
+  }
+  
+  .panier-produits,
+  .right-panel-wrapper {
+    max-width: 100%;
+    min-width: auto;
+  }
+  .quantite-control-group button {
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  
+}
+.quantite-control-group{
+
+}
+  .right-panel-wrapper {
+    margin-top: 0;
+  }
+  
+  .produit-controls-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

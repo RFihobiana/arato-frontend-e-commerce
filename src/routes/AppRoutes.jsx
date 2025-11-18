@@ -13,6 +13,7 @@ import Profil from "../pages/front-office/Profil";
 import ChangePasswordAdmin from "../composants/front-office/Profil/ChangePasswordAdmin";
 
 // Pages Back-Office
+import LieuxLivraison from "../composants/back-office/Livraison/LieuxLivraison";
 import TableauLayout from "../pages/back-office/TableauLayout";
 import TableauDeBord from "../composants/back-office/TableauDeBord";
 import Produits from "../composants/back-office/Produits/Produits";
@@ -85,6 +86,8 @@ export default function AppRoutes() {
           <Route path="clients" element={<Clients />} />
           <Route path="livraisons" element={<Livraisons />} />
           <Route path="livraisons/frais" element={<FraisLivraison />} />
+                  <Route path="livraisons/lieux" element={<LieuxLivraison />} />
+
           <Route path="change-password" element={<ChangePasswordAdmin />} />
         </Route>
 

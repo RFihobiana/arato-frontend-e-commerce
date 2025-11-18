@@ -53,3 +53,12 @@ export const deletePromotion = async (id) => {
         throw error;
     }
 };
+export const sendPromoEmail = async () => {
+    try {
+        const res = await api.post(`/send-email`, {}, getConfig());
+        return res.data;
+    } catch (error) {
+        console.error("Erreur envoi e-mails promo:", error.response?.data || error.message);
+        throw error;
+    }
+};
